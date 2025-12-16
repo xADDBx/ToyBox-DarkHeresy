@@ -13,9 +13,9 @@ jobs:
     steps:
     - name: Build
       id: build-action
-      uses: xADDBx/BuildOwlcatMod@v2
+      uses: xADDBx/BuildOwlcatMod@v3
       with:
-        GAME_NAME: RogueTrader
+        GAME_NAME: DarkHeresy
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         GITHUB_NAME: ${{ github.repository_owner }}
         PACKAGE_OWNER: xADDBx
