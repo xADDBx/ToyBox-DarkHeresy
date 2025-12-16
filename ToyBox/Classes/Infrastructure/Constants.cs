@@ -3,7 +3,7 @@
 namespace ToyBox.Infrastructure;
 
 public static class Constants {
-    public const string LinkToIncompatibilitiesFile = "https://raw.githubusercontent.com/xADDBx/ToyBox-RogueTrader/main/ToyBox/ModDetails/Incompatibilities.json";
+    public const string LinkToIncompatibilitiesFile = "https://raw.githubusercontent.com/xADDBx/ToyBox-DarkHeresy/main/ToyBox/Incompatibilities.json";
     public const string SaveFileKey = "ToyBox.SaveSpecificSettings";
     public static readonly HashSet<StatType> LegacyStats = [StatType.CheckBluff, StatType.CheckDiplomacy, StatType.CheckIntimidate, StatType.SaveFortitude, StatType.SaveReflex, StatType.SaveWill];
     public static readonly HashSet<StatType> WeirdStats = [StatType.TemporaryHitPoints, StatType.Unknown, StatType.AttackOfOpportunityCount,

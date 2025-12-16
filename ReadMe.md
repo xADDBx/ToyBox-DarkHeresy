@@ -21,7 +21,7 @@ Download: [nexusmods.com](https://www.nexusmods.com/warhammer40kroguetrader/mods
 
 # How to contribute
 - Make sure you have Visual Studio 22 (or current) installed and other tools you might want.  See [Owlcat Modding Beginners Guide](https://github.com/WittleWolfie/OwlcatModdingWiki/wiki/Beginner-Guide) for more info
-- on the [main repository page](https://github.com/xADDBx/ToyBox) click on "fork" in the upper-right corner
+- on the [main repository page](https://github.com/xADDBx/ToyBox-DarkHeresy) click on "fork" in the upper-right corner
 ![alt text](./documentation-assets/github-fork.jpg "github fork button position")
 - on your personal fork of the repository clone to your computer ([multiple method avaiable, chose the one you prefeer](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository))
 ![alt text](./documentation-assets/github-clone-1.jpg "github code button position")

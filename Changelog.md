@@ -1,8 +1,8 @@
 ### ToyBox DarkHeresy - Ver 0.0.1 (built for x.y.z)
 - Initial port for the game
 - Find pre-port changelogs [here](https://raw.githubusercontent.com/xADDBx/ToyBox-RogueTrader/refs/heads/main/ToyBox/ReadMe.md)
-- This port is based on TB2, see the relevant changes [here](https://raw.githubusercontent.com/xADDBx/ToyBox-RogueTrader/refs/heads/RT_TB2_Feature-introduction/Porting/Changes.txt)
-- See Credits for the various versions of ToyBox [here](https://raw.githubusercontent.com/xADDBx/ToyBox-RogueTrader/refs/heads/RT_TB2_Feature-introduction/Credits.md)
+- This port is based on TB2, see the relevant changes [here](https://raw.githubusercontent.com/xADDBx/ToyBox-ToyBox-DarkHeresy/refs/heads/main/Porting/Changes.txt)
+- See Credits for the various versions of ToyBox [here](https://raw.githubusercontent.com/xADDBx/ToyBox-ToyBox-DarkHeresy/refs/heads/main/Credits.md)
 
 ### Install & Use
 

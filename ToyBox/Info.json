@@ -1,12 +1,12 @@
 {
-  "Id": "ToyBox",
+  "Id": "ToyBoxDH",
   "DisplayName": "ToyBox",
   "Author": "Narria, ADDB",
-  "Version": "1.8.24",
+  "Version": "0.0.1",
   "ManagerVersion": "0.25.0",
   "Requirements": [],
   "AssemblyName": "ToyBox.dll",
   "EntryMethod": "ToyBox.Main.Load",
-  "HomePage": "https://github.com/xADDBx/ToyBox-RogueTrader",
-  "Repository": "https://raw.githubusercontent.com/xADDBx/ToyBox-RogueTrader/main/ToyBox/Repository.json"
+  "HomePage": "https://github.com/xADDBx/ToyBox-DarkHeresy",
+  "Repository": "https://raw.githubusercontent.com/xADDBx/ToyBox-DarkHeresy/main/ToyBox/Repository.json"
 }
