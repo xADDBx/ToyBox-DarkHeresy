@@ -1,3 +1,7 @@
+### ToyBox DarkHeresy - Ver 0.1.2 (built for 0.0.3.475)
+- (***ADDB***) Swap to custom UMM because Owlcat disabled official
+- (***ADDB***) Add Modify Money thingy
+
 ### ToyBox DarkHeresy - Ver 0.1.1 (built for 0.0.3.467)
 - (***ADDB***) Remove AbilityResource related things (AddBA, RemoveBA, Type in IdCache) because there is not a single bp with that type in DH.
 

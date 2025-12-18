@@ -6,6 +6,7 @@ using ToyBox.Features.BagOfTricks.Dialog;
 using ToyBox.Features.BagOfTricks.DiceRolls;
 using ToyBox.Features.BagOfTricks.EnemyStatModifier;
 using ToyBox.Features.BagOfTricks.ExperienceMultipliers;
+using ToyBox.Features.BagOfTricks.Money;
 using ToyBox.Features.BagOfTricks.OtherMultipliers;
 using ToyBox.Features.BagOfTricks.Preview;
 using ToyBox.Features.BagOfTricks.QualityOfLife;
@@ -44,6 +45,8 @@ public partial class BagOfTricksFeatureTab : FeatureTab {
     [LocalizedString("ToyBox_Features_BagOfTricks_BagOfTricksFeatureTab_m_EnemyStatModifierLocalizedText", "Enemy Stat Modifier")]
     private static partial string m_EnemyStatModifierLocalizedText { get; }
     public BagOfTricksFeatureTab() {
+        AddFeature(new ModifyMoneyFeature(), m_MoneyLocalizedText);
+
         AddFeature(new RestAllFeature(), m_CombatLocalizedText);
         AddFeature(new RestSelectedFeature(), m_CombatLocalizedText);
         AddFeature(new ImmortalityBuffFeature(), m_CombatLocalizedText);
@@ -124,4 +127,7 @@ public partial class BagOfTricksFeatureTab : FeatureTab {
         AddFeature(new EnemyFlatStatModifierFeature(), m_EnemyStatModifierLocalizedText);
         AddFeature(new EnemyStatMultiplierFeature(), m_EnemyStatModifierLocalizedText);
     }
+
+    [LocalizedString("ToyBox_Features_BagOfTricks_BagOfTricksFeatureTab_m_MoneyLocalizedText", "Money")]
+    private static partial string m_MoneyLocalizedText { get; }
 }

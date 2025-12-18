@@ -67,6 +67,10 @@
     "Original": "Enemy Stat Modifier",
     "Translated": null
   },
+  "ToyBox_Features_BagOfTricks_BagOfTricksFeatureTab_m_MoneyLocalizedText": {
+    "Original": "Money",
+    "Translated": null
+  },
   "ToyBox_Features_BagOfTricks_Camera_AllowMouse3DraggingToAimCameraFeature_Name": {
     "Original": "Enable Mouse3 Dragging To Aim The Camera",
     "Translated": null
@@ -549,6 +553,34 @@
   },
   "ToyBox_Features_BagOfTricks_ExperienceMultipliers_ExperienceMultiplierFeature_m_OverrideForInvestigationsLocalizedText": {
     "Original": "Override for Investigations",
+    "Translated": null
+  },
+  "ToyBox_Features_BagOfTricks_Money_ModifyMoneyFeature_Name": {
+    "Original": "Modify Money",
+    "Translated": null
+  },
+  "ToyBox_Features_BagOfTricks_Money_ModifyMoneyFeature_Description": {
+    "Original": "Allows modifying how much Scints you have.",
+    "Translated": null
+  },
+  "ToyBox_Features_BagOfTricks_Money_ModifyMoneyFeature_m_AddLocalizedText": {
+    "Original": "Add",
+    "Translated": null
+  },
+  "ToyBox_Features_BagOfTricks_Money_ModifyMoneyFeature_m_GainLocalizedText": {
+    "Original": "Gain",
+    "Translated": null
+  },
+  "ToyBox_Features_BagOfTricks_Money_ModifyMoneyFeature_m_RemoveLocalizedText": {
+    "Original": "Remove",
+    "Translated": null
+  },
+  "ToyBox_Features_BagOfTricks_Money_ModifyMoneyFeature_m_CurrentMoneyLocalizedText": {
+    "Original": "Current Scints",
+    "Translated": null
+  },
+  "ToyBox_Features_BagOfTricks_Money_ModifyMoneyFeature_m_YouCanOnlyModifyYourMoneyAfterLoLocalizedText": {
+    "Original": "You can only modify your money after loading a save.",
     "Translated": null
   },
   "ToyBox_Features_BagOfTricks_OtherMultipliers_BuffDurationMultiplierFeature_m_ManageExceptionsToBuffDurationMuLocalizedText": {

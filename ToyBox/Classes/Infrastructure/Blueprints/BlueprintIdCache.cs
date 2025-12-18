@@ -72,9 +72,9 @@ public class BlueprintIdCache {
             var gameVersionChanged = GameVersion.GetVersion() != Instance.CachedGameVersion;
 
             var ummSet = Instance.UmmList.ToHashSet();
-            var ummModsChanged = !(ummSet.Count == UnityModManagerNet.UnityModManager.ModEntries.Count);
+            var ummModsChanged = !(ummSet.Count == UnityModManagerNet.UnityModManager.modEntries.Count);
             if (!ummModsChanged) {
-                foreach (var modEntry in UnityModManagerNet.UnityModManager.ModEntries) {
+                foreach (var modEntry in UnityModManagerNet.UnityModManager.modEntries) {
                     if (!ummSet.Contains(new(modEntry.Info.Id, modEntry.Info.Version))) {
                         ummModsChanged = true;
                         break;
@@ -110,7 +110,7 @@ public class BlueprintIdCache {
             Instance.CachedGameVersion = GameVersion.GetVersion();
 
             Instance.UmmList.Clear();
-            foreach (var modEntry in UnityModManagerNet.UnityModManager.ModEntries) {
+            foreach (var modEntry in UnityModManagerNet.UnityModManager.modEntries) {
                 _ = Instance.UmmList.Add(new(modEntry.Info.Id, modEntry.Info.Version));
             }
 

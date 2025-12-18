@@ -33,7 +33,7 @@ public partial class VersionCompatabilityFeature : FeatureWithPatch, INeedEarlyI
     [HarmonyPatch(typeof(UnityModManager.UI), MethodType.Constructor), HarmonyPostfix]
     private static void UnityModManager_UI_Postfix(UnityModManager.UI __instance) {
         if (VersionChecker.ResultOfCheck.HasValue && !VersionChecker.ResultOfCheck.Value) {
-            __instance.ShowModSettings = UnityModManager.ModEntries.FindIndex(mod => mod == Main.ModEntry);
+            __instance.ShowModSettings = UnityModManager.modEntries.FindIndex(mod => mod == Main.ModEntry);
             _ = Main.ModEntry.OnUnload(Main.ModEntry);
         }
     }

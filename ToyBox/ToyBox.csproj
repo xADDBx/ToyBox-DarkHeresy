@@ -6,7 +6,7 @@
 		<Description>ToyBox</Description>
 		<AppDesignerFolder>Properties</AppDesignerFolder>
 		<OutputType>Library</OutputType>
-		<Version>0.1.1</Version>
+		<Version>0.1.2</Version>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<LangVersion>preview</LangVersion>
 		<Nullable>enable</Nullable>
@@ -29,7 +29,7 @@
 		<Reference Include="$(DarkHeresyInstallDir)\WH40KDH_Data\Managed\Code*.dll" Publicize="true" Private="false" />
 		<Reference Include="$(DarkHeresyInstallDir)\WH40KDH_Data\Managed\LocalizationShared.dll*" Publicize="true" Private="false" />
 		<Reference Include="$(DarkHeresyInstallDir)\WH40KDH_Data\Managed\UnityEngine.CoreModule.dll*" Publicize="true" Private="false" />
-		<Reference Include="$(DarkHeresyData)\UnityModManager\UnityModManager.dll*" Publicize="true" Private="false" />
+		<Reference Include="$(DarkHeresyInstallDir)\WH40KDH_Data\Managed\UnityModManager\UnityModManager.dll*" Publicize="true" Private="false" />
 		<Reference Include="$(DarkHeresyInstallDir)\WH40KDH_Data\Managed\0Harmony.dll*" Private="false" />
 		<Reference Include="$(DarkHeresyInstallDir)\WH40KDH_Data\Managed\Newtonsoft.Json.dll*" Private="false" />
 		<Reference Include="$(DarkHeresyInstallDir)\WH40KDH_Data\Managed\AK.Wwise.Unity.*" Private="false" />
@@ -70,7 +70,7 @@
 			<Files Include="$(TargetDir)\**\*.*" />
 		</ItemGroup>
 
-		<Copy SourceFiles="@(Files)" DestinationFiles="@(Files->'$(DarkHeresyData)\UnityModManager\0$(AssemblyName)0\%(RecursiveDir)%(Filename)%(Extension)')" />
+		<Copy SourceFiles="@(Files)" DestinationFiles="@(Files->'$(DarkHeresyData)\UnityModManager\$(AssemblyName)\%(RecursiveDir)%(Filename)%(Extension)')" />
 		<ZipDirectory SourceDirectory="$(MSBuildProjectDirectory)\$(OutputPath)" DestinationFile="$(MSBuildProjectDirectory)\$(OutputPath)\..\$(AssemblyName)-$(Version).zip" Overwrite="true" />
 	</Target>
 	<ItemGroup>
