@@ -27,7 +27,7 @@ public partial class SkipSplashScreenFeature : FeatureWithPatch, INeedEarlyInitF
         return false;
     }
     [HarmonyPatch(typeof(MainMenuLoadingScreen), nameof(MainMenuLoadingScreen.OnStart))]
-    private class MainMenuLoadingScreen_OnStart_Patch {
+    private static class MainMenuLoadingScreen_OnStart_Patch {
         [HarmonyTranspiler]
         private static IEnumerable<CodeInstruction> Start(IEnumerable<CodeInstruction> instructions) {
             foreach (var inst in instructions) {
