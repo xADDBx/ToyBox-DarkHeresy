@@ -154,7 +154,7 @@ public static partial class Main {
                     UI.Label("Note: The game is in Alpha and so is this mod.\nI tried to be as defensive as possible, meaning features should *only* cause issues if they are activated.".Green());
                     UI.Label("If you notice mod related issues please reach out on Nexus, GitHub or Discord!".Cyan());
 
-                    UI.Label(m_ThisModWillAutomaticallyConntectLocalizedText.Green().Bold());
+                    UI.Label(m_ThisModWillAutomaticallyConnectLocalizedText.Green().Bold());
                     Feature.GetInstance<VersionCompatabilityFeature>().OnGui();
                     if (UI.Button(m_IUnderstandLocalizedText.Green().Bold())) {
                         DisableRestrictedMode();
@@ -210,8 +210,8 @@ public static partial class Main {
 
     [LocalizedString("ToyBox_Main_SomethingWentHorriblyWrongAndYou", "Something went horribly wrong and you've somehow opened the UI before ToyBox finished initialization. Please report this to the mod author!")]
     private static partial string m_SomethingWentHorriblyWrongAndYou { get; }
-    [LocalizedString("ToyBox_Main_m_ThisModWillAutomaticallyConntectLocalizedText", "This mod will automatically conntect to the internet for various tasks. Here are the respective options (in the future found in the Settings tab).")]
-    private static partial string m_ThisModWillAutomaticallyConntectLocalizedText { get; }
+    [LocalizedString("ToyBox_Main_m_ThisModWillAutomaticallyConnectLocalizedText", "This mod will automatically connect to the internet for various tasks. Here are the respective options (in the future found in the Settings tab).")]
+    private static partial string m_ThisModWillAutomaticallyConnectLocalizedText { get; }
     [LocalizedString("ToyBox_Main_m_IUnderstandLocalizedText", "I understand")]
     private static partial string m_IUnderstandLocalizedText { get; }
 }

@@ -6,11 +6,11 @@
 
 ### Install & Use
 
-1. Install the mod using Modfinder﻿ or extract the archive to your game's mod folder (e.g. 
-   `C:\Users\<YourUser>\AppData\LocalLow\Owlcat Games\WHDH\UnityModManager\ToyBox`).
-1. Start the game and load a save or start a new save (most of the mod's functions can't accessed from the main menu).
-1. Open the Unity Mod Manager﻿ by pressing CTRL + F10.
-1. Adjust the settings in the mod's menu
+1. ***Important:*** You need to replace the shipped UnityModManager once with the custom one that is provided in the release. Just replace `C:\Users\<YourUser>\AppData\LocalLow\Owlcat Games\WHDH\UnityModManager\UnityModManager.dll` with the file of the same name that is provided.
+2. Install the by manually extracting the archive to your game's mod folder (e.g. one of the final paths could be: `C:\Users\<YourUser>\AppData\LocalLow\Owlcat Games\WHDH\UnityModManager\ToyBox\ToyBox.dll`).
+3. Start the game and load a save or start a new save (most of the mod's functions can't access from the main menu).
+4. Open the Unity Mod Manager﻿ by pressing CTRL + F10.
+5. Adjust the settings in the mod's menu.
 
 ### Development Setup
 
