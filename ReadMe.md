@@ -14,10 +14,11 @@ Download: [nexusmods.com](https://www.nexusmods.com/warhammer40000darkheresy/mod
 
 ### Install & Setup (Dark Heresy)
 
-1. Install the mod using the Unity Mod Manager﻿ ***or*** Modfinder ***or*** manually extract the archive to your game's mod folder (e.g. `C:\Users\<YourUser>\AppData\LocalLow\Owlcat Games\WHDH\UnityModManager\ToyBox`).
-2. Start the game and load a save or start a new save (the mod's functions can't accessed from the main menu).
-3. Open the Unity Mod Manager﻿ by pressing CTRL + F10.
-4. Adjust the settings in the mod's menu.
+1. ***Important*** You need to replace the shipped UnityModManager ***once*** with the custom one that is provided in the release. Just replace `C:\Users\<YourUser>\AppData\LocalLow\Owlcat Games\WHDH\UnityModManager\UnityModManager.dll` with the file of the same name that is provided.
+2. Install the by manually extracting the archive to your game's mod folder (e.g. `C:\Users\<YourUser>\AppData\LocalLow\Owlcat Games\WHDH\UnityModManager\ToyBox`).
+3. Start the game and load a save or start a new save (most of the mod's functions can't accessed from the main menu).
+4. Open the Unity Mod Manager﻿ by pressing CTRL + F10.
+5. Adjust the settings in the mod's menu.
 
 # How to contribute
 - Make sure you have Visual Studio 22 (or current) installed and other tools you might want.  See [Owlcat Modding Beginners Guide](https://github.com/WittleWolfie/OwlcatModdingWiki/wiki/Beginner-Guide) for more info
