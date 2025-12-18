@@ -11,10 +11,6 @@ using Kingmaker.Blueprints.Root;
 using Kingmaker.Code.Framework.CutsceneSystem;
 using Kingmaker.DialogSystem.Blueprints;
 using Kingmaker.ElementsSystem;
-using Kingmaker.Globalmap.Blueprints;
-using Kingmaker.Globalmap.Blueprints.Colonization;
-using Kingmaker.Globalmap.Blueprints.SectorMap;
-using Kingmaker.Globalmap.Blueprints.SystemMap;
 using Kingmaker.UnitLogic.Abilities.Blueprints;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
 using Kingmaker.UnitLogic.Progression.Features;
@@ -325,22 +321,22 @@ public partial class BlueprintFilter<T> : IBlueprintFilter<T> where T : SimpleBl
                             }
                         }
                         var cat = m_CollatedBlueprintsCache.Keys.ToList();
-/*
-#warning Sort Order
-                        cat.Sort((a, b) => {
-                            return (int)Direction * Sorter.Compare(a, b);
-                        });
-*/
+                        /*
+                        #warning Sort Order
+                                                cat.Sort((a, b) => {
+                                                    return (int)Direction * Sorter.Compare(a, b);
+                                                });
+                        */
                         cat.Insert(0, AllLocalizedText);
                         m_CollationCategories = cat;
                         m_CollatedBlueprintsCache[AllLocalizedText] = [.. bps];
- /*
-                        foreach (var group in m_CollatedBlueprintsCache.Values) {
-                            group.Sort((x, y) => {
-                                return (int)Direction * BPHelper.GetSortKey(x).CompareTo(BPHelper.GetSortKey(y));
-                            });
-                        }
- */
+                        /*
+                                               foreach (var group in m_CollatedBlueprintsCache.Values) {
+                                                   group.Sort((x, y) => {
+                                                       return (int)Direction * BPHelper.GetSortKey(x).CompareTo(BPHelper.GetSortKey(y));
+                                                   });
+                                               }
+                        */
                         Main.ScheduleForMainThread(() => {
                             IsCollating = false;
                         });

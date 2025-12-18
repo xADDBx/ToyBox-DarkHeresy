@@ -84,7 +84,7 @@ public static class Helpers {
     }
     public static PartInventory? GetMainInventory() {
         if (!IsInGame()) {
-            return null; 
+            return null;
         } else {
             return Game.Instance.Player.MainCharacterOriginalEntity?.Inventory ?? Game.Instance.Player.MainCharacterEntity?.Inventory;
         }

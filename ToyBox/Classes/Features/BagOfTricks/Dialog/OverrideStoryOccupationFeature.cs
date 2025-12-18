@@ -8,7 +8,7 @@ namespace ToyBox.Features.BagOfTricks.Dialog;
 [HarmonyPatch, ToyBoxPatchCategory("ToyBox.Features.BagOfTricks.Dialog.OverrideStoryOccupationFeature")]
 public partial class OverrideStoryOccupationFeature : FeatureWithPatch {
     //                                                    Imperium Noble                   ,  Temporary Noble                  ,  Astra Militarum
-    private static readonly string[] m_OccupationIds = [ "db5ff5610a6b4990bf916be877aa9f42", "f4a7d05af4dc4a768a77fa97c95ef63f", "eb458305fdf94709b4f90dea6e1c83aa"];
+    private static readonly string[] m_OccupationIds = ["db5ff5610a6b4990bf916be877aa9f42", "f4a7d05af4dc4a768a77fa97c95ef63f", "eb458305fdf94709b4f90dea6e1c83aa"];
     private static Browser<BlueprintFeature>? m_OccupationBrowser;
     public override ref bool IsEnabled {
         get {

@@ -24,7 +24,7 @@ public partial class IgnoreAllAbilityRequirementsFeature : FeatureWithPatch {
             return "ToyBox.Features.BagOfTricks.Cheats.IgnoreAllAbilityRequirementsFeature";
         }
     }
-    [HarmonyPatch(typeof(AbilityData), nameof(AbilityData.CanTargetFromNode), [typeof(GridNodeBase), typeof(GridNodeBase), typeof(TargetWrapper), typeof(int), typeof(LosCalculations.CoverType), typeof(UnavailabilityReasonType?), typeof(int?)], 
+    [HarmonyPatch(typeof(AbilityData), nameof(AbilityData.CanTargetFromNode), [typeof(GridNodeBase), typeof(GridNodeBase), typeof(TargetWrapper), typeof(int), typeof(LosCalculations.CoverType), typeof(UnavailabilityReasonType?), typeof(int?)],
         [ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Out, ArgumentType.Out, ArgumentType.Out, ArgumentType.Normal]), HarmonyPostfix]
     private static void AbilityData_CanTargetFromNode_Patch(ref UnavailabilityReasonType? unavailabilityReason, AbilityData __instance, ref bool __result) {
         if (!__result && __instance.Caster is BaseUnitEntity unit && ToyBoxUnitHelper.IsPartyOrPet(unit)) {

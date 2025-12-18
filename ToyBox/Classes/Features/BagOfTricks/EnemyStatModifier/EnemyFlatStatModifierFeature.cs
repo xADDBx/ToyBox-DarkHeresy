@@ -39,7 +39,7 @@ public partial class EnemyFlatStatModifierFeature : FeatureWithPatch {
         return (int)CalculateLargestLabelWidth(list, GUI.skin.textField);
     });
     private readonly TimedCache<float> m_LabelWidth = new(() => {
-    List<string> names = [];
+        List<string> names = [];
         foreach (StatType stat in Enum.GetValues(typeof(StatType))) {
             if (Constants.WeirdStats.Contains(stat)) {
                 continue;

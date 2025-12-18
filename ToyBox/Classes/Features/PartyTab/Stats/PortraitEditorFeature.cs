@@ -86,7 +86,7 @@ public partial class PortraitEditorFeature : Feature, INeedContextFeature<BaseUn
             }
             if (CustomPortraitsManager.Instance.GetExistingCustomPortraitIds() is string[] customIDs) {
                 if (m_CustomPortraitBrowser == null) {
-                    m_CustomPortraitBrowser = new(id => id, id => id, customIDs, showDivBetweenItems:false, overridePageLimit: 18, overridePageWidth: (int)(EffectiveWindowWidth() * 0.9f));
+                    m_CustomPortraitBrowser = new(id => id, id => id, customIDs, showDivBetweenItems: false, overridePageLimit: 18, overridePageWidth: (int)(EffectiveWindowWidth() * 0.9f));
                     m_LoadedCustomPortraits = true;
                 }
                 var currentIndex = 0;
@@ -131,7 +131,8 @@ public partial class PortraitEditorFeature : Feature, INeedContextFeature<BaseUn
                         unit.UISettings.SetPortrait(m_CurrentlyPickedBlueprintPortrait);
                         Debug($"Changed portrait of {unit.CharacterName} to {BPHelper.GetTitle(m_CurrentlyPickedBlueprintPortrait)}");
                     }
-                };
+                }
+                ;
             }
             if (m_BlueprintPortraitBrowser == null) {
                 m_BlueprintPortraitBrowser = new(BPHelper.GetSortKey, BPHelper.GetSearchKey, null,

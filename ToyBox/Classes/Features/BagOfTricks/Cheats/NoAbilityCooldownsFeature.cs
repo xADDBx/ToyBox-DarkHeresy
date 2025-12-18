@@ -20,7 +20,7 @@ public partial class NoAbilityCooldownsFeature : FeatureWithPatch {
         }
     }
     [HarmonyPatch(typeof(AbilityExecutionContext), nameof(AbilityExecutionContext.IgnoreCooldown), MethodType.Getter), HarmonyPostfix]
-    private static void UnitUseAbilityParams_IgnoreCooldowns_Patch(AbilityExecutionContext __instance , ref bool __result) {
+    private static void UnitUseAbilityParams_IgnoreCooldowns_Patch(AbilityExecutionContext __instance, ref bool __result) {
         if (__instance.Ability?.Caster is AbstractUnitEntity unit && ToyBoxUnitHelper.IsPartyOrPet(unit)) {
             __result = true;
         }
