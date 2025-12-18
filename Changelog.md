@@ -1,4 +1,4 @@
-### ToyBox DarkHeresy - Ver 0.0.1 (built for x.y.z)
+### ToyBox DarkHeresy - Ver 0.0.1 (built for 0.0.3.467)
 - Initial port for the game
 - Find pre-port changelogs [here](https://raw.githubusercontent.com/xADDBx/ToyBox-RogueTrader/refs/heads/main/ToyBox/ReadMe.md)
 - This port is based on TB2, see the relevant changes [here](https://raw.githubusercontent.com/xADDBx/ToyBox-ToyBox-DarkHeresy/refs/heads/main/Porting/Changes.txt)
@@ -7,16 +7,15 @@
 ### Install & Use
 
 1. Install the mod using Modfinder﻿ or extract the archive to your game's mod folder (e.g. 
-   `C:\Users\<YourUser>\AppData\LocalLow\Owlcat Games\Warhammer 40000 Rogue Trader\UnityModManager\ToyBox`).
+   `C:\Users\<YourUser>\AppData\LocalLow\Owlcat Games\WHDH\UnityModManager\ToyBox`).
 1. Start the game and load a save or start a new save (most of the mod's functions can't accessed from the main menu).
 1. Open the Unity Mod Manager﻿ by pressing CTRL + F10.
 1. Adjust the settings in the mod's menu
 
 ### Development Setup
 
-1. Install ToyBox mod into your game via Unity Mod Manager
-2. Clone the git repo
-3. Build the solution and it will automatically build and install into the mod folder in the game
+1. Clone the git repo
+2. Build the solution and it will automatically build and install into the mod folder in the game
 
 ### Acknowledgments
 

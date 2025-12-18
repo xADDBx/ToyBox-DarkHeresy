@@ -10,7 +10,7 @@ It was created in the spirit of Bag of Tricks & Cheat Menu but with a little dif
   - Items
   - etc.
 
-Download: [nexusmods.com](https://www.nexusmods.com/warhammer40kroguetrader/mods/1)
+Download: [nexusmods.com](https://www.nexusmods.com/warhammer40000darkheresy/mods/1)
 
 ### Install & Setup (Dark Heresy)
 
