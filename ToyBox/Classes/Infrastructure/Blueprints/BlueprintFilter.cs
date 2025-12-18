@@ -84,7 +84,6 @@ public static partial class BlueprintFilters {
         new BlueprintFilter<BlueprintFeature>(m_FeaturesLocalizedText),
         new BlueprintFilter<BlueprintCareerPath>(m_CareersLocalizedText),
         new BlueprintFilter<BlueprintAbility>(m_AbilitiesLocalizedText),
-        new BlueprintFilter<BlueprintAbilityResource>(m_AbilityRsrc_LocalizedText),
         new BlueprintFilter<BlueprintBuff>(m_BuffsLocalizedText),
         new BlueprintFilter<BlueprintItem>(m_ItemsLocalizedText, bp => {
             return [..BlueprintFilter<BlueprintItem>.DefaultCollator(bp), bp.ItemType.ToString()];
@@ -158,8 +157,6 @@ public static partial class BlueprintFilters {
     private static partial string m_CareersLocalizedText { get; }
     [LocalizedString("ToyBox_Features_SearchAndPick_BlueprintFilters_m_AbilitiesLocalizedText", "Abilities")]
     private static partial string m_AbilitiesLocalizedText { get; }
-    [LocalizedString("ToyBox_Features_SearchAndPick_BlueprintFilters_m_AbilityRsrc_LocalizedText", "Ability Rsrc.")]
-    private static partial string m_AbilityRsrc_LocalizedText { get; }
     [LocalizedString("ToyBox_Features_SearchAndPick_BlueprintFilters_m_BuffsLocalizedText", "Buffs")]
     private static partial string m_BuffsLocalizedText { get; }
     [LocalizedString("ToyBox_Features_SearchAndPick_BlueprintFilters_m_ItemsLocalizedText", "Items")]

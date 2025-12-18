@@ -1,5 +1,8 @@
+### ToyBox DarkHeresy - Ver 0.1.1 (built for 0.0.3.467)
+- (***ADDB***) Remove AbilityResource related things (AddBA, RemoveBA, Type in IdCache) because there is not a single bp with that type in DH.
+
 ### ToyBox DarkHeresy - Ver 0.1.0 (built for 0.0.3.467)
-- Initial port for the game
+- (***ADDB***) Initial port for the game
 - Find pre-port changelogs [here](https://raw.githubusercontent.com/xADDBx/ToyBox-RogueTrader/refs/heads/main/ToyBox/ReadMe.md)
 - This port is based on TB2, see the relevant changes [here](https://raw.githubusercontent.com/xADDBx/ToyBox-ToyBox-DarkHeresy/refs/heads/main/Porting/Changes.txt)
 - See Credits for the various versions of ToyBox [here](https://raw.githubusercontent.com/xADDBx/ToyBox-ToyBox-DarkHeresy/refs/heads/main/Credits.md)

@@ -10,10 +10,6 @@ using Kingmaker.Blueprints.Quests;
 using Kingmaker.Code.Framework.CutsceneSystem;
 using Kingmaker.DialogSystem.Blueprints;
 using Kingmaker.GameInfo;
-using Kingmaker.Globalmap.Blueprints;
-using Kingmaker.Globalmap.Blueprints.Colonization;
-using Kingmaker.Globalmap.Blueprints.SectorMap;
-using Kingmaker.Globalmap.Blueprints.SystemMap;
 using Kingmaker.Modding;
 using Kingmaker.UnitLogic.Abilities.Blueprints;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
@@ -51,7 +47,7 @@ public class BlueprintIdCache {
                 typeof(BlueprintBuff), typeof(BlueprintPortrait), typeof(BlueprintAbility), typeof(BlueprintAreaEnterPoint),
                 typeof(BlueprintUnit), typeof(BlueprintUnitFact), typeof(BlueprintFeature),
                 typeof(BlueprintAreaPreset), typeof(BlueprintCutscene), typeof(BlueprintUnitAsksList), typeof(BlueprintCareerPath),
-                typeof(BlueprintUnlockableFlag), typeof(BlueprintQuest), typeof(BlueprintQuestObjective), typeof(BlueprintAbilityResource),
+                typeof(BlueprintUnlockableFlag), typeof(BlueprintQuest), typeof(BlueprintQuestObjective),
                 typeof(BlueprintMechanicEntityFact), typeof(BlueprintItemMechadendrite), typeof(BlueprintAbilityFXSettings)
         ];
 
