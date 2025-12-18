@@ -2023,22 +2023,6 @@
     "Original": "Etude is not started or completed",
     "Translated": null
   },
-  "ToyBox_Infrastructure_Blueprints_BlueprintActions_AddAbilityResourceBA_Name": {
-    "Original": "Add Ability Resource",
-    "Translated": null
-  },
-  "ToyBox_Infrastructure_Blueprints_BlueprintActions_AddAbilityResourceBA_Description": {
-    "Original": "Adds the specified BlueprintAbilityResource to the chosen unit.",
-    "Translated": null
-  },
-  "ToyBox_Infrastructure_Blueprints_BlueprintActions_AddAbilityResourceBA_AddText": {
-    "Original": "Add",
-    "Translated": null
-  },
-  "ToyBox_Infrastructure_Blueprints_BlueprintActions_AddAbilityResourceBA_UnitAlreadyHasThisAbilityResourc": {
-    "Original": "Unit already has this ability resource",
-    "Translated": null
-  },
   "ToyBox_Infrastructure_Blueprints_BlueprintActions_AddMechadendriteBA_Name": {
     "Original": "Add Mechadendrite",
     "Translated": null
@@ -2127,22 +2111,6 @@
     "Original": "Can only play an example of the current voice!",
     "Translated": null
   },
-  "ToyBox_Infrastructure_Blueprints_BlueprintActions_RemoveAbilityResourceBA_Name": {
-    "Original": "Remove Ability Resource",
-    "Translated": null
-  },
-  "ToyBox_Infrastructure_Blueprints_BlueprintActions_RemoveAbilityResourceBA_Description": {
-    "Original": "Removes the specified BlueprintAbilityResource from the chosen unit.",
-    "Translated": null
-  },
-  "ToyBox_Infrastructure_Blueprints_BlueprintActions_RemoveAbilityResourceBA_RemoveText": {
-    "Original": "Remove",
-    "Translated": null
-  },
-  "ToyBox_Infrastructure_Blueprints_BlueprintActions_RemoveAbilityResourceBA_UnitAlreadyHasThisAbilityResourc": {
-    "Original": "Unit does not have this ability resource",
-    "Translated": null
-  },
   "ToyBox_Infrastructure_Blueprints_BlueprintActions_RemoveMechadendriteBA_Name": {
     "Original": "Remove Mechadendrite",
     "Translated": null
@@ -2205,10 +2173,6 @@
   },
   "ToyBox_Features_SearchAndPick_BlueprintFilters_m_AbilitiesLocalizedText": {
     "Original": "Abilities",
-    "Translated": null
-  },
-  "ToyBox_Features_SearchAndPick_BlueprintFilters_m_AbilityRsrc_LocalizedText": {
-    "Original": "Ability Rsrc.",
     "Translated": null
   },
   "ToyBox_Features_SearchAndPick_BlueprintFilters_m_BuffsLocalizedText": {
