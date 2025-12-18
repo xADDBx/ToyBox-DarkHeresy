@@ -2,7 +2,6 @@
 
 namespace ToyBox.Features.BagOfTricks.Combat;
 
-[IsTested]
 public partial class RestAllFeature : FeatureWithBindableAction {
     [LocalizedString("ToyBox_Features_BagOfTricks_Combat_RestAllFeature_Name", "Rest All")]
     public override partial string Name { get; }

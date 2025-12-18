@@ -73,9 +73,4 @@ public partial class JealousyBegoneFeature : FeatureWithPatch {
             }
         }
     }
-    [HarmonyPatch(typeof(RomanceLocked), nameof(RomanceLocked.CheckCondition)), HarmonyPostfix]
-    private static void RomanceLocked_CheckCondition_Patch(ref bool __result) {
-        OwlLog($"Overiding RomanceLocked Condition from {__result} to false");
-        __result = false;
-    }
 }

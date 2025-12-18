@@ -3,7 +3,6 @@ using Kingmaker.View;
 
 namespace ToyBox.Features.BagOfTricks.Camera;
 
-[IsTested]
 [HarmonyPatch, ToyBoxPatchCategory("ToyBox.Features.BagOfTricks.Camera.AllowZoomOnAllMapsAndCutscenesFeature")]
 public partial class AllowZoomOnAllMapsAndCutscenesFeature : FeatureWithPatch {
     public override ref bool IsEnabled {

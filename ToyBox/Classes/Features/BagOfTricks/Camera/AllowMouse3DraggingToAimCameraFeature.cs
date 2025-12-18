@@ -4,7 +4,6 @@ using ToyBox.Infrastructure.Utilities;
 
 namespace ToyBox.Features.BagOfTricks.Camera;
 
-[IsTested]
 [HarmonyPatch, ToyBoxPatchCategory("ToyBox.Features.BagOfTricks.Camera.AllowMouse3DraggingToAimCameraFeature")]
 public partial class AllowMouse3DraggingToAimCameraFeature : FeatureWithPatch, IToggledWithBinding {
     private static float m_OriginalMinSpaceCameraAngle;

@@ -1,15 +1,13 @@
-﻿using Kingmaker.AI.Blueprints;
-using Kingmaker.AreaLogic.Cutscenes;
-using Kingmaker.AreaLogic.Etudes;
+﻿using Kingmaker.AreaLogic.Etudes;
 using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Area;
 using Kingmaker.Blueprints.Facts;
 using Kingmaker.Blueprints.Items;
 using Kingmaker.Blueprints.Items.Armors;
-using Kingmaker.Blueprints.Items.Ecnchantments;
 using Kingmaker.Blueprints.Items.Equipment;
 using Kingmaker.Blueprints.Items.Weapons;
 using Kingmaker.Blueprints.Quests;
+using Kingmaker.Code.Framework.CutsceneSystem;
 using Kingmaker.DialogSystem.Blueprints;
 using Kingmaker.GameInfo;
 using Kingmaker.Globalmap.Blueprints;
@@ -49,14 +47,12 @@ public class BlueprintIdCache {
     public Dictionary<Type, HashSet<string>> IdsByType = [];
     public static HashSet<Type> CachedIdTypes = [
                 typeof(BlueprintItem), typeof(BlueprintItemWeapon), typeof(BlueprintItemArmor), typeof(BlueprintAbility),
-                typeof(BlueprintEtude), typeof(BlueprintArea), typeof(BlueprintItemEnchantment), typeof(BlueprintAnswer),
+                typeof(BlueprintEtude), typeof(BlueprintArea), typeof(BlueprintAnswer),
                 typeof(BlueprintBuff), typeof(BlueprintPortrait), typeof(BlueprintAbility), typeof(BlueprintAreaEnterPoint),
-                typeof(BlueprintUnit), typeof(BlueprintBrain), typeof(BlueprintUnitFact), typeof(BlueprintFeature),
-                typeof(BlueprintAreaPreset), typeof(Cutscene), typeof(BlueprintUnitAsksList), typeof(BlueprintCareerPath),
-                typeof(BlueprintColony), typeof(BlueprintPlanet), typeof(BlueprintSectorMapPointStarSystem), typeof(BlueprintStarSystemMap),
+                typeof(BlueprintUnit), typeof(BlueprintUnitFact), typeof(BlueprintFeature),
+                typeof(BlueprintAreaPreset), typeof(BlueprintCutscene), typeof(BlueprintUnitAsksList), typeof(BlueprintCareerPath),
                 typeof(BlueprintUnlockableFlag), typeof(BlueprintQuest), typeof(BlueprintQuestObjective), typeof(BlueprintAbilityResource),
-                typeof(BlueprintMechanicEntityFact), typeof(BlueprintItemMechadendrite), typeof(BlueprintAbilityFXSettings), typeof(BlueprintResource),
-                typeof(BlueprintColonyTrait), typeof (BlueprintColonyEventResult)
+                typeof(BlueprintMechanicEntityFact), typeof(BlueprintItemMechadendrite), typeof(BlueprintAbilityFXSettings)
         ];
 
     private static bool? m_NeedsCacheRebuilt = null;

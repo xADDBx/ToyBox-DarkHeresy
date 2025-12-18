@@ -1,17 +1,19 @@
-﻿using Kingmaker;
-using Kingmaker.Blueprints.Classes.Experience;
-using Kingmaker.GameModes;
+﻿using Kingmaker.AreaLogic.QuestSystem;
+using Kingmaker.Blueprints.Area;
+using Kingmaker.Blueprints.Quests;
+using Kingmaker.EntitySystem.Entities;
+using Kingmaker.Framework.DetectiveSystem;
+using Kingmaker.Gameplay.Features.Experience;
 using UnityEngine;
 
 namespace ToyBox.Features.BagOfTricks.ExperienceMultipliers;
 
-[IsTested]
 [HarmonyPatch, ToyBoxPatchCategory("ToyBox.Features.BagOfTricks.ExperienceMultipliers.ExperienceMultiplierFeature")]
 public partial class ExperienceMultiplierFeature : FeatureWithPatch {
     private static bool m_IsEnabled = false;
     public override ref bool IsEnabled {
         get {
-            m_IsEnabled = Settings.AllExperienceMultiplier != 1f || Settings.UseCombatExperienceMultiplier || Settings.UseQuestExperienceMultiplier || Settings.UseSkillCheckMultiplier || Settings.UseChallengesMultiplier || Settings.UseSpaceCombatMultiplier;
+            m_IsEnabled = Settings.AllExperienceMultiplier != 1f || Settings.UseCombatExperienceMultiplier || Settings.UseQuestExperienceMultiplier || Settings.UseSkillCheckMultiplier || Settings.UseInvestigationMultiplier;
             return ref m_IsEnabled;
         }
     }
@@ -63,19 +65,11 @@ public partial class ExperienceMultiplierFeature : FeatureWithPatch {
             }
         }
         using (HorizontalScope()) {
-            if (UI.Toggle(m_OverrideForChallengesLocalizedText, null, ref Settings.UseChallengesMultiplier, null, null, 250 * Main.UIScale)) {
+            if (UI.Toggle(m_OverrideForInvestigationsLocalizedText, null, ref Settings.UseInvestigationMultiplier, null, null, 250 * Main.UIScale)) {
                 MaybeReset();
             }
-            if (Settings.UseChallengesMultiplier) {
-                UI.LogSlider(ref Settings.ChallengeMultiplier, 0f, 100f, 1f, 1);
-            }
-        }
-        using (HorizontalScope()) {
-            if (UI.Toggle(m_OverrideForSpaceCombatLocalizedText, null, ref Settings.UseSpaceCombatMultiplier, null, null, 250 * Main.UIScale)) {
-                MaybeReset();
-            }
-            if (Settings.UseSpaceCombatMultiplier) {
-                UI.LogSlider(ref Settings.SpaceCombatMultiplier, 0f, 100f, 1f, 1);
+            if (Settings.UseInvestigationMultiplier) {
+                UI.LogSlider(ref Settings.InvestigationMultiplier, 0f, 100f, 1f, 1);
             }
         }
     }
@@ -87,79 +81,61 @@ public partial class ExperienceMultiplierFeature : FeatureWithPatch {
     private static partial string m_OverrideForQuestsLocalizedText { get; }
     [LocalizedString("ToyBox_Features_BagOfTricks_ExperienceMultipliers_ExperienceMultiplierFeature_m_OverrideForSkillChecksLocalizedText", "Override for Skill Checks")]
     private static partial string m_OverrideForSkillChecksLocalizedText { get; }
-    [LocalizedString("ToyBox_Features_BagOfTricks_ExperienceMultipliers_ExperienceMultiplierFeature_m_OverrideForChallengesLocalizedText", "Override for Challenges")]
-    private static partial string m_OverrideForChallengesLocalizedText { get; }
-    [LocalizedString("ToyBox_Features_BagOfTricks_ExperienceMultipliers_ExperienceMultiplierFeature_m_OverrideForSpaceCombatLocalizedText", "Override for Space Combat")]
-    private static partial string m_OverrideForSpaceCombatLocalizedText { get; }
-
+    [LocalizedString("ToyBox_Features_BagOfTricks_ExperienceMultipliers_ExperienceMultiplierFeature_m_OverrideForInvestigationsLocalizedText", "Override for Investigations")]
+    private static partial string m_OverrideForInvestigationsLocalizedText { get; }
     #region Patches
-    [HarmonyPatch(typeof(ExperienceHelper), nameof(ExperienceHelper.GetCheckExp)), HarmonyPostfix]
-    private static void ExperienceHelper_GetCheckExp_Patch(ref int __result) {
-        var mult = Settings.AllExperienceMultiplier;
-        if (Settings.UseSkillCheckMultiplier) {
-            mult = Settings.SkillCheckMultiplier;
-        }
-        if (mult != 1) {
-            __result = Mathf.RoundToInt(__result * mult);
+    private static ExperienceType? m_Context;
+    [HarmonyPatch(typeof(Experience), nameof(Experience.Gain), [typeof(int), typeof(MechanicEntity), typeof(bool)]), HarmonyPrefix]
+    private static void Experience_Gain_Patch1(ref int experience) {
+        if (m_Context.HasValue) {
+            Experience_Calculate_Patch(m_Context.Value, ref experience);
         }
     }
-    [HarmonyPatch(typeof(ExperienceHelper), nameof(ExperienceHelper.GetCheckExpByDifficulty)), HarmonyPostfix]
-    private static void ExperienceHelper_GetCheckExpByDifficulty_Patch(ref int __result) {
-        var mult = Settings.AllExperienceMultiplier;
-        if (Settings.UseSkillCheckMultiplier) {
-            mult = Settings.SkillCheckMultiplier;
-        }
-        if (mult != 1) {
-            __result = Mathf.RoundToInt(__result * mult);
+    [HarmonyPatch(typeof(Experience), nameof(Experience.Gain), [typeof(IExperienceSettings), typeof(BaseUnitEntity)]), HarmonyPrefix]
+    private static void Experience_Gain_Patch2(IExperienceSettings experience) {
+        if (experience.OverrideValue != null) {
+            m_Context = experience.Type;
         }
     }
-    [HarmonyPatch(typeof(ExperienceHelper), nameof(ExperienceHelper.GetMobExp)), HarmonyPostfix]
-    private static void ExperienceHelper_GetMobExp_Patch(ref int __result) {
-        var mult = Settings.AllExperienceMultiplier;
-        if (Settings.UseCombatExperienceMultiplier) {
-            mult = Settings.CombatExperienceMultiplier;
-        }
-        if (mult != 1) {
-            __result = Mathf.RoundToInt(__result * mult);
+    [HarmonyPatch(typeof(Experience), nameof(Experience.GainForEncounter)), HarmonyPrefix]
+    private static void Experience_GainForEncounter_Patch(Kingmaker.Gameplay.Features.Encounter.BlueprintEncounter blueprint) {
+        if (blueprint.OverrideExperience != null) {
+            m_Context = ExperienceType.Encounter;
         }
     }
-    [HarmonyPatch(typeof(ExperienceHelper), nameof(ExperienceHelper.GetXp)), HarmonyPostfix]
-    private static void ExperienceHelper_GetXp_Patch(ref int __result, EncounterType type) {
+    [HarmonyPatch(typeof(Experience), nameof(Experience.TryGain), [typeof(BlueprintQuest), typeof(MechanicEntity)]), HarmonyPrefix]
+    private static void Experience_GainForEncounter_Patch() {
+        m_Context = ExperienceType.Quest;
+    }
+    [HarmonyPatch(typeof(Experience), nameof(Experience.Calculate), [typeof(ExperienceType), typeof(int?), typeof(int?), typeof(UnitDifficultyType?)]), HarmonyPostfix]
+    private static void Experience_Calculate_Patch(ExperienceType type, ref int __result) {
         var mult = Settings.AllExperienceMultiplier;
-        if (Game.Instance.CurrentMode == GameModeType.SpaceCombat) {
-            if (Settings.UseSpaceCombatMultiplier) {
-                mult = Settings.SpaceCombatMultiplier;
-            }
-        } else {
-            switch (type) {
-                case EncounterType.QuestNormal:
-                case EncounterType.QuestMain: {
-                        if (Settings.UseQuestExperienceMultiplier) {
-                            mult = Settings.QuestExperienceMultiplier;
-                        }
+        switch (type) {
+            case ExperienceType.Quest:
+            case ExperienceType.MainQuest: {
+                    if (Settings.UseQuestExperienceMultiplier) {
+                        mult = Settings.QuestExperienceMultiplier;
                     }
-                    break;
-                case EncounterType.Mob:
-                case EncounterType.Boss: {
-                        if (Settings.UseCombatExperienceMultiplier) {
-                            mult = Settings.CombatExperienceMultiplier;
-                        }
+                }
+                break;
+            case ExperienceType.Encounter: {
+                    if (Settings.UseCombatExperienceMultiplier) {
+                        mult = Settings.CombatExperienceMultiplier;
                     }
-                    break;
-                case EncounterType.ChallengeMinor:
-                case EncounterType.ChallengeMajor: {
-                        if (Settings.UseChallengesMultiplier) {
-                            mult = Settings.ChallengeMultiplier;
-                        }
+                }
+                break;
+            case ExperienceType.Investigation: {
+                    if (Settings.UseInvestigationMultiplier) {
+                        mult = Settings.InvestigationMultiplier;
                     }
-                    break;
-                case EncounterType.SkillCheck: {
-                        if (Settings.UseSkillCheckMultiplier) {
-                            mult = Settings.SkillCheckMultiplier;
-                        }
+                }
+                break;
+            case ExperienceType.SkillCheck: {
+                    if (Settings.UseSkillCheckMultiplier) {
+                        mult = Settings.SkillCheckMultiplier;
                     }
-                    break;
-            }
+                }
+                break;
         }
         if (mult != 1) {
             __result = Mathf.RoundToInt(__result * mult);

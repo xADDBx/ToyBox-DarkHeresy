@@ -176,7 +176,7 @@ public static class EtudesEditor {
                 }
 
                 if (Application.isPlaying) {
-                    foreach (var etude in Game.Instance.Player.EtudesSystem.Etudes.RawFacts) {
+                    foreach (var etude in Game.Instance.EtudesSystem.Etudes.RawFacts) {
                         FillPlaymodeEtudeData(etude);
                     }
                 }
@@ -572,12 +572,12 @@ public static class EtudesEditor {
     public static void UpdateEtudeState(string etudeID, EtudeInfo etude) {
         var blueprintEtude = (BlueprintEtude)ResourcesLibrary.TryGetBlueprint(etudeID);
 
-        var item = Game.Instance.Player.EtudesSystem.Etudes.Get(blueprintEtude);
+        var item = Game.Instance.EtudesSystem.Etudes.Get(blueprintEtude);
         if (item != null)
             UpdateStateInRef(item, etude);
-        else if (Game.Instance.Player.EtudesSystem.EtudeIsPreCompleted(blueprintEtude))
+        else if (Game.Instance.EtudesSystem.EtudeIsPreCompleted(blueprintEtude))
             etude.State = EtudeInfo.EtudeState.CompleteBeforeActive;
-        else if (Game.Instance.Player.EtudesSystem.EtudeIsCompleted(blueprintEtude))
+        else if (Game.Instance.EtudesSystem.EtudeIsCompleted(blueprintEtude))
             etude.State = EtudeInfo.EtudeState.Completed;
     }
     private static void Traverse(this EtudeInfo etude, Action<EtudeInfo> action) {

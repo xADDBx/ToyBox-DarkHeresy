@@ -1,11 +1,10 @@
-﻿using Kingmaker.UI.MVVM.VM.ServiceWindows.CharacterInfo.Sections.Careers.CareerPath;
+﻿using Kingmaker.Code.UI.MVVM;
 using Kingmaker.UnitLogic;
 using Kingmaker.UnitLogic.Progression.Features;
 using Kingmaker.UnitLogic.Progression.Paths;
 
 namespace ToyBox.Features.LevelUp;
 
-[IsTested]
 [HarmonyPatch, ToyBoxPatchCategory("ToyBox.Features.LevelUp.IgnoreArchetypePrerequisitesFeature")]
 public partial class IgnoreArchetypePrerequisitesFeature : FeatureWithPatch {
     public override ref bool IsEnabled {
@@ -29,8 +28,7 @@ public partial class IgnoreArchetypePrerequisitesFeature : FeatureWithPatch {
 
     }
     [HarmonyPatch(typeof(CareerPathsListVM), nameof(CareerPathsListVM.GetPrerequisitesCareers)), HarmonyPrefix]
-    private static void CareerPathsListVM_GetPrerequisitesCareers_Patch(CareerPathsListVM __instance, ref List<BlueprintCareerPath> careerPaths, ref List<BlueprintFeature> features) {
-        careerPaths = [];
-        features = [];
+    private static void CareerPathsListVM_GetPrerequisitesCareers_Patch(List<BlueprintCareerPath> result) {
+        result.Clear();
     }
 }

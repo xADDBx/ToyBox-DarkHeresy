@@ -4,15 +4,14 @@ using ToyBox.Infrastructure.Utilities;
 
 namespace ToyBox.Infrastructure.Blueprints.BlueprintActions;
 
-[IsTested]
 public partial class CompleteEtudeBA : BlueprintActionFeature, IBlueprintAction<BlueprintEtude> {
 
     public bool CanExecute(BlueprintEtude blueprint, params object[] parameter) {
-        return IsInGame() && !Game.Instance.Player.EtudesSystem.EtudeIsNotStarted(blueprint) && !Game.Instance.Player.EtudesSystem.EtudeIsCompleted(blueprint);
+        return IsInGame() && !Game.Instance.EtudesSystem.EtudeIsNotStarted(blueprint) && !Game.Instance.EtudesSystem.EtudeIsCompleted(blueprint);
     }
     private bool Execute(BlueprintEtude blueprint) {
         LogExecution(blueprint);
-        Game.Instance.Player.EtudesSystem.MarkEtudeCompleted(blueprint);
+        Game.Instance.EtudesSystem.MarkEtudeCompleted(blueprint);
         return true;
     }
     public bool? OnGui(BlueprintEtude blueprint, bool isFeatureSearch, params object[] parameter) {

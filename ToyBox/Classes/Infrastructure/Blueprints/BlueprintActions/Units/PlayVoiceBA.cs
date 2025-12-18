@@ -6,7 +6,6 @@ using ToyBox.Infrastructure.Utilities;
 
 namespace ToyBox.Classes.Infrastructure.Blueprints.BlueprintActions.Units;
 
-[IsTested]
 public partial class PlayVoiceBA : BlueprintActionFeature, IBlueprintAction<BlueprintUnitAsksList>, INeedContextFeature<BaseUnitEntity> {
     [LocalizedString("ToyBox_Classes_Infrastructure_Blueprints_BlueprintActions_Units_PlayVoiceBA_Name", "Play Voice Example")]
     public override partial string Name { get; }
@@ -14,7 +13,7 @@ public partial class PlayVoiceBA : BlueprintActionFeature, IBlueprintAction<Blue
     public override partial string Description { get; }
 
     public bool CanExecute(BlueprintUnitAsksList blueprint, params object[] parameter) {
-        if (parameter.Length > 0 && parameter[0] is BaseUnitEntity unit) {
+        if (parameter.Length > 0 && parameter[0] is BaseUnitEntity) {
             return true;
         }
         return false;
@@ -22,13 +21,12 @@ public partial class PlayVoiceBA : BlueprintActionFeature, IBlueprintAction<Blue
     private bool Execute(BlueprintUnitAsksList blueprint, params object[] parameter) {
         LogExecution(blueprint, parameter);
         var unit = (BaseUnitEntity)parameter[0];
-        var comp = blueprint.GetComponent<UnitAsksComponent>();
         if (unit.Asks.List == blueprint) {
-            return new BarkWrapper(comp.PartyMemberUnconscious, unit.View.Asks).Schedule();
+            return new AskWrapper(blueprint.PartyMemberUnconscious, unit.View.Asks).Schedule();
         } else {
-            var manager = new UnitBarksManager(unit, comp);
+            var manager = new UnitAsksManager(unit, blueprint);
             manager.LoadBanks();
-            return new BarkWrapper(comp.PartyMemberUnconscious, manager).Schedule(callback: (_, _, _) => {
+            return new AskWrapper(blueprint.PartyMemberUnconscious, manager).Schedule(callback: _ => {
                 manager.UnloadBanks();
             });
         }

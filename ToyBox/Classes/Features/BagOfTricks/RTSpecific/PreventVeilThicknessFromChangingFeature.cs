@@ -1,9 +1,8 @@
 ﻿using Kingmaker;
-using Kingmaker.Designers.WarhammerSurfaceCombatPrototype.PsychicPowers;
+using Kingmaker.Code.AreaLogic;
 
 namespace ToyBox.Features.BagOfTricks.RTSpecific;
 
-[IsTested]
 [HarmonyPatch, ToyBoxPatchCategory("ToyBox.Features.BagOfTricks.RTSpecific.PreventVeilThicknessFromChangingFeature")]
 public partial class PreventVeilThicknessFromChangingFeature : FeatureWithPatch {
     public override ref bool IsEnabled {
@@ -18,7 +17,7 @@ public partial class PreventVeilThicknessFromChangingFeature : FeatureWithPatch 
     public override void Initialize() {
         base.Initialize();
         if (IsInGame()) {
-            Game.Instance.TurnController?.VeilThicknessCounter?.Value = 0;
+            Game.Instance.LoadedArea?.Veil?.Damage = 0;
         }
     }
     protected override string HarmonyName {
@@ -26,7 +25,7 @@ public partial class PreventVeilThicknessFromChangingFeature : FeatureWithPatch 
             return "ToyBox.Features.BagOfTricks.RTSpecific.PreventVeilThicknessFromChangingFeature";
         }
     }
-    [HarmonyPatch(typeof(VeilThicknessCounter), nameof(VeilThicknessCounter.Value), MethodType.Setter), HarmonyPrefix]
+    [HarmonyPatch(typeof(PartVeil), nameof(PartVeil.Damage), MethodType.Setter), HarmonyPrefix]
     private static void VeilThicknessCounter_setValue_Patch(ref int value) {
         value = 0;
     }

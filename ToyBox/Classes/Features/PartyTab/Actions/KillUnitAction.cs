@@ -5,7 +5,6 @@ using UnityEngine;
 
 namespace ToyBox.Features.PartyTab.Actions;
 
-[IsTested]
 public partial class KillUnitAction : FeatureWithAction, INeedContextFeature<BaseUnitEntity> {
     [LocalizedString("ToyBox_Features_PartyTab_Actions_KillUnitAction_Name", "Kill Unit")]
     public override partial string Name { get; }

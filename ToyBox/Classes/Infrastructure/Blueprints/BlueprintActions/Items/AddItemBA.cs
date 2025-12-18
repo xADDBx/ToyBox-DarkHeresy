@@ -11,7 +11,8 @@ public partial class AddItemBA : BlueprintActionFeature, IBlueprintAction<Bluepr
 
     private bool Execute(BlueprintItem blueprint, int count) {
         LogExecution(blueprint, count);
-        Game.Instance.Player.Inventory.Add(blueprint, count);
+        var inv = GetMainInventory();
+        inv!.Add(blueprint, count);
         return true;
     }
     public bool? OnGui(BlueprintItem blueprint, bool isFeatureSearch, params object[] parameter) {

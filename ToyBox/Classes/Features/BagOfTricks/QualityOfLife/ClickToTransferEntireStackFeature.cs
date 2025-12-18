@@ -1,9 +1,8 @@
-﻿using Kingmaker.Code.UI.MVVM.View.ServiceWindows.Inventory;
+﻿using Kingmaker.Code.UI.MVVM;
 using ToyBox.Infrastructure.Keybinds;
 
 namespace ToyBox.Features.BagOfTricks.QualityOfLife;
 
-[IsTested]
 [HarmonyPatch, ToyBoxPatchCategory("ToyBox.Features.BagOfTricks.QualityOfLife.ClickToTransferEntireStackFeature")]
 public partial class ClickToTransferEntireStackFeature : FeatureWithPatch, IToggledWithBinding {
     public override ref bool IsEnabled {

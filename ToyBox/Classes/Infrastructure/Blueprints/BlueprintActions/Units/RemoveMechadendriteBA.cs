@@ -6,7 +6,6 @@ using ToyBox.Infrastructure.Utilities;
 
 namespace ToyBox.Infrastructure.Blueprints.BlueprintActions;
 
-[IsTested]
 public partial class RemoveMechadendriteBA : BlueprintActionFeature, IBlueprintAction<BlueprintItemMechadendrite>, INeedContextFeature<BaseUnitEntity> {
     [LocalizedString("ToyBox_Infrastructure_Blueprints_BlueprintActions_RemoveMechadendriteBA_Name", "Remove Mechadendrite")]
     public override partial string Name { get; }
@@ -29,7 +28,7 @@ public partial class RemoveMechadendriteBA : BlueprintActionFeature, IBlueprintA
         ch.Body.Mechadendrites.Remove(slot);
         ch.View.Mechadendrites.Remove(item);
         try {
-            Game.Instance.Player.Inventory.Remove(item);
+            GetMainInventory()!.Remove(item);
         } catch (Exception ex) {
             Log($"Exception while removing Mechadendrite Entity from inventory:\n{ex}");
         }

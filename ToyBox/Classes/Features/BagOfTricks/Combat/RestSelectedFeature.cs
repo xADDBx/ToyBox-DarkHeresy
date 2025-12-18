@@ -3,7 +3,6 @@ using Kingmaker.UnitLogic.Parts;
 
 namespace ToyBox.Features.BagOfTricks.Combat;
 
-[IsTested]
 public partial class RestSelectedFeature : FeatureWithBindableAction {
     [LocalizedString("ToyBox_Features_BagOfTricks_Combat_RestSelectedFeature_Name", "Rest Selected")]
     public override partial string Name { get; }
@@ -12,7 +11,7 @@ public partial class RestSelectedFeature : FeatureWithBindableAction {
 
     public override void ExecuteAction(params object[] parameter) {
         if (IsInGame()) {
-            var units = Game.Instance.SelectionCharacter?.SelectedUnits ?? [];
+            var units = Game.Instance.Controllers.SelectionCharacter?.SelectedUnits ?? [];
             LogExecution(units);
             foreach (var unit in units) {
                 PartHealth.RestUnit(unit);

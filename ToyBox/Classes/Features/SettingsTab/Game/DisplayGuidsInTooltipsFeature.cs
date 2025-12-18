@@ -1,11 +1,8 @@
-﻿using Kingmaker.Code.UI.MVVM.View.Slots;
-using Kingmaker.Code.UI.MVVM.VM.ActionBar;
-using Kingmaker.Code.UI.MVVM.VM.Tooltip.Bricks;
-using Kingmaker.Code.UI.MVVM.VM.Tooltip.Templates;
+﻿using Kingmaker.Code.UI.MVVM;
+using Kingmaker.Code.View.Bridge.Enums;
 using Kingmaker.PubSubSystem;
 using Kingmaker.PubSubSystem.Core;
-using Kingmaker.UI.Models.UnitSettings;
-using Owlcat.Runtime.UI.Tooltips;
+using Owlcat.UI;
 using ToyBox.Infrastructure.Keybinds;
 using UnityEngine;
 
@@ -66,14 +63,6 @@ public partial class DisplayGuidsInTooltipsFeature : FeatureWithPatch, IBindable
             __result = [GetTooltip($"guid: {guid}"), .. __result];
         }
     }
-    [HarmonyPatch(typeof(TooltipTemplateActivatableAbility), nameof(TooltipTemplateActivatableAbility.GetBody)), HarmonyPostfix]
-    private static void TooltipTemplateActivatableAbility_GetBody_Patch(TooltipTemplateActivatableAbility __instance, ref IEnumerable<ITooltipBrick> __result) {
-        var guid = __instance.BlueprintActivatableAbility?.AssetGuid;
-        var guid2 = __instance.BlueprintActivatableAbility?.m_Buff?.guid;
-        if (guid != null && guid2 != null) {
-            __result = [GetTooltip($"{guid}\nbuff: {guid2}"), .. __result];
-        }
-    }
     [HarmonyPatch(typeof(TooltipTemplateItem), nameof(TooltipTemplateItem.GetBody)), HarmonyPostfix]
     private static void TooltipTemplateItem_GetBody_Patch(TooltipTemplateItem __instance, ref IEnumerable<ITooltipBrick> __result) {
         var guid = __instance.m_BlueprintItem?.AssetGuid ?? __instance.m_Item?.Blueprint?.AssetGuid;
@@ -83,7 +72,7 @@ public partial class DisplayGuidsInTooltipsFeature : FeatureWithPatch, IBindable
     }
     [HarmonyPatch(typeof(TooltipTemplateBuff), nameof(TooltipTemplateBuff.GetBody)), HarmonyPostfix]
     public static void TooltipTemplateBuff_GetBody_Patch(TooltipTemplateBuff __instance, ref IEnumerable<ITooltipBrick> __result) {
-        var guid = __instance.Buff?.Blueprint?.AssetGuid;
+        var guid = __instance.m_BlueprintBuff?.AssetGuid;
         if (guid != null) {
             __result = [GetTooltip(guid), .. __result];
         }
@@ -93,19 +82,16 @@ public partial class DisplayGuidsInTooltipsFeature : FeatureWithPatch, IBindable
         if (GetInstance<DisplayGuidsInTooltipsFeature>().Keybind?.IsActive() ?? false) {
             switch (__instance.MechanicActionBarSlot) {
                 case MechanicActionBarSlotAbility ab:
-                    CopyToClipboard(ab.Ability.Blueprint.AssetGuidThreadSafe);
-                    return false;
-                case MechanicActionBarSlotActivableAbility act:
-                    CopyToClipboard(act.ActivatableAbility.Blueprint.AssetGuidThreadSafe);
+                    CopyToClipboard(ab.Ability.Blueprint.AssetGuid);
                     return false;
                 case MechanicActionBarSlotItem item:
-                    CopyToClipboard(item.Item.Blueprint.AssetGuidThreadSafe);
+                    CopyToClipboard(item.Item.Blueprint.AssetGuid);
                     return false;
-                case MechanicActionBarSlotSpell spell:
-                    CopyToClipboard(spell.Spell.Blueprint.AssetGuidThreadSafe);
+                case MechanicActionBarSlotToggleAbility ab:
+                    CopyToClipboard(ab.Ability.Blueprint.AssetGuid);
                     return false;
                 case MechanicActionBarSlotSpontaneusConvertedSpell cspell:
-                    CopyToClipboard(cspell.Spell.Blueprint.AssetGuidThreadSafe);
+                    CopyToClipboard(cspell.Spell.Blueprint.AssetGuid);
                     return false;
             }
         }
@@ -115,7 +101,7 @@ public partial class DisplayGuidsInTooltipsFeature : FeatureWithPatch, IBindable
     [HarmonyPatch(typeof(ItemSlotPCView), nameof(ItemSlotPCView.OnClick)), HarmonyPostfix]
     private static void LeftClickItem(ItemSlotPCView __instance) {
         if (GetInstance<DisplayGuidsInTooltipsFeature>().Keybind?.IsActive() ?? false) {
-            var guid = __instance.ViewModel?.Item?.Value?.Blueprint?.AssetGuid;
+            var guid = __instance.ViewModel?.Item?.CurrentValue?.Blueprint?.AssetGuid;
             if (guid != null) {
                 CopyToClipboard(guid);
             }

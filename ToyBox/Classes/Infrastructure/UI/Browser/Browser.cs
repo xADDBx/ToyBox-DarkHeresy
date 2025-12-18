@@ -1,4 +1,4 @@
-﻿using Kingmaker.Utility.UnityExtensions;
+﻿using Code.Framework.Utility.UnityExtensions;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 
@@ -157,7 +157,7 @@ public partial class Browser<T> : VerticalList<T> where T : notnull {
             }
         }) : null;
         using (HorizontalScope()) {
-            _ = UI.ActionTextField(ref CurrentSearchString, m_SearchBarControlName, contentChangedAction, (string query) => {
+            _ = UI.ActionTextField(ref CurrentSearchString, m_SearchBarControlName, contentChangedAction, query => {
                 StartNewSearch(query);
             }, AutoWidth(), Width(Math.Max(Math.Min(600, PageWidth * 0.7f), Main.UIScale * 150)));
             Space(5);

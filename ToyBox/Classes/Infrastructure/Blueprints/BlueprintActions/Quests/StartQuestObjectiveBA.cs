@@ -5,15 +5,14 @@ using ToyBox.Infrastructure.Utilities;
 
 namespace ToyBox.Infrastructure.Blueprints.BlueprintActions;
 
-[IsTested]
 public partial class StartQuestObjectiveBA : BlueprintActionFeature, IBlueprintAction<BlueprintQuestObjective> {
 
     public bool CanExecute(BlueprintQuestObjective blueprint, params object[] parameter) {
-        return IsInGame() && (Game.Instance.Player.QuestBook.GetQuest(blueprint.Quest)?.TryGetObjective(blueprint)?.State ?? QuestObjectiveState.None) == QuestObjectiveState.None;
+        return IsInGame() && (Game.Instance.QuestBook.GetQuest(blueprint.Quest)?.TryGetObjective(blueprint)?.State ?? QuestObjectiveState.None) == QuestObjectiveState.None;
     }
     private bool Execute(BlueprintQuestObjective blueprint) {
         LogExecution(blueprint);
-        Game.Instance.Player.QuestBook.GiveObjective(blueprint);
+        Game.Instance.QuestBook.GiveObjective(blueprint);
         return true;
     }
     public bool? OnGui(BlueprintQuestObjective blueprint, bool isFeatureSearch, params object[] parameter) {

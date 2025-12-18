@@ -6,12 +6,12 @@ namespace ToyBox.Infrastructure.Blueprints.BlueprintActions;
 
 public partial class RemoveItemBA : BlueprintActionFeature, IBlueprintAction<BlueprintItem> {
     public bool CanExecute(BlueprintItem blueprint, params object[] parameter) {
-        return IsInGame() && Game.Instance.Player.Inventory.Contains(blueprint);
+        return IsInGame() && GetMainInventory()!.Contains(blueprint);
     }
 
     private bool Execute(BlueprintItem blueprint, int count) {
         LogExecution(blueprint, count);
-        Game.Instance.Player.Inventory.Remove(blueprint, count);
+        GetMainInventory()!.Remove(blueprint, count);
         return true;
     }
     public bool? OnGui(BlueprintItem blueprint, bool isFeatureSearch, params object[] parameter) {

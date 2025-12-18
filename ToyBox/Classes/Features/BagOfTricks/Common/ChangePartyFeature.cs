@@ -4,7 +4,6 @@ using Kingmaker.GameModes;
 
 namespace ToyBox.Features.BagOfTricks.Common;
 
-[IsTested]
 public partial class ChangePartyFeature : FeatureWithBindableAction {
     [LocalizedString("ToyBox_Features_BagOfTricks_Common_ChangePartyFeature_Name", "Change Party")]
     public override partial string Name { get; }
@@ -12,13 +11,13 @@ public partial class ChangePartyFeature : FeatureWithBindableAction {
     public override partial string Description { get; }
 
     public override void ExecuteAction(params object[] parameter) {
-        if (IsInGame() && (Game.Instance.CurrentMode == GameModeType.Default || Game.Instance.CurrentMode == GameModeType.Pause || Game.Instance.CurrentMode == GameModeType.GlobalMap)) {
+        if (IsInGame() && (Game.Instance.CurrentModeType == GameModeType.Default || Game.Instance.CurrentModeType == GameModeType.Pause || Game.Instance.CurrentModeType == GameModeType.GlobalMap)) {
             LogExecution(parameter);
             ToggleModWindow();
             new ShowPartySelection() {
                 ActionsAfterPartySelection = new(),
                 ActionsIfCanceled = new(),
-                ShowRemoteCompanions = true,
+                AllowRemoteCompanionsAnywhere = true
             }.Run();
         }
     }

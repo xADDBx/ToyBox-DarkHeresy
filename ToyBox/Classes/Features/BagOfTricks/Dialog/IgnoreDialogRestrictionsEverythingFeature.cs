@@ -3,7 +3,6 @@ using ToyBox.Features.SettingsTab.Other;
 
 namespace ToyBox.Features.BagOfTricks.Dialog;
 
-[IsTested]
 [HarmonyPatch, ToyBoxPatchCategory("ToyBox.Features.BagOfTricks.Dialog.IgnoreDialogRestrictionsEverythingFeature")]
 public partial class IgnoreDialogRestrictionsEverythingFeature : FeatureWithPatch {
     public override ref bool IsEnabled {

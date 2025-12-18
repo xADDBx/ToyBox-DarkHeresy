@@ -1,6 +1,5 @@
 ﻿namespace ToyBox.Features.SettingsFeatures.BrowserSettings;
 
-[IsTested]
 public partial class PageLimitSetting : FeatureWithIntSlider {
     public override bool IsEnabled {
         get {

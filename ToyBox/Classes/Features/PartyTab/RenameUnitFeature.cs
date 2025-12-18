@@ -6,7 +6,6 @@ using ToyBox.Infrastructure.Utilities;
 
 namespace ToyBox.Classes.Features.PartyTab;
 
-[IsTested]
 public partial class RenameUnitFeature : Feature, INeedContextFeature<BaseUnitEntity> {
     [LocalizedString("ToyBox_Classes_Features_PartyTab_RenameUnitFeature_Name", "Rename Unit")]
     public override partial string Name { get; }

@@ -1,17 +1,18 @@
 ﻿using Kingmaker.AreaLogic.Cutscenes;
+using Kingmaker.Code.Framework.CutsceneSystem;
 using Kingmaker.Designers.EventConditionActionSystem.ContextData;
 using Kingmaker.ElementsSystem.ContextData;
 using ToyBox.Infrastructure.Utilities;
 
 namespace ToyBox.Infrastructure.Blueprints.BlueprintActions;
 
-public partial class PlayCutsceneBA : BlueprintActionFeature, IBlueprintAction<Cutscene> {
+public partial class PlayCutsceneBA : BlueprintActionFeature, IBlueprintAction<BlueprintCutscene> {
 
-    public bool CanExecute(Cutscene blueprint, params object[] parameter) {
+    public bool CanExecute(BlueprintCutscene blueprint, params object[] parameter) {
         return IsInGame();
     }
 
-    private bool Execute(Cutscene blueprint) {
+    private bool Execute(BlueprintCutscene blueprint) {
         LogExecution(blueprint);
         ToggleModWindow();
 
@@ -26,7 +27,7 @@ public partial class PlayCutsceneBA : BlueprintActionFeature, IBlueprintAction<C
 
         return true;
     }
-    public bool? OnGui(Cutscene blueprint, bool isFeatureSearch, params object[] parameter) {
+    public bool? OnGui(BlueprintCutscene blueprint, bool isFeatureSearch, params object[] parameter) {
         bool? result = null;
         if (CanExecute(blueprint)) {
             _ = UI.Button(StyleActionString(m_PlayText, isFeatureSearch), () => {
@@ -38,7 +39,7 @@ public partial class PlayCutsceneBA : BlueprintActionFeature, IBlueprintAction<C
         return result;
     }
 
-    public bool GetContext(out Cutscene? context) {
+    public bool GetContext(out BlueprintCutscene? context) {
         return ContextProvider.Blueprint(out context);
     }
 

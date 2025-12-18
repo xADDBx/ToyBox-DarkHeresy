@@ -1,6 +1,5 @@
 ﻿namespace ToyBox.Features.SettingsTab.Inspector;
 
-[IsTested]
 public partial class InspectorDrawLimitSetting : FeatureWithIntSlider {
     public override bool IsEnabled {
         get {

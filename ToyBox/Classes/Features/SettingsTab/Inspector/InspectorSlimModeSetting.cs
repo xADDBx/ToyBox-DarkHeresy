@@ -1,6 +1,5 @@
 ﻿namespace ToyBox.Features.SettingsTab.Inspector;
 
-[IsTested]
 public partial class InspectorSlimModeSetting : ToggledFeature {
     public override ref bool IsEnabled {
         get {

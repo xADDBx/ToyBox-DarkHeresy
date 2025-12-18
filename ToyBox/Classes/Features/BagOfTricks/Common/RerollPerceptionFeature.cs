@@ -5,7 +5,6 @@ using Kingmaker.Utility.DotNetExtensions;
 
 namespace ToyBox.Features.BagOfTricks.Common;
 
-[IsTested]
 public partial class RerollPerceptionFeature : FeatureWithBindableAction {
     [LocalizedString("ToyBox_Features_BagOfTricks_Common_RerollPerceptionFeature_Name", "Reroll Perception")]
     public override partial string Name { get; }
@@ -14,12 +13,12 @@ public partial class RerollPerceptionFeature : FeatureWithBindableAction {
     public override void ExecuteAction(params object[] parameter) {
         if (IsInGame()) {
             LogExecution(parameter);
-            var objects = Game.Instance.State.MapObjects;
+            var objects = Game.Instance.EntityPools.MapObjects;
             foreach (var mo in objects) {
-                mo.LastAwarenessRollRank.Clear();
+                mo.AwarenessCheck.LastAwarenessValue.Clear();
             }
             var ac = GameModesFactory.AllControllers.Select(c => c.Controller).OfType<PartyAwarenessController>().FirstOrDefault();
-            ac?.m_ForceUpdateCharacterMap.AddRange(Game.Instance.Player.PartyAndPets);
+            ac?.m_ForceUpdateCharacters.AddRange(Game.Instance.Player.PartyAndPets);
         }
     }
 }

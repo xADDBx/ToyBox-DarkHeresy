@@ -1,11 +1,9 @@
 ﻿using Kingmaker;
-using Kingmaker.UI.Legacy.MainMenuUI;
-using System.Reflection;
+using Kingmaker.Code.UI.MVVM;
 using System.Reflection.Emit;
 
 namespace ToyBox.Features.BagOfTricks.QualityOfLife;
 
-[IsTested]
 [HarmonyPatch, ToyBoxPatchCategory("ToyBox.Features.BagOfTricks.QualityOfLife.SkipSplashScreenFeature")]
 public partial class SkipSplashScreenFeature : FeatureWithPatch, INeedEarlyInitFeature {
     public override ref bool IsEnabled {
@@ -23,29 +21,29 @@ public partial class SkipSplashScreenFeature : FeatureWithPatch, INeedEarlyInitF
             return "ToyBox.Features.BagOfTricks.QualityOfLife.SkipSplashScreenFeature";
         }
     }
-    [HarmonyTargetMethods]
-    public static IEnumerable<MethodInfo> PatchTargets() {
-        yield return AccessTools.Method(typeof(SplashScreenController), nameof(SplashScreenController.ShowSplashScreen));
-        yield return AccessTools.Method(typeof(MainMenuLoadingScreen), nameof(MainMenuLoadingScreen.OnStart));
+    [HarmonyPatch(typeof(SplashScreenController), nameof(SplashScreenController.ShowSplashScreen)), HarmonyPrefix]
+    private static bool Prefix(SplashScreenController __instance) {
+        __instance.StartCoroutine(__instance.SkipWaitingSplashScreens());
+        return false;
     }
-    [HarmonyTranspiler]
-    public static IEnumerable<CodeInstruction> Start(IEnumerable<CodeInstruction> instructions) {
-        var method = AccessTools.Method(typeof(GameStarter), nameof(GameStarter.IsSkippingMainMenu));
-        foreach (var inst in instructions) {
-            if (inst.Calls(method)) {
-                yield return new CodeInstruction(OpCodes.Ldc_I4_1).WithLabels(inst.labels);
-            } else if (inst.LoadsConstant("Logo Show Requested")) {
-                yield return new(OpCodes.Ldarg_0);
-                yield return CodeInstruction.Call((string _, MainMenuLoadingScreen screen) => Helper(_, screen));
-                yield return new(OpCodes.Ret);
-                break;
-            } else {
-                yield return inst;
+    [HarmonyPatch(typeof(MainMenuLoadingScreen), nameof(MainMenuLoadingScreen.OnStart))]
+    private class MainMenuLoadingScreen_OnStart_Patch {
+        [HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> Start(IEnumerable<CodeInstruction> instructions) {
+            foreach (var inst in instructions) {
+                if (inst.LoadsConstant("Logo Show Requested")) {
+                    yield return new(OpCodes.Ldarg_0);
+                    yield return CodeInstruction.Call((string _, MainMenuLoadingScreen screen) => Helper(_, screen));
+                    yield return new(OpCodes.Ret);
+                    break;
+                } else {
+                    yield return inst;
+                }
             }
         }
-    }
-    private static void Helper(string _, MainMenuLoadingScreen screen) {
-        screen.gameObject.SetActive(false);
-        GameStarter.Instance.StartGame();
+        private static void Helper(string _, MainMenuLoadingScreen screen) {
+            screen.gameObject.SetActive(false);
+            GameStarter.Instance.StartGame();
+        }
     }
 }

@@ -17,7 +17,7 @@ public partial class InspectDialogControllerFeature : Feature {
             return;
         }
         m_WidthCache ??= new(() => CalculateLargestLabelWidth([Name], GUI.skin.toggle));
-        InspectorUI.InspectToggle(Game.Instance.DialogController, Name.Green(), options: Width(m_WidthCache));
-        InspectorUI.InspectIfExpanded(Game.Instance.DialogController);
+        InspectorUI.InspectToggle(Game.Instance.Controllers.DialogController, Name.Green(), options: Width(m_WidthCache));
+        InspectorUI.InspectIfExpanded(Game.Instance.Controllers.DialogController);
     }
 }

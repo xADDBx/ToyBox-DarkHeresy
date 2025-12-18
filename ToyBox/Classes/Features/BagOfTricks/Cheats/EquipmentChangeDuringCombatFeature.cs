@@ -1,15 +1,13 @@
 ﻿using Kingmaker;
-using Kingmaker.Code.UI.MVVM.VM.ServiceWindows.Inventory;
+using Kingmaker.Code.UI.MVVM;
 using Kingmaker.Controllers.TurnBased;
 using Kingmaker.EntitySystem.Entities;
 using Kingmaker.Items.Slots;
-using Kingmaker.UI.Common;
 using System.Reflection;
 using System.Reflection.Emit;
 
 namespace ToyBox.Features.BagOfTricks.Cheats;
 
-[IsTested]
 [HarmonyPatch, ToyBoxPatchCategory("ToyBox.Features.BagOfTricks.Cheats.EquipmentChangeDuringCombatFeature")]
 public partial class EquipmentChangeDuringCombatFeature : FeatureWithPatch {
     public override ref bool IsEnabled {

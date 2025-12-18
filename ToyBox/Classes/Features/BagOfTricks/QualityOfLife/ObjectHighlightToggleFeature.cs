@@ -1,15 +1,15 @@
 ﻿using Kingmaker;
+using Kingmaker.Blueprints.Root;
 using Kingmaker.Controllers.MapObjects;
 using Kingmaker.GameModes;
+using Kingmaker.Gameplay.Features.Encounter;
 using Kingmaker.PubSubSystem;
 using Kingmaker.PubSubSystem.Core;
 using Kingmaker.UI.InputSystems;
-using Kingmaker.UI.Models.SettingsUI;
 using Kingmaker.Utility.GameConst;
 
 namespace ToyBox.Features.BagOfTricks.QualityOfLife;
 
-[IsTested]
 [HarmonyPatch, ToyBoxPatchCategory("ToyBox.Features.BagOfTricks.QualityOfLife.ObjectHighlightToggleFeature")]
 public partial class ObjectHighlightToggleFeature : FeatureWithPatch, IGameModeHandler {
     public override ref bool IsEnabled {
@@ -50,14 +50,14 @@ public partial class ObjectHighlightToggleFeature : FeatureWithPatch, IGameModeH
             return;
         }
         if (m_TurnOffWhen.Contains(gameMode)) {
-            if (InteractionHighlightController.Instance?.IsHighlighting ?? false) {
+            if (InteractionHighlightController.Instance?.m_IsGlobalHighlighting ?? false) {
                 m_WasTurnedOffBefore = true;
                 m_WasTurnedOff = true;
                 InteractionHighlightController.Instance?.HighlightOff();
                 m_WasTurnedOff = false;
             }
         } else {
-            if (m_WasTurnedOffBefore && (!InteractionHighlightController.Instance?.IsHighlighting ?? false)) {
+            if (m_WasTurnedOffBefore && (!InteractionHighlightController.Instance?.m_IsGlobalHighlighting ?? false)) {
                 InteractionHighlightController.Instance?.HighlightOn();
                 m_WasTurnedOffBefore = false;
             }
@@ -71,11 +71,11 @@ public partial class ObjectHighlightToggleFeature : FeatureWithPatch, IGameModeH
         if (Game.Instance?.Player?.IsInCombat ?? false) {
             return true;
         }
-        if (binding.Name.StartsWith(UISettingsRoot.Instance.UIKeybindGeneralSettings.HighlightObjects.name)) {
+        if (binding.Name.StartsWith(ConfigRoot.Instance.UISettingsRoot.UISettings.UIKeybindGeneralSettings.HighlightObjects.name)) {
             if (!m_JustChangedViaBinding && binding.InputMatched() && binding.Name.EndsWith(UIConsts.SuffixOn)) {
                 m_JustChangedViaBinding = true;
                 try {
-                    InteractionHighlightController.Instance?.Highlight(!InteractionHighlightController.Instance?.IsHighlighting ?? false);
+                    InteractionHighlightController.Instance?.Highlight(!InteractionHighlightController.Instance?.m_IsGlobalHighlighting ?? false);
                 } catch {
                     m_JustChangedViaBinding = false;
                     return false;
@@ -92,14 +92,14 @@ public partial class ObjectHighlightToggleFeature : FeatureWithPatch, IGameModeH
     private static bool m_InterestingTick = false;
     private static bool m_WasOnBeforeFightIntern = false;
     internal static bool m_WasOnBeforeFight = false;
-    [HarmonyPatch(typeof(Player), nameof(Player.IsInCombat), MethodType.Setter), HarmonyPrefix]
+    [HarmonyPatch(typeof(ActiveEncounter), nameof(ActiveEncounter.IsCompleted), MethodType.Setter), HarmonyPrefix]
     private static void Set_Player_IsInCombatPre(bool value) {
         m_InterestingTick = value != Game.Instance.Player.IsInCombat;
         if (!m_InterestingTick) {
             return;
         }
 
-        if ((InteractionHighlightController.Instance?.IsHighlighting ?? false) && value) {
+        if ((InteractionHighlightController.Instance?.m_IsGlobalHighlighting ?? false) && value) {
             m_WasOnBeforeFightIntern = true;
             m_WasOnBeforeFight = true;
             try {
@@ -108,7 +108,7 @@ public partial class ObjectHighlightToggleFeature : FeatureWithPatch, IGameModeH
             m_WasOnBeforeFight = false;
         }
     }
-    [HarmonyPatch(typeof(Player), nameof(Player.IsInCombat), MethodType.Setter), HarmonyPostfix]
+    [HarmonyPatch(typeof(ActiveEncounter), nameof(ActiveEncounter.IsCompleted), MethodType.Setter), HarmonyPostfix]
     private static void Set_Player_IsInCombatPost(bool value) {
         if (!m_InterestingTick) {
             return;

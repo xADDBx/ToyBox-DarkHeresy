@@ -1,7 +1,6 @@
 ﻿using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Items;
-using Kingmaker.Blueprints.Items.Ecnchantments;
-using Kingmaker.UI.Models.Tooltip.Base;
+using Kingmaker.UIDataProvider;
 using System.Collections.Concurrent;
 using ToyBox.Features.SettingsFeatures.Blueprints;
 
@@ -59,8 +58,6 @@ public static class BPHelper {
                     Debug($"Error while getting name for {uiDataProvider}:\n{ex}");
                 }
                 ret = CheckNullName(blueprint, Name, false, true);
-            } else if (blueprint is BlueprintItemEnchantment enchantment) {
-                ret = CheckNullName(blueprint, enchantment.Name, false, true);
             }
             ret ??= blueprint.name;
         } catch (Exception ex) {
@@ -80,8 +77,6 @@ public static class BPHelper {
                     Debug($"Error while getting name for {uiDataProvider}:\n{ex}");
                 }
                 ret = CheckNullName(blueprint, Name, true);
-            } else if (blueprint is BlueprintItemEnchantment enchantment) {
-                ret = CheckNullName(blueprint, enchantment.Name, true);
             }
             ret ??= blueprint.name;
         } catch (Exception ex) {
@@ -102,11 +97,6 @@ public static class BPHelper {
                     Debug($"Error while getting name for {uiDataProvider}:\n{ex}");
                 }
                 ret = CheckNullName(blueprint, Name);
-                if (Settings.ToggleSearchDescriptions) {
-                    ret += " " + GetDescription(blueprint);
-                }
-            } else if (blueprint is BlueprintItemEnchantment enchantment) {
-                ret = CheckNullName(blueprint, enchantment.Name);
                 if (Settings.ToggleSearchDescriptions) {
                     ret += " " + GetDescription(blueprint);
                 }

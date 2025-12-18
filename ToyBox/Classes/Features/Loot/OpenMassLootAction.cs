@@ -1,5 +1,5 @@
 ﻿using Kingmaker.Code.UI.MVVM;
-using Kingmaker.Code.UI.MVVM.VM.Loot;
+using Kingmaker.Code.View.Bridge.Enums;
 using Kingmaker.Utility;
 
 namespace ToyBox.Features.Loot;
@@ -18,13 +18,12 @@ public partial class OpenMassLootAction : FeatureWithBindableAction {
             Warn("Mass Loot null or empty, aborting...");
             return;
         }
-        var contextVm = RootUIContext.Instance.SurfaceVM?.StaticPartVM?.LootContextVM;
+        var contextVm = RootVM.Instance.LootContext;
         if (contextVm == null) {
             Warn("Surface LootContextVM is null (maybe in space?), aborting...");
             return;
         }
 
-        var lootVM = new LootVM(LootContextVM.LootWindowMode.ZoneExit, loot, null, () => contextVm.DisposeAndRemove(contextVm.LootVM));
-        contextVm.LootVM.Value = lootVM;
+        contextVm.m_LootVM.Value = new LootVM(LootWindowMode.ZoneExit, loot, null, contextVm.DisposeLoot);
     }
 }

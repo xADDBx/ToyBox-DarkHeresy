@@ -3,7 +3,6 @@ using Kingmaker.PubSubSystem.Core;
 
 namespace ToyBox.Features.BagOfTricks.Cheats;
 
-[IsTested]
 public partial class RestoreSpellsAndSkillsAfterCombatFeature : ToggledFeature, IPartyCombatHandler {
     public override ref bool IsEnabled {
         get {
@@ -35,7 +34,6 @@ public partial class RestoreSpellsAndSkillsAfterCombatFeature : ToggledFeature, 
                 foreach (var resource in u.AbilityResources) {
                     u.AbilityResources.Restore(resource);
                 }
-                u.Brain.RestoreAvailableActions();
             }
         }
     }

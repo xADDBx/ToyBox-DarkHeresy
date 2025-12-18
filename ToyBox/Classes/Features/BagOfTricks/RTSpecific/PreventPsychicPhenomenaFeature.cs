@@ -3,7 +3,6 @@ using Kingmaker.UnitLogic.Mechanics.Actions;
 
 namespace ToyBox.Features.BagOfTricks.RTSpecific;
 
-[IsTested]
 [HarmonyPatch, ToyBoxPatchCategory("ToyBox.Features.BagOfTricks.RTSpecific.PreventPsychicPhenomenaFeature")]
 public partial class PreventPsychicPhenomenaFeature : FeatureWithPatch {
     public override ref bool IsEnabled {
@@ -25,8 +24,12 @@ public partial class PreventPsychicPhenomenaFeature : FeatureWithPatch {
     private static bool ContextActionRunPsychicPhenomena_RunAction_Patch() {
         return false;
     }
-    [HarmonyPatch(typeof(PsychicPhenomenaController), nameof(PsychicPhenomenaController.HandleExecutionProcessEnd)), HarmonyPrefix]
-    private static bool PsychicPhenomenaController_HandleExecutionProcessEnd_Patch() {
+    [HarmonyPatch(typeof(PsychicPhenomenaController), nameof(PsychicPhenomenaController.TryTriggerPsychicPhenomenaBeforeCast)), HarmonyPrefix]
+    private static bool PsychicPhenomenaController_TryTriggerPsychicPhenomenaBeforeCast_Patch() {
+        return false;
+    }
+    [HarmonyPatch(typeof(PsychicPhenomenaController), nameof(PsychicPhenomenaController.TryTriggerPsychicPhenomenaAfterCast)), HarmonyPrefix]
+    private static bool PsychicPhenomenaController_TryTriggerPsychicPhenomenaAfterCast_Patch() {
         return false;
     }
 }

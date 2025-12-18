@@ -12,9 +12,9 @@ It was created in the spirit of Bag of Tricks & Cheat Menu but with a little dif
 
 Download: [nexusmods.com](https://www.nexusmods.com/warhammer40kroguetrader/mods/1)
 
-### Install & Setup (Rogue Trader)
+### Install & Setup (Dark Heresy)
 
-1. Install the mod using the Unity Mod Manager﻿ ***or*** Modfinder ***or*** manually extract the archive to your game's mod folder (e.g. `C:\Users\<YourUser>\AppData\LocalLow\Owlcat Games\Warhammer 40000 Rogue Trader\UnityModManager\ToyBox`).
+1. Install the mod using the Unity Mod Manager﻿ ***or*** Modfinder ***or*** manually extract the archive to your game's mod folder (e.g. `C:\Users\<YourUser>\AppData\LocalLow\Owlcat Games\WHDH\UnityModManager\ToyBox`).
 2. Start the game and load a save or start a new save (the mod's functions can't accessed from the main menu).
 3. Open the Unity Mod Manager﻿ by pressing CTRL + F10.
 4. Adjust the settings in the mod's menu.

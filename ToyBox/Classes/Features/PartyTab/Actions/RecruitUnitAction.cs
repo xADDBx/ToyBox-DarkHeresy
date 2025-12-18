@@ -8,7 +8,6 @@ using UnityEngine;
 
 namespace ToyBox.Features.PartyTab.Actions;
 
-[IsTested]
 public partial class RecruitUnitAction : FeatureWithAction, INeedContextFeature<BaseUnitEntity> {
     [LocalizedString("ToyBox_Features_PartyTab_Actions_RecruitUnitAction_Name", "Recruit Unit")]
     public override partial string Name { get; }
@@ -25,7 +24,7 @@ public partial class RecruitUnitAction : FeatureWithAction, INeedContextFeature<
     public override void ExecuteAction(params object[] parameter) {
         LogExecution(parameter);
         var unit = (BaseUnitEntity)parameter[0];
-        var currentMode = Game.Instance.CurrentMode;
+        var currentMode = Game.Instance.CurrentModeType;
         GameHelper.RecruitNPC(unit, unit.Blueprint);
         if (currentMode == GameModeType.Default || currentMode == GameModeType.Pause) {
             unit.Position = Game.Instance.Player.MainCharacter.Entity.Position;
@@ -33,9 +32,6 @@ public partial class RecruitUnitAction : FeatureWithAction, INeedContextFeature<
             if (unit.IsDetached) {
                 Game.Instance.Player.AttachPartyMember(unit);
             }
-        }
-        foreach (var pet in Game.Instance.Player.PartyAndPets.Where(u => u.IsPet && u.OwnerEntity == unit)) {
-            pet.Position = unit.Position;
         }
         Game.Instance.Player.FixPartyAfterChange();
     }

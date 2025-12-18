@@ -5,7 +5,6 @@ using UnityEngine;
 
 namespace ToyBox.Features.BagOfTricks.OtherMultipliers;
 
-[IsTested]
 [HarmonyPatch, ToyBoxPatchCategory("ToyBox.Features.BagOfTricks.OtherMultipliers.MaxWalkDistanceFeature")]
 public partial class MaxWalkDistanceFeature : FeatureWithPatch {
     private int? m_OriginalMaxWalkDistance;
@@ -23,19 +22,18 @@ public partial class MaxWalkDistanceFeature : FeatureWithPatch {
     public override void Initialize() {
         base.Initialize();
         if (IsEnabled && m_OriginalMaxWalkDistance.HasValue) {
-            BlueprintRoot.Instance.MaxWalkDistance = Settings.MaxWalkDistanceSetting!.Value;
+            ConfigRoot.Instance.SystemMechanics.MaxWalkDistance = Settings.MaxWalkDistanceSetting!.Value;
         }
     }
     public override void Destroy() {
         base.Destroy();
         if (m_OriginalMaxWalkDistance.HasValue) {
-            BlueprintRoot.Instance.MaxWalkDistance = m_OriginalMaxWalkDistance.Value;
+            ConfigRoot.Instance.SystemMechanics.MaxWalkDistance = m_OriginalMaxWalkDistance.Value;
         }
     }
     public override void OnGui() {
         if (!m_OriginalMaxWalkDistance.HasValue) {
-            var maybeCached = BlueprintRootReferenceHelper.RootRef.Cached as BlueprintRoot;
-            if (maybeCached != null) {
+            if (ConfigRoot.SystemMechanicsRootRef.Cached is SystemMechanicsRoot maybeCached) {
                 m_OriginalMaxWalkDistance = maybeCached.MaxWalkDistance;
             } else {
                 return;
@@ -66,9 +64,9 @@ public partial class MaxWalkDistanceFeature : FeatureWithPatch {
     [HarmonyPatch(typeof(BlueprintsCache), nameof(BlueprintsCache.Init)), HarmonyPostfix, HarmonyPriority(Priority.Last)]
     private static void InitializePatch() {
         var feature = GetInstance<MaxWalkDistanceFeature>();
-        feature.m_OriginalMaxWalkDistance = BlueprintRoot.Instance.MaxWalkDistance;
+        feature.m_OriginalMaxWalkDistance = ConfigRoot.Instance.SystemMechanics.MaxWalkDistance;
         if (feature.IsEnabled) {
-            BlueprintRoot.Instance.MaxWalkDistance = Settings.MaxWalkDistanceSetting!.Value;
+            ConfigRoot.Instance.SystemMechanics.MaxWalkDistance = Settings.MaxWalkDistanceSetting!.Value;
         }
     }
 }

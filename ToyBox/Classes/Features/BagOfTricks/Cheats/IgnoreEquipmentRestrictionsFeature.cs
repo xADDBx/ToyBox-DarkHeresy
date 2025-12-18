@@ -3,7 +3,6 @@ using Kingmaker.Items;
 
 namespace ToyBox.Features.BagOfTricks.Cheats;
 
-[IsTested]
 [HarmonyPatch, ToyBoxPatchCategory("ToyBox.Features.BagOfTricks.Cheats.IgnoreEquipmentRestrictionsFeature")]
 public partial class IgnoreEquipmentRestrictionsFeature : FeatureWithPatch {
     public override ref bool IsEnabled {
@@ -13,7 +12,7 @@ public partial class IgnoreEquipmentRestrictionsFeature : FeatureWithPatch {
     }
     [LocalizedString("ToyBox_Features_BagOfTricks_Cheats_IgnoreEquipmentRestrictionsFeature_Name", "Ignore Equipment Restrictions")]
     public override partial string Name { get; }
-    [LocalizedString("ToyBox_Features_BagOfTricks_Cheats_IgnoreEquipmentRestrictionsFeature_Description", "Allows equipping items regardless of class, stat, etc. requirements.")]
+    [LocalizedString("ToyBox_Features_BagOfTricks_Cheats_IgnoreEquipmentRestrictionsFeature_Description", "Allows equipping items regardless of facts, stat, etc. requirements.")]
     public override partial string Description { get; }
 
     protected override string HarmonyName {
@@ -21,8 +20,8 @@ public partial class IgnoreEquipmentRestrictionsFeature : FeatureWithPatch {
             return "ToyBox.Features.BagOfTricks.Cheats.IgnoreEquipmentRestrictionsFeature";
         }
     }
-    [HarmonyPatch(typeof(EquipmentRestrictionClass), nameof(EquipmentRestrictionClass.CanBeEquippedBy)), HarmonyPostfix]
-    private static void EquipmentRestrictionClass_CanBeEquippedBy_Patch(ref bool __result) {
+    [HarmonyPatch(typeof(EquipmentRestrictionHasFacts), nameof(EquipmentRestrictionHasFacts.CanBeEquippedBy)), HarmonyPostfix]
+    private static void EquipmentRestrictionHasFact_CanBeEquippedBy_Patch(ref bool __result) {
         __result = true;
     }
     [HarmonyPatch(typeof(EquipmentRestrictionStat), nameof(EquipmentRestrictionStat.CanBeEquippedBy)), HarmonyPostfix]

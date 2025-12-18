@@ -3,7 +3,6 @@ using ToyBox.Infrastructure.Utilities;
 
 namespace ToyBox.Features.PartyTab.Careers;
 
-[IsTested]
 public partial class ModifyCharacterLevelFeature : Feature, INeedContextFeature<BaseUnitEntity> {
     [LocalizedString("ToyBox_Features_PartyTab_Careers_ModifyCharacterLevelFeature_Name", "Modify Character Level")]
     public override partial string Name { get; }
@@ -24,10 +23,9 @@ public partial class ModifyCharacterLevelFeature : Feature, INeedContextFeature<
 
     public void OnGui(BaseUnitEntity unit) {
         UI.Label((m_CharacterLevelLocalizedText + ": ").Cyan(), AutoWidth());
-        var currentExperience = unit.Progression.Experience;
-        var level = unit.Progression.m_CharacterLevel;
+        var level = unit.Progression.CharacterLevel;
         if (UI.ValueAdjuster(ref level, 1, 0, 55)) {
-            unit.Progression.m_CharacterLevel = level;
+            unit.Progression.CharacterLevel = level;
         }
         Space(10);
         UI.Label(Description.Green());

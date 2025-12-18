@@ -2,7 +2,6 @@
 
 namespace ToyBox.Features.BagOfTricks.QualityOfLife;
 
-[IsTested]
 public partial class GameTimeScaleFeature : FeatureWithFloatSlider {
     public override bool IsEnabled {
         get {
@@ -12,17 +11,17 @@ public partial class GameTimeScaleFeature : FeatureWithFloatSlider {
     public override void Initialize() {
         base.Initialize();
         if (GetInstance<GameAlternateTimeScaleFeature>().IsEnabled) {
-            Game.Instance.TimeController.DebugTimeScale = Settings.GameAlternateTimeScaleMultiplier;
+            Game.Instance.Controllers.TimeController.DebugTimeScale = Settings.GameAlternateTimeScaleMultiplier;
         } else if (IsEnabled) {
-            Game.Instance.TimeController.DebugTimeScale = Value;
+            Game.Instance.Controllers.TimeController.DebugTimeScale = Value;
         }
     }
     public override void Destroy() {
         base.Destroy();
         if (GetInstance<GameAlternateTimeScaleFeature>().IsEnabled) {
-            Game.Instance.TimeController.DebugTimeScale = Settings.GameAlternateTimeScaleMultiplier;
+            Game.Instance.Controllers.TimeController.DebugTimeScale = Settings.GameAlternateTimeScaleMultiplier;
         } else {
-            Game.Instance.TimeController.DebugTimeScale = 1;
+            Game.Instance.Controllers.TimeController.DebugTimeScale = 1;
         }
     }
     public override ref float Value {

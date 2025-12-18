@@ -4,7 +4,6 @@ using Kingmaker.GameModes;
 
 namespace ToyBox.Features.BagOfTricks.Teleport;
 
-[IsTested]
 public partial class TeleportPartyToYouFeature : FeatureWithBindableAction {
     [LocalizedString("ToyBox_Features_BagOfTricks_Teleport_TeleportPartyToYouFeature_Name", "Teleport Party To You")]
     public override partial string Name { get; }
@@ -12,7 +11,7 @@ public partial class TeleportPartyToYouFeature : FeatureWithBindableAction {
     public override partial string Description { get; }
 
     public override void ExecuteAction(params object[] parameter) {
-        if (IsInGame() && (Game.Instance.CurrentMode == GameModeType.Default || Game.Instance.CurrentMode == GameModeType.Pause)) {
+        if (IsInGame() && (Game.Instance.CurrentModeType == GameModeType.Default || Game.Instance.CurrentModeType == GameModeType.Pause)) {
             var position = Game.Instance.Player.MainCharacterEntity.Position;
             var units = Game.Instance.Player.m_PartyAndPets ?? [];
             LogExecution(position, units);

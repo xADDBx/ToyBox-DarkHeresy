@@ -1,6 +1,5 @@
 ﻿namespace ToyBox.Features.SettingsFeatures.Blueprints;
 
-[IsTested]
 public partial class ShowBlueprintAssetIdsSetting : ToggledFeature {
     public override ref bool IsEnabled {
         get {

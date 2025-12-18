@@ -1,6 +1,4 @@
-﻿using Kingmaker.AI.Blueprints;
-using Kingmaker.AreaLogic.Cutscenes;
-using Kingmaker.AreaLogic.Etudes;
+﻿using Kingmaker.AreaLogic.Etudes;
 using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Area;
 using Kingmaker.Blueprints.Facts;
@@ -9,6 +7,8 @@ using Kingmaker.Blueprints.Items.Armors;
 using Kingmaker.Blueprints.Items.Equipment;
 using Kingmaker.Blueprints.Items.Weapons;
 using Kingmaker.Blueprints.Quests;
+using Kingmaker.Blueprints.Root;
+using Kingmaker.Code.Framework.CutsceneSystem;
 using Kingmaker.DialogSystem.Blueprints;
 using Kingmaker.ElementsSystem;
 using Kingmaker.Globalmap.Blueprints;
@@ -17,7 +17,6 @@ using Kingmaker.Globalmap.Blueprints.SectorMap;
 using Kingmaker.Globalmap.Blueprints.SystemMap;
 using Kingmaker.UnitLogic.Abilities.Blueprints;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
-using Kingmaker.UnitLogic.Levelup.Obsolete.Blueprints;
 using Kingmaker.UnitLogic.Progression.Features;
 using Kingmaker.UnitLogic.Progression.Paths;
 using System.Linq.Expressions;
@@ -50,7 +49,7 @@ public static partial class BlueprintFilters {
         return bp.m_AllElements?.OfType<Condition>()?.Select(e => e.GetCaption() ?? "") ?? [];
     }
     private static string GetCostString(BlueprintItem bp) {
-        return CreateBetweenValuesString(bp.ProfitFactorCost, "⊙".Yellow());
+        return CreateBetweenValuesString(bp.Cost, "⊙".Yellow());
     }
     private static string CreateBetweenValuesString(float v, string? units = "", float binSize = 2f) {
         if (v < 0) {
@@ -62,7 +61,10 @@ public static partial class BlueprintFilters {
         var min = Mathf.Pow(binSize, floorLogV);
         var minStr = AddSuffix(min, units);
         var max = Mathf.Pow(binSize, floorLogV + 1);
-        if (min == max) return $"{min:0}{units}";
+        if (min == max) {
+            return $"{min:0}{units}";
+        }
+
         var maxStr = AddSuffix(max, units);
         return $"{minStr} - {maxStr}";
     }
@@ -81,9 +83,7 @@ public static partial class BlueprintFilters {
         new BlueprintFilter<BlueprintFact>(m_FactsLocalizedText),
         new BlueprintFilter<BlueprintFeature>(m_FeaturesLocalizedText),
         new BlueprintFilter<BlueprintCareerPath>(m_CareersLocalizedText),
-        new BlueprintFilter<BlueprintProgression>(m_ProgressionLocalizedText, bp => [.. bp.Classes.Where(c => c is not null).Select(cl => cl.Name)]),
         new BlueprintFilter<BlueprintAbility>(m_AbilitiesLocalizedText),
-        new BlueprintFilter<BlueprintBrain>(m_BrainsLocalizedText),
         new BlueprintFilter<BlueprintAbilityResource>(m_AbilityRsrc_LocalizedText),
         new BlueprintFilter<BlueprintBuff>(m_BuffsLocalizedText),
         new BlueprintFilter<BlueprintItem>(m_ItemsLocalizedText, bp => {
@@ -96,8 +96,8 @@ public static partial class BlueprintFilters {
             return [..BlueprintFilter<BlueprintItemWeapon>.DefaultCollator(bp), bp.Family.ToString(), bp.Category.ToString(), GetCostString(bp)];
         }),
         new BlueprintFilter<BlueprintItemArmor>(m_ArmorsLocalizedText, bp => {
-            if (bp.Type != null) {
-                return [..BlueprintFilter<BlueprintItemArmor>.DefaultCollator(bp), bp.Type.DefaultName, GetCostString(bp)];
+            if (bp.ProficiencyGroup != ArmorProficiencyGroup.None) {
+                return [..BlueprintFilter<BlueprintItemArmor>.DefaultCollator(bp), ConfigRoot.Instance.LocalizedTexts.Stats.GetText(bp.ProficiencyGroup), GetCostString(bp)];
             } else {
                 return [..BlueprintFilter<BlueprintItemArmor>.DefaultCollator(bp), GetCostString(bp)];
             }
@@ -106,21 +106,19 @@ public static partial class BlueprintFilters {
             return [..BlueprintFilter<BlueprintItemEquipmentUsable>.DefaultCollator(bp), bp.SubtypeName, GetCostString(bp)];
         }),
         new BlueprintFilter<BlueprintUnit>(m_UnitsLocalizedText, bp => {
-            return [..BlueprintFilter<BlueprintUnit>.DefaultCollator(bp), bp.Race?.Name ?? "?", m_CRLocalizedText + $" {bp.CR}"];
+            if (bp.OverrideCR.HasValue) {
+                return [..BlueprintFilter<BlueprintUnit>.DefaultCollator(bp), bp.Race?.Name ?? "?", m_CRLocalizedText + $" {bp.OverrideCR}"];
+            } else {
+                return [..BlueprintFilter<BlueprintUnit>.DefaultCollator(bp), bp.Race?.Name ?? "?"];
+            }
         }),
         new BlueprintFilter<BlueprintRace>(m_RacesLocalizedText),
         new BlueprintFilter<BlueprintArea>(m_AreasLocalizedText),
         new BlueprintFilter<BlueprintAreaEnterPoint>(m_AreaEntryLocalizedText, bp => {
             return [..BlueprintFilter<BlueprintAreaEnterPoint>.DefaultCollator(bp), bp.m_Area.NameSafe()];
         }),
-        new BlueprintFilter<BlueprintStarSystemMap>(m_SystemMapLocalizedText, bp => {
-            return [..BlueprintFilter<BlueprintStarSystemMap>.DefaultCollator(bp), ..bp.Stars.Select(r => $"☀ {r.Star.Get().NameForAcronym}"), ..bp.Planets.Select(p => $"◍ {p.Get().Name}")];
-        }),
-        new BlueprintFilter<BlueprintSectorMapPoint>(m_SectorMapPointsLocalizedText, bp => {
-            return [..BlueprintFilter<BlueprintSectorMapPoint>.DefaultCollator(bp), ..bp.Name.Split(' ')];
-        }),
-        new BlueprintFilter<Cutscene>(m_CutscenesLocalizedText, bp => {
-            return [..BlueprintFilter<Cutscene>.DefaultCollator(bp), bp.Priority.ToString()];
+        new BlueprintFilter<BlueprintCutscene>(m_CutscenesLocalizedText, bp => {
+            return [..BlueprintFilter<BlueprintCutscene>.DefaultCollator(bp), bp.Priority.ToString()];
         }),
         new BlueprintFilter<BlueprintQuest>(m_QuestsLocalizedText, bp => {
             return [..BlueprintFilter<BlueprintQuest>.DefaultCollator(bp), bp.m_Type.ToString()];
@@ -134,7 +132,7 @@ public static partial class BlueprintFilters {
         new BlueprintFilter<BlueprintUnlockableFlag>(m_FlagsLocalizedText, bp => {
             return [..BlueprintFilter<BlueprintUnlockableFlag>.DefaultCollator(bp), ..CaptionNames(bp)];
         }),
-        new BlueprintFilter<BlueprintDialog>(m_DailogsLocalizedText, bp => {
+        new BlueprintFilter<BlueprintDialog>(m_DialogsLocalizedText, bp => {
             return [..BlueprintFilter<BlueprintDialog>.DefaultCollator(bp), ..CaptionNames(bp)];
         }),
         new BlueprintFilter<BlueprintAnswer>(m_AnswersLocalizedText, bp => {
@@ -147,12 +145,6 @@ public static partial class BlueprintFilters {
                 return [..BlueprintFilter<BlueprintCue>.DefaultCollator(bp), "-"];
             }
         }),
-        new BlueprintFilter<BlueprintPlanet>(m_PlanetsLocalizedText, bp => {
-            return [..BlueprintFilter<BlueprintPlanet>.DefaultCollator(bp), ..CaptionNames(bp)];
-        }),
-        new BlueprintFilter<BlueprintColony>(m_ColoniesLocalizedText, bp => {
-            return [..BlueprintFilter<BlueprintColony>.DefaultCollator(bp), ..CaptionNames(bp)];
-        }),
         new BlueprintFilter<BlueprintAreaPreset>(m_AreaPresetsLocalizedText),
     ];
 
@@ -164,14 +156,8 @@ public static partial class BlueprintFilters {
     private static partial string m_FeaturesLocalizedText { get; }
     [LocalizedString("ToyBox_Features_SearchAndPick_BlueprintFilters_m_CareersLocalizedText", "Careers")]
     private static partial string m_CareersLocalizedText { get; }
-    [LocalizedString("ToyBox_Features_SearchAndPick_BlueprintFilters_m_ProgressionLocalizedText", "Progression")]
-    private static partial string m_ProgressionLocalizedText { get; }
     [LocalizedString("ToyBox_Features_SearchAndPick_BlueprintFilters_m_AbilitiesLocalizedText", "Abilities")]
     private static partial string m_AbilitiesLocalizedText { get; }
-    [LocalizedString("ToyBox_Features_SearchAndPick_BlueprintFilters_m_SpellsLocalizedText", "Spells")]
-    private static partial string m_SpellsLocalizedText { get; }
-    [LocalizedString("ToyBox_Features_SearchAndPick_BlueprintFilters_m_BrainsLocalizedText", "Brains")]
-    private static partial string m_BrainsLocalizedText { get; }
     [LocalizedString("ToyBox_Features_SearchAndPick_BlueprintFilters_m_AbilityRsrc_LocalizedText", "Ability Rsrc.")]
     private static partial string m_AbilityRsrc_LocalizedText { get; }
     [LocalizedString("ToyBox_Features_SearchAndPick_BlueprintFilters_m_BuffsLocalizedText", "Buffs")]
@@ -188,8 +174,6 @@ public static partial class BlueprintFilters {
     private static partial string m_UsableLocalizedText { get; }
     [LocalizedString("ToyBox_Features_SearchAndPick_BlueprintFilters_m_UnitsLocalizedText", "Units")]
     private static partial string m_UnitsLocalizedText { get; }
-    [LocalizedString("ToyBox_Features_SearchAndPick_BlueprintFilters_m_UnitsCRLocalizedText", "Units CR")]
-    private static partial string m_UnitsCRLocalizedText { get; }
     [LocalizedString("ToyBox_Features_SearchAndPick_BlueprintFilters_m_CRLocalizedText", "CR")]
     private static partial string m_CRLocalizedText { get; }
     [LocalizedString("ToyBox_Features_SearchAndPick_BlueprintFilters_m_RacesLocalizedText", "Races")]
@@ -198,10 +182,6 @@ public static partial class BlueprintFilters {
     private static partial string m_AreasLocalizedText { get; }
     [LocalizedString("ToyBox_Features_SearchAndPick_BlueprintFilters_m_AreaEntryLocalizedText", "Area Entry")]
     private static partial string m_AreaEntryLocalizedText { get; }
-    [LocalizedString("ToyBox_Features_SearchAndPick_BlueprintFilters_m_SystemMapLocalizedText", "System Map")]
-    private static partial string m_SystemMapLocalizedText { get; }
-    [LocalizedString("ToyBox_Features_SearchAndPick_BlueprintFilters_m_SectorMapPointsLocalizedText", "Sector Map Points")]
-    private static partial string m_SectorMapPointsLocalizedText { get; }
     [LocalizedString("ToyBox_Features_SearchAndPick_BlueprintFilters_m_CutscenesLocalizedText", "Cutscenes")]
     private static partial string m_CutscenesLocalizedText { get; }
     [LocalizedString("ToyBox_Features_SearchAndPick_BlueprintFilters_m_QuestsLocalizedText", "Quests")]
@@ -212,14 +192,10 @@ public static partial class BlueprintFilters {
     internal static partial string m_EtudesLocalizedText { get; }
     [LocalizedString("ToyBox_Features_SearchAndPick_BlueprintFilters_m_FlagsLocalizedText", "Flags")]
     private static partial string m_FlagsLocalizedText { get; }
-    [LocalizedString("ToyBox_Features_SearchAndPick_BlueprintFilters_m_DailogsLocalizedText", "Dailogs")]
-    private static partial string m_DailogsLocalizedText { get; }
+    [LocalizedString("ToyBox_Features_SearchAndPick_BlueprintFilters_m_DialogsLocalizedText", "Dialogs")]
+    private static partial string m_DialogsLocalizedText { get; }
     [LocalizedString("ToyBox_Features_SearchAndPick_BlueprintFilters_m_AnswersLocalizedText", "Answers")]
     private static partial string m_AnswersLocalizedText { get; }
-    [LocalizedString("ToyBox_Features_SearchAndPick_BlueprintFilters_m_PlanetsLocalizedText", "Planets")]
-    private static partial string m_PlanetsLocalizedText { get; }
-    [LocalizedString("ToyBox_Features_SearchAndPick_BlueprintFilters_m_ColoniesLocalizedText", "Colonies")]
-    private static partial string m_ColoniesLocalizedText { get; }
     [LocalizedString("ToyBox_Features_SearchAndPick_BlueprintFilters_m_AreaPresetsLocalizedText", "Area Presets")]
     private static partial string m_AreaPresetsLocalizedText { get; }
     [LocalizedString("ToyBox_Features_SearchAndPick_BlueprintFilters_m_CuesLocalizedText", "Cues")]

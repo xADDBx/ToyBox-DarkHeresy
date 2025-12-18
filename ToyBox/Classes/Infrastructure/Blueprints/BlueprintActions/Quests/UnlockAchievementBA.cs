@@ -4,7 +4,6 @@ using ToyBox.Infrastructure.Utilities;
 
 namespace ToyBox.Infrastructure.Blueprints.BlueprintActions;
 
-[IsTested]
 public partial class UnlockAchievementBA : BlueprintActionFeature, IBlueprintAction<AchievementData> {
 
     public bool CanExecute(AchievementData blueprint, params object[] parameter) {

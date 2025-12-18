@@ -4,7 +4,6 @@ using System.Security.Cryptography;
 
 namespace ToyBox.Features.SettingsFeatures.UpdateAndIntegrity;
 
-[IsTested]
 public partial class IntegrityCheckerFeature : ToggledFeature {
     private const string m_ChecksumFileName = "checksum";
     public override ref bool IsEnabled {

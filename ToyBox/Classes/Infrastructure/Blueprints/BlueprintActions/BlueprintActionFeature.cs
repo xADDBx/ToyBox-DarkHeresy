@@ -116,13 +116,9 @@ public class BlueprintActions : FeatureTab {
 
     public BlueprintActions() {
 #warning TODO: BlueprintSelection; BlueprintSelectionFeature
-        AddFeature(new ColonizeColonyBA());
-        AddFeature(new ColonizePlanetBA());
         AddFeature(new LoadAreaPresetBA());
         AddFeature(new TeleportBlueprintAreaBA());
         AddFeature(new TeleportBlueprintAreaEnterPointBA());
-        AddFeature(new TeleportBlueprintSectorMapPointStarSystemBA());
-        AddFeature(new TeleportBlueprintStarSystemMapBA());
 
         AddFeature(new AddItemBA());
         AddFeature(new RemoveItemBA());

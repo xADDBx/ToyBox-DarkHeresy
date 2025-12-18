@@ -1,10 +1,10 @@
 ﻿using Kingmaker;
 using Kingmaker.Achievements;
+using Kingmaker.Blueprints.Root;
 using Kingmaker.Stores;
 
 namespace ToyBox.Features.Achievements;
 
-[IsTested]
 public partial class BrowseAchievementsFeature : Feature {
     [LocalizedString("ToyBox_Features_Achievements_BrowseAchievementsFeature_Name", "Browse Achievements")]
     public override partial string Name { get; }
@@ -20,7 +20,7 @@ public partial class BrowseAchievementsFeature : Feature {
             return;
         }
         if (m_AchievementsBrowser == null) {
-            m_AllAchievements = [.. Game.Instance.BlueprintRoot.Achievements.List.Where(ach => {
+            m_AllAchievements = [.. ConfigRoot.Instance.Achievements.List.Where(ach => {
                 var toCheck = StoreManager.Store switch {
                     StoreType.Steam => ach.SteamId,
                     StoreType.GoG => ach.GogId,

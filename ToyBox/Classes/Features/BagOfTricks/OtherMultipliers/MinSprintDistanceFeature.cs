@@ -5,7 +5,6 @@ using UnityEngine;
 
 namespace ToyBox.Features.BagOfTricks.OtherMultipliers;
 
-[IsTested]
 [HarmonyPatch, ToyBoxPatchCategory("ToyBox.Features.BagOfTricks.OtherMultipliers.MinSprintDistanceFeature")]
 public partial class MinSprintDistanceFeature : FeatureWithPatch {
     private int? m_OriginalMinSprintDistance;
@@ -23,19 +22,18 @@ public partial class MinSprintDistanceFeature : FeatureWithPatch {
     public override void Initialize() {
         base.Initialize();
         if (IsEnabled && m_OriginalMinSprintDistance.HasValue) {
-            BlueprintRoot.Instance.MinSprintDistance = Settings.MinSprintDistanceSetting!.Value;
+            ConfigRoot.Instance.SystemMechanics.MinSprintDistance = Settings.MinSprintDistanceSetting!.Value;
         }
     }
     public override void Destroy() {
         base.Destroy();
         if (m_OriginalMinSprintDistance.HasValue) {
-            BlueprintRoot.Instance.MinSprintDistance = m_OriginalMinSprintDistance.Value;
+            ConfigRoot.Instance.SystemMechanics.MinSprintDistance = m_OriginalMinSprintDistance.Value;
         }
     }
     public override void OnGui() {
         if (!m_OriginalMinSprintDistance.HasValue) {
-            var maybeCached = BlueprintRootReferenceHelper.RootRef.Cached as BlueprintRoot;
-            if (maybeCached != null) {
+            if (ConfigRoot.SystemMechanicsRootRef.Cached is SystemMechanicsRoot maybeCached) {
                 m_OriginalMinSprintDistance = maybeCached.MinSprintDistance;
             } else {
                 return;
@@ -66,9 +64,9 @@ public partial class MinSprintDistanceFeature : FeatureWithPatch {
     [HarmonyPatch(typeof(BlueprintsCache), nameof(BlueprintsCache.Init)), HarmonyPostfix, HarmonyPriority(Priority.Last)]
     private static void InitializePatch() {
         var feature = GetInstance<MinSprintDistanceFeature>();
-        feature.m_OriginalMinSprintDistance = BlueprintRoot.Instance.MinSprintDistance;
+        feature.m_OriginalMinSprintDistance = ConfigRoot.Instance.SystemMechanics.MinSprintDistance;
         if (feature.IsEnabled) {
-            BlueprintRoot.Instance.MinSprintDistance = Settings.MinSprintDistanceSetting!.Value;
+            ConfigRoot.Instance.SystemMechanics.MinSprintDistance = Settings.MinSprintDistanceSetting!.Value;
         }
     }
 }

@@ -3,7 +3,6 @@ using Kingmaker.Cheats;
 
 namespace ToyBox.Features.BagOfTricks.Combat;
 
-[IsTested]
 public partial class KillAllEnemiesFeature : FeatureWithBindableAction {
     [LocalizedString("ToyBox_Features_BagOfTricks_Combat_KillAllEnemiesFeature_Name", "Kill All Enemies")]
     public override partial string Name { get; }
@@ -12,7 +11,7 @@ public partial class KillAllEnemiesFeature : FeatureWithBindableAction {
 
     public override void ExecuteAction(params object[] parameter) {
         if (IsInGame() && Game.Instance.Player.IsInCombat) {
-            var units = Game.Instance.State?.AllBaseUnits ?? [];
+            var units = Game.Instance.EntityPools?.AllBaseUnits ?? [];
             LogExecution(units);
             foreach (var unit in units) {
                 if (unit.IsInCombat && unit.IsPlayerEnemy) {

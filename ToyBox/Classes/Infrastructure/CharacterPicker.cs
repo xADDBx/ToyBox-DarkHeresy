@@ -23,13 +23,13 @@ public static partial class CharacterPicker {
         }, m_CacheDuration),
         [CharacterListType.Friendly] = new(() => {
             var player = GameHelper.GetPlayerCharacter();
-            return Game.Instance.State.AllBaseUnits.Where(u => u != null && !u.IsEnemy(player))?.ToList() ?? [];
+            return Game.Instance.EntityPools.AllBaseUnits.Where(u => u != null && !u.IsEnemy(player))?.ToList() ?? [];
         }, m_CacheDuration),
         [CharacterListType.Enemies] = new(() => {
             var player = GameHelper.GetPlayerCharacter();
-            return Game.Instance.State.AllBaseUnits.Where(u => u != null && u.IsEnemy(player))?.ToList() ?? [];
+            return Game.Instance.EntityPools.AllBaseUnits.Where(u => u != null && u.IsEnemy(player))?.ToList() ?? [];
         }, m_CacheDuration),
-        [CharacterListType.AllUnits] = new(() => Game.Instance.State.AllBaseUnits?.ToList() ?? [], m_CacheDuration)
+        [CharacterListType.AllUnits] = new(() => Game.Instance.EntityPools.AllBaseUnits?.ToList() ?? [], m_CacheDuration)
     };
     public static CharacterListType CurrentList { 
         private set;

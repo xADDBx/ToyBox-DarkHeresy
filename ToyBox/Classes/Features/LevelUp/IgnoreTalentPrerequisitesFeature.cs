@@ -1,11 +1,10 @@
-﻿using Kingmaker.EntitySystem.Entities;
+﻿using Kingmaker.Code.UI.MVVM;
+using Kingmaker.EntitySystem.Entities;
 using Kingmaker.PubSubSystem.Core;
-using Kingmaker.UI.MVVM.VM.CharGen;
 using Kingmaker.UnitLogic.Progression.Prerequisites;
 
 namespace ToyBox.Features.LevelUp;
 
-[IsTested]
 [HarmonyPatch, ToyBoxPatchCategory("ToyBox.Features.LevelUp.IgnoreTalentPrerequisitesFeature")]
 public partial class IgnoreTalentPrerequisitesFeature : FeatureWithPatch {
     public override ref bool IsEnabled {

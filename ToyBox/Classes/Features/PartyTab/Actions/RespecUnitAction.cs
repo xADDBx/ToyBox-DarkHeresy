@@ -1,9 +1,10 @@
 ﻿using Kingmaker;
 using Kingmaker.Blueprints;
-using Kingmaker.Code.UI.MVVM.View.ServiceWindows.CharacterInfo;
+using Kingmaker.Code.View.Bridge.Enums;
 using Kingmaker.EntitySystem.Entities;
 using Kingmaker.PubSubSystem;
 using Kingmaker.PubSubSystem.Core;
+using Kingmaker.UI.Events;
 using Kingmaker.UnitLogic.Levelup.Components;
 using ToyBox.Features.LevelUp;
 using ToyBox.Infrastructure.Utilities;
@@ -11,7 +12,6 @@ using UnityEngine;
 
 namespace ToyBox.Features.PartyTab.Actions;
 
-[IsTested]
 public partial class RespecUnitAction : FeatureWithAction, INeedContextFeature<BaseUnitEntity> {
     [LocalizedString("ToyBox_Features_PartyTab_Actions_RespecUnitAction_Name", "Respec Unit")]
     public override partial string Name { get; }
@@ -37,21 +37,10 @@ public partial class RespecUnitAction : FeatureWithAction, INeedContextFeature<B
         LogExecution(parameter);
         ToggleModWindow();
         var unit = (BaseUnitEntity)parameter[0];
-        var pet = unit.Pet;
         unit.Progression.Respec();
-        EventBus.RaiseEvent(unit, delegate (IRespecHandler h) {
-            h.HandleRespecFinished();
+        EventBus.RaiseEvent(delegate (IServiceWindowUIHandler h) {
+            h.HandleOpenCharacterInfo(CharInfoPageType.LevelProgression, unit);
         }, true);
-        EventBus.RaiseEvent(delegate (INewServiceWindowUIHandler h) {
-            h.HandleOpenCharacterInfoPage(CharInfoPageType.LevelProgression, unit);
-        }, true);
-        if (pet != null && unit.Pet == null) {
-            // Rogue Trader Code:
-            // Not doing the following lines will cause saving coroutine to fail after respeccing a unit with a pet, kicking the user back to main menu.
-            Game.Instance.Player.CrossSceneState.RemoveEntityData(pet);
-            Game.Instance.Player.InvalidateCharacterLists();
-            Game.Instance.SelectionCharacter.UpdateSelectedUnits();
-        }
     }
     public bool GetContext(out BaseUnitEntity? context) {
         return ContextProvider.BaseUnitEntity(out context);

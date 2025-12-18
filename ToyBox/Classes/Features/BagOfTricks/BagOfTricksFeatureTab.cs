@@ -31,10 +31,6 @@ public partial class BagOfTricksFeatureTab : FeatureTab {
     private static partial string m_PreviewLocalizedText { get; }
     [LocalizedString("ToyBox_Features_BagOfTricks_BagOfTricksFeatureTab_m_DialogLocalizedText", "Dialog")]
     private static partial string m_DialogLocalizedText { get; }
-    [LocalizedString("ToyBox_Features_BagOfTricks_BagOfTricksFeatureTab_m_RTFactionReputationLocalizedText", "RT Faction Reputation")]
-    private static partial string m_RTFactionReputationLocalizedText { get; }
-    [LocalizedString("ToyBox_Features_BagOfTricks_BagOfTricksFeatureTab_m_RTResourcesLocalizedText", "RT Resources")]
-    private static partial string m_RTResourcesLocalizedText { get; }
     [LocalizedString("ToyBox_Features_BagOfTricks_BagOfTricksFeatureTab_m_RTTweaksLocalizedText", "RT Tweaks")]
     private static partial string m_RTTweaksLocalizedText { get; }
     [LocalizedString("ToyBox_Features_BagOfTricks_BagOfTricksFeatureTab_m_CameraLocalizedText", "Camera")]
@@ -61,13 +57,10 @@ public partial class BagOfTricksFeatureTab : FeatureTab {
         AddFeature(new TeleportSelectedToCursorFeature(), m_TeleportLocalizedText);
         AddFeature(new TeleportPartyToCursorFeature(), m_TeleportLocalizedText);
 
-        AddFeature(new GoToGlobalMapFeature(), m_CommonLocalizedText);
         AddFeature(new ChangePartyFeature(), m_CommonLocalizedText);
         AddFeature(new RerollPerceptionFeature(), m_CommonLocalizedText);
         AddFeature(new ResetInteractablesFeature(), m_CommonLocalizedText);
-        AddFeature(new ChangeWeatherFeature(), m_CommonLocalizedText);
         AddFeature(new GiveAllItemsFeature(), m_CommonLocalizedText);
-        AddFeature(new OpenReputationTradeWindowFeature(), m_CommonLocalizedText);
 
         AddFeature(new PreviewDialogResultsFeature(), m_PreviewLocalizedText);
         AddFeature(new PreviewDialogConditionsFeature(), m_PreviewLocalizedText);
@@ -77,7 +70,6 @@ public partial class BagOfTricksFeatureTab : FeatureTab {
         AddFeature(new RemoteCompanionDialogFeature(), m_DialogLocalizedText);
         AddFeature(new ExCompanionDialogFeature(), m_DialogLocalizedText);
         AddFeature(new OverrideStoryOccupationFeature(), m_DialogLocalizedText);
-        AddFeature(new IgnoreDialogRestrictionsSoulMarkFeature(), m_DialogLocalizedText);
 
         AddFeature(new EnableAchievementsFeature(), m_QualityOfLifeText);
         AddFeature(new SkipSplashScreenFeature(), m_QualityOfLifeText);
@@ -91,11 +83,6 @@ public partial class BagOfTricksFeatureTab : FeatureTab {
         AddFeature(new DisableEndTurnKeybindFeature(), m_QualityOfLifeText);
         AddFeature(new LoadingWithBlueprintErrorsFeature(), m_QualityOfLifeText);
 
-        AddFeature(new ModifyFactionReputationFeature(), m_RTFactionReputationLocalizedText);
-        
-        AddFeature(new ModifyResourcesFeature(), m_RTResourcesLocalizedText);
-
-        AddFeature(new DisableRandomWarpEncounterFeature(), m_RTTweaksLocalizedText);
         AddFeature(new PreventPsychicPhenomenaFeature(), m_RTTweaksLocalizedText);
         AddFeature(new PreventVeilThicknessFromChangingFeature(), m_RTTweaksLocalizedText);
         AddFeature(new CustomizePsychicPhenomenaFeature(), m_RTTweaksLocalizedText);
@@ -110,11 +97,9 @@ public partial class BagOfTricksFeatureTab : FeatureTab {
         AddFeature(new ResetCameraAimToDefaultFeature(), m_CameraLocalizedText);
 
         AddFeature(new PreventTrapsFromTriggeringFeature(), m_CheatsText);
-        AddFeature(new UnlimitedStackingOfModifiersFeature(), m_CheatsText);
         AddFeature(new HighlightHiddenObjectsFeature(), m_CheatsText);
         AddFeature(new FreeAbilitiesFeature(), m_CheatsText);
         AddFeature(new NoAbilityCooldownsFeature(), m_CheatsText);
-        AddFeature(new PartialUnlimitedActionsPerTurnFeature(), m_CheatsText);
         AddFeature(new CompleteUnlimitedActionsPerTurnFeature(), m_CheatsText);
         AddFeature(new InfiniteChargesOnItemsFeature(), m_CheatsText);
         AddFeature(new IgnoreEquipmentRestrictionsFeature(), m_CheatsText);

@@ -1,12 +1,12 @@
-﻿using Kingmaker;
-using Kingmaker.Code.UI.MVVM.View.MainMenu.PC;
-using Kingmaker.UI.Common;
-using UniRx;
+﻿using Code.View.UI.UIUtils;
+using Kingmaker;
+using Kingmaker.Code.UI.MVVM;
+using Kingmaker.Code.View.Bridge.OBSOLETE;
+using ToyBox.Infrastructure.Utilities;
 using UnityEngine;
 
 namespace ToyBox.Features.BagOfTricks.QualityOfLife;
 
-[IsTested]
 [HarmonyPatch, ToyBoxPatchCategory("ToyBox.Features.BagOfTricks.QualityOfLife.AutoLoadLastSaveOnLaunchFeature")]
 public partial class AutoLoadLastSaveOnLaunchFeature : FeatureWithPatch {
     private static bool m_IsLaunch = true;
@@ -25,8 +25,8 @@ public partial class AutoLoadLastSaveOnLaunchFeature : FeatureWithPatch {
             return "ToyBox.Features.BagOfTricks.QualityOfLife.AutoLoadLastSaveOnLaunchFeature";
         }
     }
-    [HarmonyPatch(typeof(MainMenuPCView), nameof(MainMenuPCView.BindViewImplementation)), HarmonyPostfix]
-    private static void MainMenuPCView_BindViewImplementation_Patch(MainMenuPCView __instance) {
+    [HarmonyPatch(typeof(MainMenuPCView), nameof(MainMenuPCView.OnBind)), HarmonyPostfix]
+    private static void MainMenuPCView_OnBind_Patch(MainMenuPCView __instance) {
         if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) {
             m_IsLaunch = false;
             Warn("Auto Load Save on Launch disabled via Shift!");
@@ -35,7 +35,7 @@ public partial class AutoLoadLastSaveOnLaunchFeature : FeatureWithPatch {
         if (m_IsLaunch) {
             m_IsLaunch = false;
             Game.Instance.SaveManager.UpdateSaveListIfNeeded();
-            _ = MainThreadDispatcher.StartCoroutine(UIUtilityCheckSaves.WaitForSaveUpdated(__instance.ViewModel.LoadLastGame));
+            _ = ToyBoxBehaviour.Instance.StartCoroutine(UIUtilitySaves.WaitForSaveUpdated(__instance.ViewModel.LoadLastGame));
         }
     }
 }

@@ -2,8 +2,11 @@
 using Kingmaker.UnitLogic.Buffs;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
 using Kingmaker.UnitLogic.Mechanics;
+using ToyBox.Infrastructure.Blueprints;
 using ToyBox.Infrastructure.Utilities;
 using UnityEngine;
+using UnityEngine.TerrainTools;
+using static Kingmaker.UnitLogic.Buffs.Buff.Scope;
 
 namespace ToyBox.Features.BagOfTricks.OtherMultipliers;
 
@@ -45,7 +48,7 @@ public partial class BuffDurationMultiplierFeature : FeatureWithPatch {
             } else {
                 using (HorizontalScope()) {
                     Space(40);
-                    bool updateItems = false;
+                    var updateItems = false;
                     m_ExclusionBrowser.OnGUI(buff => {
                         using (HorizontalScope()) {
                             var isExcluded = Settings.BuffDurationMultiplierExclusions.Contains(buff.AssetGuid);
@@ -85,7 +88,7 @@ public partial class BuffDurationMultiplierFeature : FeatureWithPatch {
             return "ToyBox.Features.BagOfTricks.OtherMultipliers.BuffDurationMultiplierFeature";
         }
     }
-    [HarmonyPatch(typeof(BuffCollection), nameof(BuffCollection.Add), [typeof(BlueprintBuff), typeof(MechanicEntity), typeof(MechanicsContext), typeof(BuffDuration)]), HarmonyPostfix]
+    [HarmonyPatch(typeof(BuffCollection), nameof(BuffCollection.Add), [typeof(BlueprintBuff), typeof(MechanicEntity), typeof(MechanicsContext), typeof(BuffDuration), typeof(int)]), HarmonyPostfix]
     private static void BuffCollection_Add_Patch(BlueprintBuff blueprint, MechanicEntity caster, ref BuffDuration duration) {
         try {
             if (!duration.Rounds.HasValue || caster == null || caster.IsPlayerEnemy || Settings.BuffDurationMultiplierExclusions.Contains(blueprint.AssetGuid) || duration.IsPermanent) {

@@ -129,7 +129,7 @@ public class EtudesTreeModel {
     private EtudeInfo PrepareNewEtudeData(BlueprintEtude blueprintEtude) {
         if (blueprintEtude.Parent == null)
             EtudesEditor.rootEtudeId = blueprintEtude.AssetGuid;
-        var tree = Game.Instance.Player.EtudesSystem?.Etudes;
+        var tree = Game.Instance.EtudesSystem?.Etudes;
         var fact = tree?.Get(blueprintEtude);
         var etudeInfo = new EtudeInfo {
             Name = blueprintEtude.name,
@@ -204,7 +204,7 @@ public class EtudesTreeModel {
             }
         }
 
-        result = result.OrderBy(e => -loadedEtudes[e].Priority - ((loadedEtudes[e].State == EtudeInfo.EtudeState.Active) ? 100500 : 0)).ToList();
+        result = [.. result.OrderBy(e => -loadedEtudes[e].Priority - ((loadedEtudes[e].State == EtudeInfo.EtudeState.Active) ? 100500 : 0))];
 
         return result;
     }

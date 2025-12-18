@@ -1,7 +1,7 @@
 ﻿using Kingmaker;
-using Kingmaker.UI.Models.Log.CombatLog_ThreadSystem;
-using Kingmaker.UI.Models.Log.CombatLog_ThreadSystem.LogThreads.LifeEvents;
+using Kingmaker.Code.Framework.GameLog;
 using Kingmaker.UI.Models.Log.GameLogCntxt;
+using Kingmaker.UnitLogic.Parts;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using ToyBox.Features.PartyTab;
@@ -61,7 +61,7 @@ public static class Helpers {
 
         if (Feature.GetInstance<LogHotkeysToCombatLogSetting>().IsEnabled) {
             var messageText = "ToyBox".Blue() + " - " + toLog;
-            var message = new CombatLogMessage(messageText, Color.black, Kingmaker.UI.Models.Log.Enums.PrefixIcon.RightArrow);
+            var message = new CombatLogMessage(messageText, Color.black, PrefixIcon.RightArrow);
             var messageLog = LogThreadService.Instance.m_Logs[LogChannelType.Dialog].FirstOrDefault(x => x is DialogLogThread);
             using (GameLogContext.Scope) {
                 messageLog?.AddMessage(message);
@@ -71,7 +71,7 @@ public static class Helpers {
         PartyFeatureTab.FeatureRefresh();
     }
     public static Vector3 GetCursorPositionInWorld() {
-        var camera = Game.GetCamera();
+        var camera = Game.Instance.GetCamera();
         if (Physics.Raycast(camera.ScreenPointToRay(Input.mousePosition), out var raycastHit, camera.farClipPlane, 21761)) {
             return raycastHit.point;
         }
@@ -80,6 +80,13 @@ public static class Helpers {
     public static SaveSpecificSettings? InSaveSettings {
         get {
             return SaveSpecificSettings.Instance;
+        }
+    }
+    public static PartInventory? GetMainInventory() {
+        if (!IsInGame()) {
+            return null; 
+        } else {
+            return Game.Instance.Player.MainCharacterOriginalEntity?.Inventory ?? Game.Instance.Player.MainCharacterEntity?.Inventory;
         }
     }
 }

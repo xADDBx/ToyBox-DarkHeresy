@@ -4,7 +4,6 @@ using ToyBox.Infrastructure.Utilities;
 
 namespace ToyBox.Features.PartyTab.Stats;
 
-[IsTested]
 [HarmonyPatch, ToyBoxPatchCategory("ToyBox.Features.PartyTab.Stats.UnitOverrideAiControlBehaviourFeature")]
 public partial class UnitOverrideAiControlBehaviourFeature : FeatureWithPatch, INeedContextFeature<BaseUnitEntity> {
     private static bool m_IsEnabled = false;

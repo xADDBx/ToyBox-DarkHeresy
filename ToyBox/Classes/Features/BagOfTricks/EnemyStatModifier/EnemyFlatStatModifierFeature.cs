@@ -4,7 +4,6 @@ using Kingmaker.EntitySystem.Stats;
 using Kingmaker.EntitySystem.Stats.Base;
 using ToyBox.Infrastructure.Utilities;
 using UnityEngine;
-using Warhammer.SpaceCombat.StarshipLogic;
 
 namespace ToyBox.Features.BagOfTricks.EnemyStatModifier;
 
@@ -42,7 +41,7 @@ public partial class EnemyFlatStatModifierFeature : FeatureWithPatch {
     private readonly TimedCache<float> m_LabelWidth = new(() => {
     List<string> names = [];
         foreach (StatType stat in Enum.GetValues(typeof(StatType))) {
-            if (Constants.WeirdStats.Contains(stat) || Constants.LegacyStats.Contains(stat) || Constants.StarshipStats.Contains(stat)) {
+            if (Constants.WeirdStats.Contains(stat)) {
                 continue;
             }
             var name = LocalizedTexts.Instance.Stats.GetText(stat);
@@ -61,7 +60,7 @@ public partial class EnemyFlatStatModifierFeature : FeatureWithPatch {
                 Space(25);
                 using (VerticalScope()) {
                     foreach (StatType stat in Enum.GetValues(typeof(StatType))) {
-                        if (Constants.WeirdStats.Contains(stat) || Constants.LegacyStats.Contains(stat) || Constants.StarshipStats.Contains(stat)) {
+                        if (Constants.WeirdStats.Contains(stat)) {
                             continue;
                         }
                         if (!Settings.FlatEnemyMods.TryGetValue(stat, out var mod)) {
@@ -96,13 +95,13 @@ public partial class EnemyFlatStatModifierFeature : FeatureWithPatch {
     }
     [HarmonyPatch(typeof(ModifiableValue), nameof(ModifiableValue.ModifiedValue), MethodType.Getter), HarmonyPostfix]
     private static void ModifiableValue_getModifiedValue_Patch(ModifiableValue __instance, ref int __result) {
-        if (__instance.Owner is BaseUnitEntity entity && !entity.IsStarship() && entity.IsPlayerEnemy && Settings.FlatEnemyMods.TryGetValue(__instance.OriginalType, out var mod)) {
+        if (__instance.Owner is BaseUnitEntity entity && entity.IsPlayerEnemy && Settings.FlatEnemyMods.TryGetValue(__instance.Type, out var mod)) {
             __result += mod;
         }
     }
     [HarmonyPatch(typeof(ModifiableValue), nameof(ModifiableValue.PermanentValue), MethodType.Getter), HarmonyPostfix]
     private static void ModifiableValue_getPermanentValue_Patch(ModifiableValue __instance, ref int __result) {
-        if (__instance.Owner is BaseUnitEntity entity && !entity.IsStarship() && entity.IsPlayerEnemy && Settings.FlatEnemyMods.TryGetValue(__instance.OriginalType, out var mod)) {
+        if (__instance.Owner is BaseUnitEntity entity && entity.IsPlayerEnemy && Settings.FlatEnemyMods.TryGetValue(__instance.Type, out var mod)) {
             __result += mod;
         }
     }

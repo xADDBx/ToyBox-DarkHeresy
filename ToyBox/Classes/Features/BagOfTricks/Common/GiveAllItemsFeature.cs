@@ -3,7 +3,6 @@ using Kingmaker.Blueprints.Items;
 
 namespace ToyBox.Features.BagOfTricks.Common;
 
-[IsTested]
 public partial class GiveAllItemsFeature : FeatureWithBindableAction {
     [LocalizedString("ToyBox_Features_BagOfTricks_Common_GiveAllItemsFeature_Name", "Give All Items")]
     public override partial string Name { get; }
@@ -13,8 +12,9 @@ public partial class GiveAllItemsFeature : FeatureWithBindableAction {
         _ = BPLoader.GetBlueprintsOfType<BlueprintItem>(bps => {
             LogExecution(parameter);
             if (IsInGame()) {
+                var inv = GetMainInventory()!;
                 foreach (var bp in bps) {
-                    Game.Instance.Player.Inventory.Add(bp, 1, null, false);
+                    inv.Add(bp, 1, null, false);
                 }
             }
         });

@@ -5,7 +5,6 @@ using UnityEngine;
 
 namespace ToyBox.Features.BagOfTricks.QualityOfLife;
 
-[IsTested]
 public partial class GameAlternateTimeScaleFeature : ToggledFeature, IBindableFeature {
     public override ref bool IsEnabled {
         get {
@@ -24,18 +23,18 @@ public partial class GameAlternateTimeScaleFeature : ToggledFeature, IBindableFe
         base.Initialize();
         Keybind = Hotkeys.MaybeGetHotkey(GetType());
         if (IsEnabled) {
-            Game.Instance.TimeController.DebugTimeScale = Settings.GameAlternateTimeScaleMultiplier;
+            Game.Instance.Controllers.TimeController.DebugTimeScale = Settings.GameAlternateTimeScaleMultiplier;
         }
     }
     public override void Destroy() {
         base.Destroy();
-        Game.Instance.TimeController.DebugTimeScale = GetInstance<GameTimeScaleFeature>().Value;
+        Game.Instance.Controllers.TimeController.DebugTimeScale = GetInstance<GameTimeScaleFeature>().Value;
     }
     public override void OnGui() {
         using (HorizontalScope()) {
             if (UI.Slider(ref Settings.GameAlternateTimeScaleMultiplier, 0.00001f, 20f, 1f, 3, null, null, AutoWidth(), GUILayout.MinWidth(50), GUILayout.MaxWidth(150))) {
                 if (IsEnabled) {
-                    Game.Instance.TimeController.DebugTimeScale = Settings.GameAlternateTimeScaleMultiplier;
+                    Game.Instance.Controllers.TimeController.DebugTimeScale = Settings.GameAlternateTimeScaleMultiplier;
                 }
             }
             Space(10);

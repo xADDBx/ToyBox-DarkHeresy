@@ -5,7 +5,6 @@ using Kingmaker.UI.Selection;
 
 namespace ToyBox.Features.BagOfTricks.Teleport;
 
-[IsTested]
 public partial class TeleportSelectedToCursorFeature : FeatureWithBindableAction {
     [LocalizedString("ToyBox_Features_BagOfTricks_Teleport_TeleportSelectedToCursorFeature_Name", "Teleport Selected Characters To Cursor")]
     public override partial string Name { get; }
@@ -13,7 +12,7 @@ public partial class TeleportSelectedToCursorFeature : FeatureWithBindableAction
     public override partial string Description { get; }
 
     public override void ExecuteAction(params object[] parameter) {
-        if (IsInGame() && (Game.Instance.CurrentMode == GameModeType.Default || Game.Instance.CurrentMode == GameModeType.Pause)) {
+        if (IsInGame() && (Game.Instance.CurrentModeType == GameModeType.Default || Game.Instance.CurrentModeType == GameModeType.Pause)) {
             var position = GetCursorPositionInWorld();
             var units = SelectionManagerBase.Instance.SelectedUnits ?? [];
             LogExecution(position, units);

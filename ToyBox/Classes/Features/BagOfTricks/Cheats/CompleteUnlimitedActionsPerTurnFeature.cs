@@ -2,7 +2,6 @@
 
 namespace ToyBox.Features.BagOfTricks.Cheats;
 
-[IsTested]
 [HarmonyPatch, ToyBoxPatchCategory("ToyBox.Features.BagOfTricks.Cheats.CompleteUnlimitedActionsPerTurnFeature")]
 public partial class CompleteUnlimitedActionsPerTurnFeature : FeatureWithPatch {
     public override ref bool IsEnabled {
@@ -23,10 +22,6 @@ public partial class CompleteUnlimitedActionsPerTurnFeature : FeatureWithPatch {
 
     [HarmonyPatch(typeof(PartUnitCombatState), nameof(PartUnitCombatState.SpendActionPoints)), HarmonyPrefix]
     private static bool PartUnitCombatState_SpendActionPoints_Patch(PartUnitCombatState __instance) {
-        return !ToyBoxUnitHelper.IsPartyOrPet(__instance.Owner);
-    }
-    [HarmonyPatch(typeof(PartUnitCombatState), nameof(PartUnitCombatState.SpendActionPointsAll)), HarmonyPrefix]
-    private static bool PartUnitCombatState_SpendActionPointsAll_Patch(PartUnitCombatState __instance) {
         return !ToyBoxUnitHelper.IsPartyOrPet(__instance.Owner);
     }
 }

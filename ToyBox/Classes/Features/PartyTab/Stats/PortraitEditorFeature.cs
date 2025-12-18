@@ -7,7 +7,6 @@ using UnityEngine;
 
 namespace ToyBox.Features.PartyTab.Stats;
 
-[IsTested]
 public partial class PortraitEditorFeature : Feature, INeedContextFeature<BaseUnitEntity> {
     [LocalizedString("ToyBox_Features_PartyTab_Stats_PortraitEditorFeature_Name", "Change Unit Portrait")]
     public override partial string Name { get; }
@@ -245,11 +244,11 @@ public partial class PortraitEditorFeature : Feature, INeedContextFeature<BaseUn
                         if (!portraitDir.Exists) {
                             portraitDir.Create();
                         }
-                        var outFile = new FileInfo(Path.Combine(portraitDir.FullName, BlueprintRoot.Instance.CharGenRoot.PortraitSmallName + BlueprintRoot.Instance.CharGenRoot.PortraitsFormat));
+                        var outFile = new FileInfo(Path.Combine(portraitDir.FullName, ConfigRoot.Instance.CharGenRoot.PortraitSmallName + ConfigRoot.Instance.CharGenRoot.PortraitsFormat));
                         portrait.SmallPortrait.texture.SaveTextureToFile(outFile.FullName, -1, -1, MiscExtensions.SaveTextureFileFormat.PNG, 100, false);
-                        outFile = new FileInfo(Path.Combine(portraitDir.FullName, BlueprintRoot.Instance.CharGenRoot.PortraitMediumName + BlueprintRoot.Instance.CharGenRoot.PortraitsFormat));
+                        outFile = new FileInfo(Path.Combine(portraitDir.FullName, ConfigRoot.Instance.CharGenRoot.PortraitMediumName + ConfigRoot.Instance.CharGenRoot.PortraitsFormat));
                         portrait.HalfLengthPortrait.texture.SaveTextureToFile(outFile.FullName, -1, -1, MiscExtensions.SaveTextureFileFormat.PNG, 100, false);
-                        outFile = new FileInfo(Path.Combine(portraitDir.FullName, BlueprintRoot.Instance.CharGenRoot.PortraitBigName + BlueprintRoot.Instance.CharGenRoot.PortraitsFormat));
+                        outFile = new FileInfo(Path.Combine(portraitDir.FullName, ConfigRoot.Instance.CharGenRoot.PortraitBigName + ConfigRoot.Instance.CharGenRoot.PortraitsFormat));
                         portrait.FullLengthPortrait.texture.SaveTextureToFile(outFile.FullName, -1, -1, MiscExtensions.SaveTextureFileFormat.PNG, 100, false);
                         Process.Start(portraitDir.FullName);
                     } catch (Exception ex) {

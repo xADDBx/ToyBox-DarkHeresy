@@ -2,38 +2,29 @@
 using Kingmaker.Blueprints.JsonSystem;
 using Kingmaker.Blueprints.Root;
 using Kingmaker.Designers.WarhammerSurfaceCombatPrototype;
-using Kingmaker.UnitLogic.Abilities.Blueprints;
+using ToyBox.Infrastructure.Inspector;
 using ToyBox.Infrastructure.Utilities;
 using UnityEngine;
 
 namespace ToyBox.Features.BagOfTricks.RTSpecific;
 
-[IsTested]
 [HarmonyPatch, ToyBoxPatchCategory("ToyBox.Features.BagOfTricks.RTSpecific.CustomizePsychicPhenomenaFeature")]
 // Early Init to prevent threading from causing issues with mods adding new phenomenas
 public partial class CustomizePsychicPhenomenaFeature : FeatureWithPatch, INeedEarlyInitFeature {
-    private IEnumerable<BlueprintPsychicPhenomenaRoot.PsychicPhenomenaData>? m_BackupPsychicPhenomena;
-    private IEnumerable<BlueprintAbilityReference>? m_BackupPerilsOfTheWarpMinor;
-    private IEnumerable<BlueprintAbilityReference>? m_BackupPerilsOfTheWarpMajor;
-    private static string GetPsychicPhenomenaString(BlueprintPsychicPhenomenaRoot.PsychicPhenomenaData p) {
-        var text = p.Bark?.Entries?[0]?.Text;
-        if (text != null) {
-            return $"{text.String.GetText()} ({text.name})";
+    private IEnumerable<BlueprintPsykerRoot.PhenomenaData>? m_BackupPsychicPhenomena;
+    private IEnumerable<BlueprintPsykerRoot.PhenomenaData>? m_BackupPerilsOfTheWarp;
+    private static string GetPsychicKey(BlueprintPsykerRoot.PhenomenaData p) {
+        return p.Ability.guid ?? p.Bark?.Entries?[0]?.Text.GetName() ?? p.OptionalMinorFX?.AssetId ?? "<Null>";
+    }
+    private static string GetPsychicDisplayText(BlueprintPsykerRoot.PhenomenaData p) {
+        if (p.Ability.GetBlueprint() is SimpleBlueprint bp) {
+            return BPHelper.GetTitle(bp);
         } else {
-            return "<Null>!".Red().Bold();
+            return p.Bark?.Entries?[0]?.Text.GetName() ?? p.OptionalMinorFX?.AssetId ?? "<Null>";
         }
     }
-    private static string GetPsychicPhenomenaKey(BlueprintPsychicPhenomenaRoot.PsychicPhenomenaData p) {
-        var text = p.Bark?.Entries?[0]?.Text;
-        if (text != null) {
-            return text.String?.Key ?? text.name;
-        } else {
-            return "<Null>!".Red().Bold();
-        }
-    }
-    private readonly Browser<BlueprintPsychicPhenomenaRoot.PsychicPhenomenaData> m_PsychicPhenomenaBrowser = new(GetPsychicPhenomenaString, GetPsychicPhenomenaString, overridePageWidth: (int)(0.8f * EffectiveWindowWidth()));
-    private readonly Browser<BlueprintAbility> m_PerilsOfTheWarpMinorBrowser = new(BPHelper.GetSortKey, BPHelper.GetSearchKey, overridePageWidth:(int)(0.8f * EffectiveWindowWidth()));
-    private readonly Browser<BlueprintAbility> m_PerilsOfTheWarpMajorBrowser = new(BPHelper.GetSortKey, BPHelper.GetSearchKey, overridePageWidth: (int)(0.8f * EffectiveWindowWidth()));
+    private readonly Browser<BlueprintPsykerRoot.PhenomenaData> m_PsychicPhenomenaBrowser = new(GetPsychicKey, GetPsychicKey, overridePageWidth: (int)(0.8f * EffectiveWindowWidth()));
+    private readonly Browser<BlueprintPsykerRoot.PhenomenaData> m_PerilsOfTheWarpBrowser = new(GetPsychicKey, GetPsychicKey, overridePageWidth:(int)(0.8f * EffectiveWindowWidth()));
     private readonly TimedCache<float> m_ButtonWidth = new(() => CalculateLargestLabelWidth([m_StopExcludingLocalizedText, m_ExcludeLocalizedText], GUI.skin.button)); 
     public override ref bool IsEnabled {
         get {
@@ -45,23 +36,19 @@ public partial class CustomizePsychicPhenomenaFeature : FeatureWithPatch, INeedE
         RestorePhenomena();
     }
     private void BackupPhenomena() {
-        var root = BlueprintRoot.Instance.WarhammerRoot.PsychicPhenomenaRoot;
+        var root = ConfigRoot.Instance.PsykerRoot;
         m_BackupPsychicPhenomena = root.PsychicPhenomena.Select(p => p);
         m_PsychicPhenomenaBrowser.UpdateItems(m_BackupPsychicPhenomena);
-        m_BackupPerilsOfTheWarpMinor = root.PerilsOfTheWarpMinor.Select(p => p);
-        m_PerilsOfTheWarpMinorBrowser.UpdateItems(m_BackupPerilsOfTheWarpMinor.Select(r => r.Get()));
-        m_BackupPerilsOfTheWarpMajor = root.PerilsOfTheWarpMajor.Select(p => p);
-        m_PerilsOfTheWarpMajorBrowser.UpdateItems(m_BackupPerilsOfTheWarpMajor.Select(r => r.Get()));
+        m_BackupPerilsOfTheWarp = root.PerilsOfTheWarp;
+        m_PerilsOfTheWarpBrowser.UpdateItems(m_BackupPerilsOfTheWarp);
     }
     private void RestorePhenomena() {
         if (m_BackupPsychicPhenomena != null) {
-            var root = BlueprintRoot.Instance.WarhammerRoot.PsychicPhenomenaRoot;
+            var root = ConfigRoot.Instance.PsykerRoot;
             root.PsychicPhenomena = [.. root.PsychicPhenomena.Union(m_BackupPsychicPhenomena)];
-            root.PerilsOfTheWarpMinor = [.. root.PerilsOfTheWarpMinor.Union(m_BackupPerilsOfTheWarpMinor)];
-            root.PerilsOfTheWarpMajor = [.. root.PerilsOfTheWarpMajor.Union(m_BackupPerilsOfTheWarpMajor)];
+            root.PerilsOfTheWarp = [.. root.PerilsOfTheWarp.Union(m_BackupPerilsOfTheWarp)];
             m_BackupPsychicPhenomena = root.PsychicPhenomena;
-            m_BackupPerilsOfTheWarpMinor = root.PerilsOfTheWarpMinor;
-            m_BackupPerilsOfTheWarpMajor = root.PerilsOfTheWarpMajor;
+            m_BackupPerilsOfTheWarp = root.PerilsOfTheWarp;
         }
     }
     private static T[] RemoveAll<T>(T[] collection, Func<T, bool> pred) {
@@ -71,16 +58,16 @@ public partial class CustomizePsychicPhenomenaFeature : FeatureWithPatch, INeedE
         if (m_BackupPsychicPhenomena == null) {
             BackupPhenomena();
         }
-        var root = BlueprintRoot.Instance.WarhammerRoot.PsychicPhenomenaRoot;
-        root.PsychicPhenomena = RemoveAll(root.PsychicPhenomena, phenomena => Settings.ExcludedRandomPhenomena.Contains(phenomena.Bark?.Entries?[0]?.Text?.String?.Key ?? "<null>"));
-        root.PerilsOfTheWarpMinor = RemoveAll(root.PerilsOfTheWarpMinor, minor => Settings.ExcludedPerilsMinor.Contains(minor.guid ?? "<null>"));
-        root.PerilsOfTheWarpMajor = RemoveAll(root.PerilsOfTheWarpMajor, major => Settings.ExcludedPerilsMajor.Contains(major.guid ?? "<null>"));
+        var root = ConfigRoot.Instance.PsykerRoot;
+        root.PsychicPhenomena = RemoveAll(root.PsychicPhenomena, phenomena => Settings.ExcludedRandomPhenomena.Contains(GetPsychicKey(phenomena)));
+        root.PerilsOfTheWarp = RemoveAll(root.PerilsOfTheWarp, peril => Settings.ExcludedPerils.Contains(GetPsychicKey(peril)));
     }
-    private void PerilsGUI(BlueprintAbility item, ref HashSet<string> collection) {
+    private void PhenomenaGui(BlueprintPsykerRoot.PhenomenaData item, ref HashSet<string> collection) {
         using (HorizontalScope()) {
-            var key = item.AssetGuid;
+            var key = GetPsychicKey(item);
             var isExcluded = collection.Contains(key);
-            var name = BPHelper.GetTitle(item) + ": " + BPHelper.GetDescription(item) ?? "<Null>".Orange();
+            var name = GetPsychicDisplayText(item);
+            InspectorUI.InspectToggle(item);
             if (isExcluded) {
                 if (UI.Button(m_StopExcludingLocalizedText.Cyan(), null, null, Width(m_ButtonWidth))) {
                     collection.Remove(key);
@@ -98,6 +85,7 @@ public partial class CustomizePsychicPhenomenaFeature : FeatureWithPatch, INeedE
                 UI.Label(name);
             }
         }
+        InspectorUI.InspectIfExpanded(item);
     }
     private bool m_IsCustomizing = false;
     public override void OnGui() {
@@ -116,32 +104,12 @@ public partial class CustomizePsychicPhenomenaFeature : FeatureWithPatch, INeedE
 
                         UI.Label(m_PsychicPhenomenaLocalizedText);
                         m_PsychicPhenomenaBrowser.OnGUI(item => {
-                            using (HorizontalScope()) {
-                                var key = GetPsychicPhenomenaKey(item);
-                                var isExcluded = Settings.ExcludedRandomPhenomena.Contains(key);
-                                var name = GetPsychicPhenomenaString(item);
-                                if (isExcluded) {
-                                    if (UI.Button(m_StopExcludingLocalizedText.Cyan(), null, null, Width(m_ButtonWidth))) {
-                                        Settings.ExcludedRandomPhenomena.Remove(key);
-                                        RestorePhenomena();
-                                        RemovePhenomena();
-                                    }
-                                    Space(10);
-                                    UI.Label(name.Cyan());
-                                } else {
-                                    if (UI.Button(m_ExcludeLocalizedText, null, null, Width(m_ButtonWidth))) {
-                                        Settings.ExcludedRandomPhenomena.Add(key);
-                                        RemovePhenomena();
-                                    }
-                                    Space(10);
-                                    UI.Label(name);
-                                }
-                            }
+                            PhenomenaGui(item, ref Settings.ExcludedRandomPhenomena);
                         });
-                        UI.Label(m_MinorPerilsLocalizedText);
-                        m_PerilsOfTheWarpMinorBrowser.OnGUI(item => PerilsGUI(item, ref Settings.ExcludedPerilsMinor));
-                        UI.Label(m_MajorPerilsLocalizedText);
-                        m_PerilsOfTheWarpMajorBrowser.OnGUI(item => PerilsGUI(item, ref Settings.ExcludedPerilsMajor));
+                        UI.Label(m_PerilsLocalizedText);
+                        m_PerilsOfTheWarpBrowser.OnGUI(item => {
+                            PhenomenaGui(item, ref Settings.ExcludedPerils);
+                        });
                     }
                 }
             }
@@ -152,10 +120,8 @@ public partial class CustomizePsychicPhenomenaFeature : FeatureWithPatch, INeedE
     private static partial string m_CustomizeLocalizedText { get; }
     [LocalizedString("ToyBox_Features_BagOfTricks_RTSpecific_CustomizePsychicPhenomenaFeature_m_PsychicPhenomenaLocalizedText", "Psychic Phenomena")]
     private static partial string m_PsychicPhenomenaLocalizedText { get; }
-    [LocalizedString("ToyBox_Features_BagOfTricks_RTSpecific_CustomizePsychicPhenomenaFeature_m_MinorPerilsLocalizedText", "Minor Perils")]
-    private static partial string m_MinorPerilsLocalizedText { get; }
-    [LocalizedString("ToyBox_Features_BagOfTricks_RTSpecific_CustomizePsychicPhenomenaFeature_m_MajorPerilsLocalizedText", "Major Perils")]
-    private static partial string m_MajorPerilsLocalizedText { get; }
+    [LocalizedString("ToyBox_Features_BagOfTricks_RTSpecific_CustomizePsychicPhenomenaFeature_m_PerilsLocalizedText", "Perils")]
+    private static partial string m_PerilsLocalizedText { get; }
     [LocalizedString("ToyBox_Features_BagOfTricks_RTSpecific_CustomizePsychicPhenomenaFeature_Name", "Customize Psychic Phenomena / Perils of the Warp")]
     public override partial string Name { get; }
     [LocalizedString("ToyBox_Features_BagOfTricks_RTSpecific_CustomizePsychicPhenomenaFeature_Description", "Allows disabling specific psychic phenomenas or perils of the warp.")]

@@ -1,9 +1,8 @@
-﻿using Kingmaker.Blueprints;
+﻿using Code.Framework.Utility.UnityExtensions;
+using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Facts;
 using Kingmaker.EntitySystem;
 using Kingmaker.EntitySystem.Entities;
-using Kingmaker.UnitLogic;
-using Kingmaker.Utility.UnityExtensions;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.CompilerServices;

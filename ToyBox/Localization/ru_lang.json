@@ -43,14 +43,6 @@
     "Original": "Dialog",
     "Translated": null
   },
-  "ToyBox_Features_BagOfTricks_BagOfTricksFeatureTab_m_RTFactionReputationLocalizedText": {
-    "Original": "RT Faction Reputation",
-    "Translated": null
-  },
-  "ToyBox_Features_BagOfTricks_BagOfTricksFeatureTab_m_RTResourcesLocalizedText": {
-    "Original": "RT Resources",
-    "Translated": null
-  },
   "ToyBox_Features_BagOfTricks_BagOfTricksFeatureTab_m_RTTweaksLocalizedText": {
     "Original": "RT Tweaks",
     "Translated": null
@@ -200,7 +192,7 @@
     "Translated": null
   },
   "ToyBox_Features_BagOfTricks_Cheats_IgnoreEquipmentRestrictionsFeature_Description": {
-    "Original": "Allows equipping items regardless of class, stat, etc. requirements.",
+    "Original": "Allows equipping items regardless of facts, stat, etc. requirements.",
     "Translated": null
   },
   "ToyBox_Features_BagOfTricks_Cheats_IgnoreLineOfSightAbilityRequirementFeature_Name": {
@@ -251,14 +243,6 @@
     "Original": "Makes abilities have no cooldown.",
     "Translated": null
   },
-  "ToyBox_Features_BagOfTricks_Cheats_PartialUnlimitedActionsPerTurnFeature_Name": {
-    "Original": "Don't use AP (Partial)",
-    "Translated": null
-  },
-  "ToyBox_Features_BagOfTricks_Cheats_PartialUnlimitedActionsPerTurnFeature_Description": {
-    "Original": "Don't use any AP except for except for abilities which would consume all your AP at once.",
-    "Translated": null
-  },
   "ToyBox_Features_BagOfTricks_Cheats_PreventTrapsFromTriggeringFeature_Name": {
     "Original": "Prevent Traps from Triggering",
     "Translated": null
@@ -273,14 +257,6 @@
   },
   "ToyBox_Features_BagOfTricks_Cheats_RestoreSpellsAndSkillsAfterCombatFeature_Description": {
     "Original": "Restores all ability resources once the party leaves combat.",
-    "Translated": null
-  },
-  "ToyBox_Features_BagOfTricks_Cheats_UnlimitedStackingOfModifiersFeature_Name": {
-    "Original": "Unlimited Stacking of Modifiers",
-    "Translated": null
-  },
-  "ToyBox_Features_BagOfTricks_Cheats_UnlimitedStackingOfModifiersFeature_Description": {
-    "Original": "Makes modifiers like Stats or Damage stack for party members even if they shouldn't.",
     "Translated": null
   },
   "ToyBox_Features_BagOfTricks_Combat_ImmortalityBuffFeature_Name": {
@@ -347,36 +323,12 @@
     "Original": "Opens the party member selection screen.",
     "Translated": null
   },
-  "ToyBox_Features_BagOfTricks_Common_ChangeWeatherFeature_Name": {
-    "Original": "Change Weather",
-    "Translated": null
-  },
-  "ToyBox_Features_BagOfTricks_Common_ChangeWeatherFeature_Description": {
-    "Original": "Sets the time until next weather change to 0.",
-    "Translated": null
-  },
   "ToyBox_Features_BagOfTricks_Common_GiveAllItemsFeature_Name": {
     "Original": "Give All Items",
     "Translated": null
   },
   "ToyBox_Features_BagOfTricks_Common_GiveAllItemsFeature_Description": {
     "Original": "Adds 1 of each BlueprintItem to the player inventory.",
-    "Translated": null
-  },
-  "ToyBox_Features_BagOfTricks_Common_GoToGlobalMapFeature_Name": {
-    "Original": "Go To Global Map",
-    "Translated": null
-  },
-  "ToyBox_Features_BagOfTricks_Common_GoToGlobalMapFeature_Description": {
-    "Original": "Tries to load the sector map area. Don't use in prologue.",
-    "Translated": null
-  },
-  "ToyBox_Features_BagOfTricks_Common_OpenReputationTradeWindowFeature_Name": {
-    "Original": "Open Trade Window",
-    "Translated": null
-  },
-  "ToyBox_Features_BagOfTricks_Common_OpenReputationTradeWindowFeature_Description": {
-    "Original": "Opens the faction reputation trade window (when available).",
     "Translated": null
   },
   "ToyBox_Features_BagOfTricks_Common_RerollPerceptionFeature_Name": {
@@ -409,14 +361,6 @@
   },
   "ToyBox_Features_BagOfTricks_Dialog_IgnoreDialogRestrictionsEverythingFeature_Description": {
     "Original": "Answers that were restricted will be made available.",
-    "Translated": null
-  },
-  "ToyBox_Features_BagOfTricks_Dialog_IgnoreDialogRestrictionsSoulMarkFeature_Name": {
-    "Original": "Ignore Dialog Restrictions (SoulMark)",
-    "Translated": null
-  },
-  "ToyBox_Features_BagOfTricks_Dialog_IgnoreDialogRestrictionsSoulMarkFeature_Description": {
-    "Original": "Answers that were restricted based on your conviction/soul marks will be made available.",
     "Translated": null
   },
   "ToyBox_Features_BagOfTricks_Dialog_JealousyBegoneFeature_Name": {
@@ -475,10 +419,6 @@
     "Original": "All Attacks Hit",
     "Translated": null
   },
-  "ToyBox_Features_BagOfTricks_DiceRolls_DiceRollsOverridesFeature_m_AllAttacksCritLocalizedText": {
-    "Original": "All Attacks Crit",
-    "Translated": null
-  },
   "ToyBox_Features_BagOfTricks_DiceRolls_DiceRollsOverridesFeature_m_RollWithAdvantageLocalizedText": {
     "Original": "Roll with Advantage",
     "Translated": null
@@ -523,16 +463,16 @@
     "Original": "Initiative -> Higher is better",
     "Translated": null
   },
-  "ToyBox_Features_BagOfTricks_DiceRolls_DiceRollsOverridesFeature_m_Initiative_AlwaysRoll10LocalizedText": {
-    "Original": "Initiative: Always Roll 10",
-    "Translated": null
-  },
-  "ToyBox_Features_BagOfTricks_DiceRolls_DiceRollsOverridesFeature_m_Initiative_AlwaysRoll5LocalizedText": {
-    "Original": "Initiative: Always Roll 5",
-    "Translated": null
-  },
   "ToyBox_Features_BagOfTricks_DiceRolls_DiceRollsOverridesFeature_m_Initiative_AlwaysRoll1LocalizedText": {
     "Original": "Initiative: Always Roll 1",
+    "Translated": null
+  },
+  "ToyBox_Features_BagOfTricks_DiceRolls_DiceRollsOverridesFeature_m_Initiative_AlwaysRoll50LocalizedText": {
+    "Original": "Initiative: Always Roll 50",
+    "Translated": null
+  },
+  "ToyBox_Features_BagOfTricks_DiceRolls_DiceRollsOverridesFeature_m_Initiative_AlwaysRoll100LocalizedText": {
+    "Original": "Initiative: Always Roll 100",
     "Translated": null
   },
   "ToyBox_Features_BagOfTricks_DiceRolls_DiceRollsOverridesFeature_m_SkillChecks__LowerIsBetterLocalizedText": {
@@ -607,12 +547,8 @@
     "Original": "Override for Skill Checks",
     "Translated": null
   },
-  "ToyBox_Features_BagOfTricks_ExperienceMultipliers_ExperienceMultiplierFeature_m_OverrideForChallengesLocalizedText": {
-    "Original": "Override for Challenges",
-    "Translated": null
-  },
-  "ToyBox_Features_BagOfTricks_ExperienceMultipliers_ExperienceMultiplierFeature_m_OverrideForSpaceCombatLocalizedText": {
-    "Original": "Override for Space Combat",
+  "ToyBox_Features_BagOfTricks_ExperienceMultipliers_ExperienceMultiplierFeature_m_OverrideForInvestigationsLocalizedText": {
+    "Original": "Override for Investigations",
     "Translated": null
   },
   "ToyBox_Features_BagOfTricks_OtherMultipliers_BuffDurationMultiplierFeature_m_ManageExceptionsToBuffDurationMuLocalizedText": {
@@ -811,12 +747,8 @@
     "Original": "Psychic Phenomena",
     "Translated": null
   },
-  "ToyBox_Features_BagOfTricks_RTSpecific_CustomizePsychicPhenomenaFeature_m_MinorPerilsLocalizedText": {
-    "Original": "Minor Perils",
-    "Translated": null
-  },
-  "ToyBox_Features_BagOfTricks_RTSpecific_CustomizePsychicPhenomenaFeature_m_MajorPerilsLocalizedText": {
-    "Original": "Major Perils",
+  "ToyBox_Features_BagOfTricks_RTSpecific_CustomizePsychicPhenomenaFeature_m_PerilsLocalizedText": {
+    "Original": "Perils",
     "Translated": null
   },
   "ToyBox_Features_BagOfTricks_RTSpecific_CustomizePsychicPhenomenaFeature_Name": {
@@ -837,98 +769,6 @@
   },
   "ToyBox_Features_BagOfTricks_RTSpecific_CustomizePsychicPhenomenaFeature_m_ExcludeLocalizedText": {
     "Original": "Exclude",
-    "Translated": null
-  },
-  "ToyBox_Features_BagOfTricks_RTSpecific_DisableRandomWarpEncounterFeature_Name": {
-    "Original": "Disable Random Encounters in Warp",
-    "Translated": null
-  },
-  "ToyBox_Features_BagOfTricks_RTSpecific_DisableRandomWarpEncounterFeature_Description": {
-    "Original": "Prevents random encounters in warp. Note that this also disables positive and flavor events!",
-    "Translated": null
-  },
-  "ToyBox_Features_BagOfTricks_RTSpecific_ModifyFactionReputationFeature_Name": {
-    "Original": "Modify Faction Reputation",
-    "Translated": null
-  },
-  "ToyBox_Features_BagOfTricks_RTSpecific_ModifyFactionReputationFeature_Description": {
-    "Original": "Allows you to modify the reputation at the various in-game factions.",
-    "Translated": null
-  },
-  "ToyBox_Features_BagOfTricks_RTSpecific_ModifyFactionReputationFeature_m_CurrentReputationLocalizedText": {
-    "Original": "Current Reputation",
-    "Translated": null
-  },
-  "ToyBox_Features_BagOfTricks_RTSpecific_ModifyFactionReputationFeature_m_LevelLocalizedText": {
-    "Original": "Level",
-    "Translated": null
-  },
-  "ToyBox_Features_BagOfTricks_RTSpecific_ModifyFactionReputationFeature_m_ExperienceLocalizedText": {
-    "Original": "Experience",
-    "Translated": null
-  },
-  "ToyBox_Features_BagOfTricks_RTSpecific_ModifyFactionReputationFeature_m_AdjustReputationByTheFollowingAmLocalizedText": {
-    "Original": "Adjust Reputation by the following amount",
-    "Translated": null
-  },
-  "ToyBox_Features_BagOfTricks_RTSpecific_ModifyFactionReputationFeature_m_AddLocalizedText": {
-    "Original": "Add",
-    "Translated": null
-  },
-  "ToyBox_Features_BagOfTricks_RTSpecific_ModifyFactionReputationFeature_m_RemoveLocalizedText": {
-    "Original": "Remove",
-    "Translated": null
-  },
-  "ToyBox_Features_BagOfTricks_RTSpecific_ModifyResourcesFeature_Name": {
-    "Original": "Modify RT Resources",
-    "Translated": null
-  },
-  "ToyBox_Features_BagOfTricks_RTSpecific_ModifyResourcesFeature_Description": {
-    "Original": "Allows modifying Scrap, Profit Factor, Navigators Insight and possibly current Veil Thickness.",
-    "Translated": null
-  },
-  "ToyBox_Features_BagOfTricks_RTSpecific_ModifyResourcesFeature_m_CurrentNavigatorInsightLocalizedText": {
-    "Original": "Current Navigator Insight",
-    "Translated": null
-  },
-  "ToyBox_Features_BagOfTricks_RTSpecific_ModifyResourcesFeature_m_AdjustNavigatorInsightByTheFolloLocalizedText": {
-    "Original": "Adjust Navigator Insight by the following amount",
-    "Translated": null
-  },
-  "ToyBox_Features_BagOfTricks_RTSpecific_ModifyResourcesFeature_m_AddLocalizedText": {
-    "Original": "Add",
-    "Translated": null
-  },
-  "ToyBox_Features_BagOfTricks_RTSpecific_ModifyResourcesFeature_m_RemoveLocalizedText": {
-    "Original": "Remove",
-    "Translated": null
-  },
-  "ToyBox_Features_BagOfTricks_RTSpecific_ModifyResourcesFeature_m_CurrentScrapLocalizedText": {
-    "Original": "Current Scrap",
-    "Translated": null
-  },
-  "ToyBox_Features_BagOfTricks_RTSpecific_ModifyResourcesFeature_m_AdjustScrapByTheFollowingAmountLocalizedText": {
-    "Original": "Adjust Scrap by the following amount",
-    "Translated": null
-  },
-  "ToyBox_Features_BagOfTricks_RTSpecific_ModifyResourcesFeature_m_CurrentProfitFactorLocalizedText": {
-    "Original": "Current Profit Factor",
-    "Translated": null
-  },
-  "ToyBox_Features_BagOfTricks_RTSpecific_ModifyResourcesFeature_m_AdjustProfitFactorByTheFollowingLocalizedText": {
-    "Original": "Adjust Profit Factor by the following amount",
-    "Translated": null
-  },
-  "ToyBox_Features_BagOfTricks_RTSpecific_ModifyResourcesFeature_m_CurrentVeilThicknessLocalizedText": {
-    "Original": "Current Veil Thickness",
-    "Translated": null
-  },
-  "ToyBox_Features_BagOfTricks_RTSpecific_ModifyResourcesFeature_m_SetVeilThicknessToTheFollowingAmLocalizedText": {
-    "Original": "Set Veil Thickness to the following amount",
-    "Translated": null
-  },
-  "ToyBox_Features_BagOfTricks_RTSpecific_ModifyResourcesFeature_m_SetLocalizedText": {
-    "Original": "Set",
     "Translated": null
   },
   "ToyBox_Features_BagOfTricks_RTSpecific_PreventPsychicPhenomenaFeature_Name": {
@@ -1475,28 +1315,20 @@
     "Original": "The button \"{0}\" will play try to play a random PartyMemberUnconscious sound.",
     "Translated": null
   },
-  "ToyBox_Features_PartyTab_Stats_UnitDisableVoiceoverAndBarksFeature_Name": {
-    "Original": "Disable Voiceover and Barks for Character",
+  "ToyBox_Features_PartyTab_Stats_UnitModifyAlignmentsFeature_Name": {
+    "Original": "Modify Alignments",
     "Translated": null
   },
-  "ToyBox_Features_PartyTab_Stats_UnitDisableVoiceoverAndBarksFeature_Description": {
-    "Original": "Prevents this character from talking with his voice.",
-    "Translated": null
-  },
-  "ToyBox_Features_PartyTab_Stats_UnitModifySoulMarksFeature_Name": {
-    "Original": "Modify Soul Marks",
-    "Translated": null
-  },
-  "ToyBox_Features_PartyTab_Stats_UnitModifySoulMarksFeature_Description": {
+  "ToyBox_Features_PartyTab_Stats_UnitModifyAlignmentsFeature_Description": {
     "Original": "Allows modifying the alignment of the character.",
     "Translated": null
   },
-  "ToyBox_Features_PartyTab_Stats_UnitModifySoulMarksFeature_m_UnitsOtherThanTheMainCharacterDoLocalizedText": {
-    "Original": "Units other than the main character don't really have an alignment. Assign the milestone features like SoulMarkCorruption2_Feature, though they might not work on other units.",
+  "ToyBox_Features_PartyTab_Stats_UnitModifyAlignmentsFeature_m_UnitsOtherThanTheMainCharacterDoLocalizedText": {
+    "Original": "Units other than the main character don't really have an alignment. Assign the milestone features like AlignmentCorruption2_Feature, though they might not work on other units.",
     "Translated": null
   },
-  "ToyBox_Features_PartyTab_Stats_UnitModifySoulMarksFeature_m_SoulMarksLocalizedText": {
-    "Original": "Soul Marks",
+  "ToyBox_Features_PartyTab_Stats_UnitModifyAlignmentsFeature_m_AlignmentsLocalizedText": {
+    "Original": "Alignments",
     "Translated": null
   },
   "ToyBox_Features_PartyTab_Stats_UnitModifyStatsFeature_Name": {
@@ -1521,22 +1353,6 @@
   },
   "ToyBox_Features_PartyTab_Stats_UnitOverrideAiControlBehaviourFeature_m_MakeCharacterAIControlledLocalizedText": {
     "Original": "AI should controll this Character",
-    "Translated": null
-  },
-  "ToyBox_Features_PartyTab_Stats_UnitOverrideMechanicalSizeFeature_Name": {
-    "Original": "Enable Mechanical Size Overrides",
-    "Translated": null
-  },
-  "ToyBox_Features_PartyTab_Stats_UnitOverrideMechanicalSizeFeature_Description": {
-    "Original": "If this is disabled, none of the previously set mechanical size overrides will take effect.",
-    "Translated": null
-  },
-  "ToyBox_Features_PartyTab_Stats_UnitOverrideMechanicalSizeFeature_m_CurrentMechanicalSizeLocalizedText": {
-    "Original": "Current Mechanical Size",
-    "Translated": null
-  },
-  "ToyBox_Features_PartyTab_Stats_UnitOverrideMechanicalSizeFeature_m_OverrideLocalizedText": {
-    "Original": "Override",
     "Translated": null
   },
   "ToyBox_Features_PartyTab_Stats_UnitOverrideVisualSizeFeature_Name": {
@@ -1963,30 +1779,6 @@
     "Original": "Mod Version is not compatible with this game version!",
     "Translated": "Версия мода не совместима с этой версией игры!"
   },
-  "ToyBox_Infrastructure_Blueprints_BlueprintActions_ColonizeColonyBA_ColonizeText": {
-    "Original": "Colonize",
-    "Translated": null
-  },
-  "ToyBox_Infrastructure_Blueprints_BlueprintActions_ColonizeColonyBA_Name": {
-    "Original": "Colonize BlueprintColony",
-    "Translated": null
-  },
-  "ToyBox_Infrastructure_Blueprints_BlueprintActions_ColonizeColonyBA_Description": {
-    "Original": "Tries to colonize the specified BlueprintColony in the current Star System.",
-    "Translated": null
-  },
-  "ToyBox_Infrastructure_Blueprints_BlueprintActions_ColonizePlanetBA_ColonizeText": {
-    "Original": "Colonize",
-    "Translated": null
-  },
-  "ToyBox_Infrastructure_Blueprints_BlueprintActions_ColonizePlanetBA_Name": {
-    "Original": "Colonize BlueprintPlanet",
-    "Translated": null
-  },
-  "ToyBox_Infrastructure_Blueprints_BlueprintActions_ColonizePlanetBA_Description": {
-    "Original": "Tries to colonize the specified BlueprintPlanet in the current Star System.",
-    "Translated": null
-  },
   "ToyBox_Infrastructure_Blueprints_BlueprintActions_LoadAreaPresetBA_LoadPresetText": {
     "Original": "Load Preset",
     "Translated": null
@@ -2021,30 +1813,6 @@
   },
   "ToyBox_Infrastructure_Blueprints_BlueprintActions_TeleportBlueprintAreaEnterPointBA_Description": {
     "Original": "Loads the area of the specified BlueprintAreaEnterPoint.",
-    "Translated": null
-  },
-  "ToyBox_Infrastructure_Blueprints_BlueprintActions_TeleportBlueprintSectorMapPointStarSystemBA_TeleportText": {
-    "Original": "Teleport",
-    "Translated": null
-  },
-  "ToyBox_Infrastructure_Blueprints_BlueprintActions_TeleportBlueprintSectorMapPointStarSystemBA_Name": {
-    "Original": "Teleport to BlueprintSectorMapPointStarSystem",
-    "Translated": null
-  },
-  "ToyBox_Infrastructure_Blueprints_BlueprintActions_TeleportBlueprintSectorMapPointStarSystemBA_Description": {
-    "Original": "Gets the first AreaEnterPoint corresponding to the specified BlueprintSectorMapPointStarSystem and loads it.",
-    "Translated": null
-  },
-  "ToyBox_Infrastructure_Blueprints_BlueprintActions_TeleportBlueprintStarSystemMapBA_TeleportText": {
-    "Original": "Teleport",
-    "Translated": null
-  },
-  "ToyBox_Infrastructure_Blueprints_BlueprintActions_TeleportBlueprintStarSystemMapBA_Name": {
-    "Original": "Teleport to BlueprintStarSystemMap",
-    "Translated": null
-  },
-  "ToyBox_Infrastructure_Blueprints_BlueprintActions_TeleportBlueprintStarSystemMapBA_Description": {
-    "Original": "Gets the first AreaEnterPoint corresponding to the specified BlueprintStarSystemMap and loads it.",
     "Translated": null
   },
   "ToyBox_Infrastructure_Blueprints_BlueprintActions_AddItemBA_Add_x": {
@@ -2435,20 +2203,8 @@
     "Original": "Careers",
     "Translated": null
   },
-  "ToyBox_Features_SearchAndPick_BlueprintFilters_m_ProgressionLocalizedText": {
-    "Original": "Progression",
-    "Translated": null
-  },
   "ToyBox_Features_SearchAndPick_BlueprintFilters_m_AbilitiesLocalizedText": {
     "Original": "Abilities",
-    "Translated": null
-  },
-  "ToyBox_Features_SearchAndPick_BlueprintFilters_m_SpellsLocalizedText": {
-    "Original": "Spells",
-    "Translated": null
-  },
-  "ToyBox_Features_SearchAndPick_BlueprintFilters_m_BrainsLocalizedText": {
-    "Original": "Brains",
     "Translated": null
   },
   "ToyBox_Features_SearchAndPick_BlueprintFilters_m_AbilityRsrc_LocalizedText": {
@@ -2483,10 +2239,6 @@
     "Original": "Units",
     "Translated": null
   },
-  "ToyBox_Features_SearchAndPick_BlueprintFilters_m_UnitsCRLocalizedText": {
-    "Original": "Units CR",
-    "Translated": null
-  },
   "ToyBox_Features_SearchAndPick_BlueprintFilters_m_CRLocalizedText": {
     "Original": "CR",
     "Translated": null
@@ -2501,14 +2253,6 @@
   },
   "ToyBox_Features_SearchAndPick_BlueprintFilters_m_AreaEntryLocalizedText": {
     "Original": "Area Entry",
-    "Translated": null
-  },
-  "ToyBox_Features_SearchAndPick_BlueprintFilters_m_SystemMapLocalizedText": {
-    "Original": "System Map",
-    "Translated": null
-  },
-  "ToyBox_Features_SearchAndPick_BlueprintFilters_m_SectorMapPointsLocalizedText": {
-    "Original": "Sector Map Points",
     "Translated": null
   },
   "ToyBox_Features_SearchAndPick_BlueprintFilters_m_CutscenesLocalizedText": {
@@ -2531,20 +2275,12 @@
     "Original": "Flags",
     "Translated": null
   },
-  "ToyBox_Features_SearchAndPick_BlueprintFilters_m_DailogsLocalizedText": {
-    "Original": "Dailogs",
+  "ToyBox_Features_SearchAndPick_BlueprintFilters_m_DialogsLocalizedText": {
+    "Original": "Dialogs",
     "Translated": null
   },
   "ToyBox_Features_SearchAndPick_BlueprintFilters_m_AnswersLocalizedText": {
     "Original": "Answers",
-    "Translated": null
-  },
-  "ToyBox_Features_SearchAndPick_BlueprintFilters_m_PlanetsLocalizedText": {
-    "Original": "Planets",
-    "Translated": null
-  },
-  "ToyBox_Features_SearchAndPick_BlueprintFilters_m_ColoniesLocalizedText": {
-    "Original": "Colonies",
     "Translated": null
   },
   "ToyBox_Features_SearchAndPick_BlueprintFilters_m_AreaPresetsLocalizedText": {
@@ -2685,14 +2421,6 @@
   },
   "ToyBox_Infrastructure_Enums_UnitSelectType_Localizer_OffText": {
     "Original": "Off",
-    "Translated": null
-  },
-  "ToyBox_Infrastructure_Enums_UnitSelectType_Localizer_m_ShipLocalizedText": {
-    "Original": "Ship",
-    "Translated": null
-  },
-  "ToyBox_Infrastructure_Enums_UnitSelectType_Localizer_m_EnemyShipLocalizedText": {
-    "Original": "Enemy Ship",
     "Translated": null
   },
   "ToyBox_FeatureTab_m_FeatureFailedInitializationLocalizedText": {

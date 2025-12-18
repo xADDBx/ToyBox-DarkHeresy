@@ -5,7 +5,6 @@ using ToyBox.Infrastructure.Utilities;
 
 namespace ToyBox.Features.BagOfTricks.Combat;
 
-[IsTested]
 [HarmonyPatch, ToyBoxPatchCategory("ToyBox.Features.BagOfTricks.Combat.MurderHoboFeature")]
 public partial class MurderHoboFeature : FeatureWithPatch, IToggledWithBinding {
     [LocalizedString("ToyBox_Features_BagOfTricks_Combat_MurderHoboFeature_Name", "Murder Hobo")]

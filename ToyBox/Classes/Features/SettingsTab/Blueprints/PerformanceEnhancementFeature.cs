@@ -8,7 +8,6 @@ using System.Runtime.Serialization;
 
 namespace ToyBox.Features.SettingsFeatures.Blueprints;
 
-[IsTested]
 [HarmonyPatch, ToyBoxPatchCategory("ToyBox.Features.SettingsFeatures.Blueprints.PerformanceEnhancementFeatures")]
 public partial class PerformanceEnhancementFeatures : FeatureWithPatch {
     [LocalizedString("ToyBox_Features_SettingsFeatures_BlueprintLoaderSettings_PerformanceEnhancementFeatures_PerformanceEnhancementText", "Performance Enhancement")]

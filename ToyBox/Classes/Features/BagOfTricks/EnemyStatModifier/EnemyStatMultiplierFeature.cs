@@ -42,7 +42,7 @@ public partial class EnemyStatMultiplierFeature : FeatureWithPatch {
     private readonly TimedCache<float> m_LabelWidth = new(() => {
         List<string> names = [];
         foreach (StatType stat in Enum.GetValues(typeof(StatType))) {
-            if (Constants.WeirdStats.Contains(stat) || Constants.LegacyStats.Contains(stat) || Constants.StarshipStats.Contains(stat)) {
+            if (Constants.WeirdStats.Contains(stat)) {
                 continue;
             }
             var name = LocalizedTexts.Instance.Stats.GetText(stat);
@@ -61,7 +61,7 @@ public partial class EnemyStatMultiplierFeature : FeatureWithPatch {
                 Space(25);
                 using (VerticalScope()) {
                     foreach (StatType stat in Enum.GetValues(typeof(StatType))) {
-                        if (Constants.WeirdStats.Contains(stat) || Constants.LegacyStats.Contains(stat) || Constants.StarshipStats.Contains(stat)) {
+                        if (Constants.WeirdStats.Contains(stat)) {
                             continue;
                         }
                         if (!Settings.MultiplierEnemyMods.TryGetValue(stat, out var mod)) {
@@ -96,13 +96,13 @@ public partial class EnemyStatMultiplierFeature : FeatureWithPatch {
     }
     [HarmonyPatch(typeof(ModifiableValue), nameof(ModifiableValue.ModifiedValue), MethodType.Getter), HarmonyPostfix]
     private static void ModifiableValue_getModifiedValue_Patch(ModifiableValue __instance, ref int __result) {
-        if (__instance.Owner is BaseUnitEntity entity && !entity.IsStarship() && entity.IsPlayerEnemy && Settings.MultiplierEnemyMods.TryGetValue(__instance.OriginalType, out var mod)) {
+        if (__instance.Owner is BaseUnitEntity entity && entity.IsPlayerEnemy && Settings.MultiplierEnemyMods.TryGetValue(__instance.Type, out var mod)) {
             __result = (int)(mod * __result);
         }
     }
     [HarmonyPatch(typeof(ModifiableValue), nameof(ModifiableValue.PermanentValue), MethodType.Getter), HarmonyPostfix]
     private static void ModifiableValue_getPermanentValue_Patch(ModifiableValue __instance, ref int __result) {
-        if (__instance.Owner is BaseUnitEntity entity && !entity.IsStarship() && entity.IsPlayerEnemy && Settings.MultiplierEnemyMods.TryGetValue(__instance.OriginalType, out var mod)) {
+        if (__instance.Owner is BaseUnitEntity entity && entity.IsPlayerEnemy && Settings.MultiplierEnemyMods.TryGetValue(__instance.Type, out var mod)) {
             __result = (int)(mod * __result);
         }
     }

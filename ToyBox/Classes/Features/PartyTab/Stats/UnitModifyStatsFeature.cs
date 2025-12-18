@@ -9,7 +9,6 @@ using Warhammer.SpaceCombat.StarshipLogic;
 
 namespace ToyBox.Features.PartyTab.Stats;
 
-[IsTested]
 [HarmonyPatch, ToyBoxPatchCategory("ToyBox.Features.PartyTab.Stats.UnitModifyStatsFeature")]
 public partial class UnitModifyStatsFeature : FeatureWithPatch, INeedContextFeature<BaseUnitEntity> {
     public override ref bool IsEnabled {
@@ -41,7 +40,7 @@ public partial class UnitModifyStatsFeature : FeatureWithPatch, INeedContextFeat
     private readonly TimedCache<float> m_LabelWidth = new(() => {
         List<string> names = [];
         foreach (StatType stat in Enum.GetValues(typeof(StatType))) {
-            if (Constants.WeirdStats.Contains(stat) || Constants.LegacyStats.Contains(stat) || Constants.StarshipStats.Contains(stat)) {
+            if (Constants.WeirdStats.Contains(stat)) {
                 continue;
             }
             var name = LocalizedTexts.Instance.Stats.GetText(stat);
@@ -67,7 +66,7 @@ public partial class UnitModifyStatsFeature : FeatureWithPatch, INeedContextFeat
                         }
                     }
                     foreach (StatType stat in Enum.GetValues(typeof(StatType))) {
-                        if (Constants.WeirdStats.Contains(stat) || Constants.LegacyStats.Contains(stat) || (Constants.StarshipStats.Contains(stat) && !unit.IsStarship())) {
+                        if (Constants.WeirdStats.Contains(stat)) {
                             continue;
                         }
                         var modifiableValue = unit.Stats.GetStatOptional(stat);
@@ -95,7 +94,7 @@ public partial class UnitModifyStatsFeature : FeatureWithPatch, INeedContextFeat
                                     modifiedValue = modifiableValue.ModifiedValue;
                                 }
                                 change -= 1;
-                                modifiableValue.BaseValue += change;
+                                modifiableValue.m_ActualBaseValue += change;
                                 modifiedValue += change;
                             });
                             UI.Label($" {modifiedValue} ".Bold().Orange(), Width(50 * Main.UIScale));
@@ -106,7 +105,7 @@ public partial class UnitModifyStatsFeature : FeatureWithPatch, INeedContextFeat
                                     modifiedValue = modifiableValue.ModifiedValue;
                                 }
                                 change += 1;
-                                modifiableValue.BaseValue += change;
+                                modifiableValue.m_ActualBaseValue += change;
                                 modifiedValue += change;
                             });
                             Space(10);
@@ -118,7 +117,7 @@ public partial class UnitModifyStatsFeature : FeatureWithPatch, INeedContextFeat
                                     modifiedValue = modifiableValue.ModifiedValue;
                                 }
                                 change += pair.newContent - modifiableValue.ModifiedValue;
-                                modifiableValue.BaseValue += change;
+                                modifiableValue.m_ActualBaseValue += change;
                             }, Width(75 * Main.UIScale));
                         }
                         if (change > 0) {
@@ -150,7 +149,7 @@ public partial class UnitModifyStatsFeature : FeatureWithPatch, INeedContextFeat
             foreach (var change in changes) {
                 try {
                     var modifiableValue2 = __result.Stats.GetStatOptional(change.Key) ?? AddStat(change.Key, __result);
-                    modifiableValue2.BaseValue += change.Value;
+                    modifiableValue2.m_ActualBaseValue += change.Value;
                 } catch (Exception ex) {
                     Error(ex);
                 }

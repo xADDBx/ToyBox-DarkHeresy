@@ -5,16 +5,15 @@ using ToyBox.Infrastructure.Utilities;
 
 namespace ToyBox.Infrastructure.Blueprints.BlueprintActions;
 
-[IsTested]
 public partial class CompleteQuestBA : BlueprintActionFeature, IBlueprintAction<BlueprintQuest> {
 
     public bool CanExecute(BlueprintQuest blueprint, params object[] parameter) {
-        return IsInGame() && Game.Instance.Player.QuestBook.GetQuest(blueprint)?.State == QuestState.Started;
+        return IsInGame() && Game.Instance.QuestBook.GetQuest(blueprint)?.State == QuestState.Started;
     }
     private bool Execute(BlueprintQuest blueprint) {
         LogExecution(blueprint);
         foreach (var objective in blueprint.Objectives) {
-            Game.Instance.Player.QuestBook.CompleteObjective(objective);
+            Game.Instance.QuestBook.CompleteObjective(objective);
         }
         return true;
     }

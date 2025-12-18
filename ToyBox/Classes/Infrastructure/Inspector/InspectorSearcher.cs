@@ -43,7 +43,7 @@ public static class InspectorSearcher {
             work.Push((child, depthToSearch, false));
         }
 
-        int processed = 0;
+        var processed = 0;
         while (work.Count > 0) {
             var (node, depth, childrenPushed) = work.Pop();
 

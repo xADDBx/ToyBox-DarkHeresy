@@ -1,8 +1,8 @@
-﻿using Kingmaker.Designers.EventConditionActionSystem.Actions;
+﻿using Kingmaker.Code.View.UI.UIUtilities;
+using Kingmaker.Designers.EventConditionActionSystem.Actions;
 using Kingmaker.Designers.EventConditionActionSystem.Conditions;
 using Kingmaker.DialogSystem.Blueprints;
 using Kingmaker.ElementsSystem;
-using Kingmaker.UI.Common;
 using Kingmaker.UnitLogic.Alignments;
 
 namespace ToyBox.Features.BagOfTricks.Preview;
@@ -10,8 +10,8 @@ namespace ToyBox.Features.BagOfTricks.Preview;
 public static partial class DialogPreviewUtilities {
     internal const string Indent = "        ";
     private const int m_MaxDepth = 20;
-    private static List<(BlueprintCueBase?, int, GameAction[]?, SoulMarkShift?, SoulMarkShift?)> CollateAnswerData(BlueprintAnswer answer, out bool isRecursive) {
-        var cueResults = new List<(BlueprintCueBase?, int, GameAction[]?, SoulMarkShift?, SoulMarkShift?)>();
+    private static List<(BlueprintCueBase?, int, GameAction[]?, IEnumerable<AlignmentShift>)> CollateAnswerData(BlueprintAnswer answer, out bool isRecursive) {
+        var cueResults = new List<(BlueprintCueBase?, int, GameAction[]?, IEnumerable<AlignmentShift>)>();
         var toCheck = new Queue<(BlueprintCueBase, int)>();
         isRecursive = false;
         var visited = new HashSet<BlueprintAnswerBase> {
@@ -20,7 +20,7 @@ public static partial class DialogPreviewUtilities {
         if (answer.NextCue.Cues.Count > 0) {
             toCheck.Enqueue((answer.NextCue.Select(), 1));
         }
-        cueResults.Add((null, 0, answer.OnSelect.Actions, answer.SoulMarkShift, answer.SoulMarkRequirement));
+        cueResults.Add((null, 0, answer.OnSelect.Actions, answer.AlignmentShifts));
         while (toCheck.Count > 0) {
             var item = toCheck.Dequeue();
             var cueBase = item.Item1;
@@ -30,7 +30,7 @@ public static partial class DialogPreviewUtilities {
             }
 
             if (cueBase is BlueprintCue cue) {
-                cueResults.Add((cue, currentDepth, [.. cue.OnShow.Actions, .. cue.OnStop.Actions], cue.SoulMarkShift, cue.SoulMarkRequirement));
+                cueResults.Add((cue, currentDepth, [.. cue.OnShow.Actions, .. cue.OnStop.Actions], cue.AlignmentShifts));
                 if (cue.Answers.Count > 0) {
                     var subAnswer = cue.Answers[0].Get();
                     if (visited.Contains(subAnswer)) {
@@ -43,7 +43,7 @@ public static partial class DialogPreviewUtilities {
                     toCheck.Enqueue((cue.Continue.Select(), currentDepth + 1));
                 }
             } else if (cueBase is BlueprintBookPage page) {
-                cueResults.Add((page, currentDepth, page.OnShow.Actions, null, null));
+                cueResults.Add((page, currentDepth, page.OnShow.Actions, []));
                 if (page.Answers.Count > 0) {
                     var subAnswer = page.Answers[0].Get();
                     if (visited.Contains(subAnswer)) {
@@ -103,14 +103,19 @@ public static partial class DialogPreviewUtilities {
         }
         return cueResults;
     }
-    public static string? FormatSoulmarkShift(SoulMarkShift? shift, string format) {
-        if (shift != null && shift.Value != 0) {
-            if (shift.Description?.Text is string { Length: > 0 } description) {
-                return string.Format(format, $"{UIUtility.GetSoulMarkDirectionText(shift.Direction)}, {shift.Value}, {description}");
+    public static string? FormatSoulmarkShift(IEnumerable<AlignmentShift> shifts, string format) {
+        string? s = null;
+        foreach (var shift in shifts) {
+            if (shift.NoShift) {
+                continue;
             }
-            return string.Format(format, $"{UIUtility.GetSoulMarkDirectionText(shift.Direction)}, {shift.Value}");
+            s ??= "";
+            if (shift.Description?.Text is string { Length: > 0 } description) {
+                s += string.Format(format, $"{UIUtilityText.GetSoulMarkDirectionText(shift.Axis)}, {shift.Value}, {description}");
+            }
+            s += string.Format(format, $"{UIUtilityText.GetSoulMarkDirectionText(shift.Axis)}, {shift.Value}");
         }
-        return null;
+        return s;
     }
     public static string GetAnswerResultText(BlueprintAnswer answer) {
         var answerData = CollateAnswerData(answer, out var isRecursive);
@@ -121,13 +126,9 @@ public static partial class DialogPreviewUtilities {
             var depth = data.Item2;
             var actions = data.Item3;
             var alignment = data.Item4;
-            var alignmentRequirement = data.Item5;
             var line = new List<string>();
             if ((actions?.Length ?? 0) > 0) {
                 line.AddRange(actions.SelectMany(FormatActionAsList));
-            }
-            if (FormatSoulmarkShift(alignmentRequirement, m_SoulMarkRequiredLocalizedText + "({0])") is { } soulMarkRequiredText) {
-                line.Add(soulMarkRequiredText);
             }
             if (FormatSoulmarkShift(alignment, m_SoulMarkShiftLocalizedText + "({0})") is { } soulMarkShiftText) {
                 line.Add(soulMarkShiftText);
@@ -147,7 +148,7 @@ public static partial class DialogPreviewUtilities {
     }
     public static string GetCueResultText(BlueprintCue cue) {
         var actions = cue.OnShow.Actions.Concat(cue.OnStop.Actions).ToArray();
-        var alignment = cue.SoulMarkShift;
+        var alignment = cue.AlignmentShifts;
         var text = "";
         if (actions.Length > 0) {
             var result = FormatActions(actions);
@@ -156,8 +157,8 @@ public static partial class DialogPreviewUtilities {
             }
             text += $" \n<size=65%>[{result}]</size>";
         }
-        if (alignment != null && alignment.Value > 0) {
-            text += " \n<size=65%>[" + string.Format(m_SoulMarkShift_0_By_1__DescriptioLocalizedText, UIUtility.GetSoulMarkDirectionText(alignment.Direction).Text, alignment.Value, alignment.Description.Text) + "]</size>";
+        foreach (var shift in alignment) {
+            text += " \n<size=65%>[" + string.Format(m_SoulMarkShift_0_By_1__DescriptioLocalizedText, UIUtilityText.GetSoulMarkDirectionText(shift.Axis).Text, shift.Value, shift.Description.Text) + "]</size>";
         }
         return text;
     }
@@ -199,7 +200,7 @@ public static partial class DialogPreviewUtilities {
     }
     public static List<string> FormatConditionsAsList(BlueprintAnswer answer) {
         var list = new List<string>();
-        if (answer.HasShowCheck) {
+        if (answer.ShowCheck != null) {
             list.Add(string.Format(m_ShowCheck__0_DC__1__LocalizedText, answer.ShowCheck.Type, answer.ShowCheck.DC));
         }
         if (answer.ShowConditions?.Conditions?.Length > 0) {

@@ -7,7 +7,6 @@ using UnityEngine;
 
 namespace ToyBox.Features.PartyTab.Actions;
 
-[IsTested]
 public partial class AddUnitToPartyAction : FeatureWithAction, INeedContextFeature<BaseUnitEntity> {
     [LocalizedString("ToyBox_Features_PartyTab_Actions_AddUnitToPartyAction_Name", "Add Unit to Party")]
     public override partial string Name { get; }
@@ -23,7 +22,7 @@ public partial class AddUnitToPartyAction : FeatureWithAction, INeedContextFeatu
     public override void ExecuteAction(params object[] parameter) {
         LogExecution(parameter);
         var unit = (BaseUnitEntity)parameter[0];
-        var currentMode = Game.Instance.CurrentMode;
+        var currentMode = Game.Instance.CurrentModeType;
         Game.Instance.Player.AddCompanion(unit);
         if (currentMode == GameModeType.Default || currentMode == GameModeType.Pause) {
             unit.IsInGame = true;

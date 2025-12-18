@@ -2,7 +2,6 @@
 
 namespace ToyBox.Features.BagOfTricks.Combat;
 
-[IsTested]
 public partial class RemoveBuffsFeature : FeatureWithBindableAction {
     [LocalizedString("ToyBox_Features_BagOfTricks_Combat_RemoveBuffsFeature_Name", "Remove Buffs")]
     public override partial string Name { get; }

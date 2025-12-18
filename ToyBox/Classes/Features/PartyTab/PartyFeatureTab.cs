@@ -51,11 +51,9 @@ public partial class PartyFeatureTab : FeatureTab {
         AddFeature(new PortraitEditorFeature());
         AddFeature(new ChangeGenderFeature());
         AddFeature(new UnitBrowseVoicesFeature());
-        AddFeature(new UnitDisableVoiceoverAndBarksFeature());
         AddFeature(new UnitOverrideAiControlBehaviourFeature());
-        AddFeature(new UnitOverrideMechanicalSizeFeature());
         AddFeature(new UnitOverrideVisualSizeFeature());
-        AddFeature(new UnitModifySoulMarksFeature());
+        AddFeature(new UnitModifyAlignmentFeature());
         AddFeature(new UnitModifyStatsFeature());
 
         AddFeature(new PartyBrowseFeatsFeature());
@@ -213,15 +211,11 @@ public partial class PartyFeatureTab : FeatureTab {
             Div.DrawDiv();
             Feature.GetInstance<UnitBrowseVoicesFeature>().OnGui(unit);
             Div.DrawDiv();
-            Feature.GetInstance<UnitDisableVoiceoverAndBarksFeature>().OnGui(unit);
-            Div.DrawDiv();
             Feature.GetInstance<UnitOverrideAiControlBehaviourFeature>().OnGui(unit);
-            Div.DrawDiv();
-            Feature.GetInstance<UnitOverrideMechanicalSizeFeature>().OnGui(unit);
             Div.DrawDiv();
             Feature.GetInstance<UnitOverrideVisualSizeFeature>().OnGui(unit);
             Div.DrawDiv();
-            Feature.GetInstance<UnitModifySoulMarksFeature>().OnGui(unit);
+            Feature.GetInstance<UnitModifyAlignmentFeature>().OnGui(unit);
             Div.DrawDiv();
             Feature.GetInstance<UnitModifyStatsFeature>().OnGui(unit);
         }

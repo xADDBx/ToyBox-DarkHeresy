@@ -8,7 +8,6 @@ using UnityEngine;
 
 namespace ToyBox.Features.LevelUp;
 
-[IsTested]
 [HarmonyPatch, ToyBoxPatchCategory("ToyBox.Features.LevelUp.RespecFromLevelXFeature")]
 public partial class RespecFromLevelXFeature : FeatureWithPatch {
     public override ref bool IsEnabled {

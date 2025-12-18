@@ -5,7 +5,6 @@ using Kingmaker.UnitLogic.ActivatableAbilities;
 
 namespace ToyBox.Features.BagOfTricks.Cheats;
 
-[IsTested]
 [HarmonyPatch, ToyBoxPatchCategory("ToyBox.Features.BagOfTricks.Cheats.FreeAbilitiesFeature")]
 public partial class FreeAbilitiesFeature : FeatureWithPatch {
     public override ref bool IsEnabled {
@@ -26,13 +25,6 @@ public partial class FreeAbilitiesFeature : FeatureWithPatch {
     [HarmonyPatch(typeof(AbilityResourceLogic), nameof(AbilityResourceLogic.Spend)), HarmonyPrefix]
     private static bool AbilityResourceLogic_Spend_Patch(AbilityData ability) {
         if (ability.Caster is BaseUnitEntity unit && ToyBoxUnitHelper.IsPartyOrPet(unit)) {
-            return false;
-        }
-        return true;
-    }
-    [HarmonyPatch(typeof(ActivatableAbilityResourceLogic), nameof(ActivatableAbilityResourceLogic.SpendResource)), HarmonyPrefix]
-    private static bool ActivatableAbilityResourceLogic_SpendResource_Patch(ActivatableAbilityResourceLogic __instance) {
-        if (__instance.Owner is BaseUnitEntity unit && ToyBoxUnitHelper.IsPartyOrPet(unit)) {
             return false;
         }
         return true;

@@ -2,7 +2,6 @@
 using Kingmaker.EntitySystem.Entities;
 using Kingmaker.Mechanics.Entities;
 using Kingmaker.UnitLogic.Parts;
-using Warhammer.SpaceCombat.StarshipLogic;
 
 namespace ToyBox.Infrastructure;
 
@@ -23,7 +22,7 @@ public static class ToyBoxUnitHelper {
         if (unit == null) {
             return false;
         }
-        if (m_PartyOrPetCache.TryGetValue(unit, out bool result)) {
+        if (m_PartyOrPetCache.TryGetValue(unit, out var result)) {
             return result;
         }
         if (unit.OriginalBlueprint == null || Game.Instance?.Player?.AllCharacters is { Count: 0 }) {
@@ -52,8 +51,6 @@ public static class ToyBoxUnitHelper {
             UnitSelectType.You => unit.IsMainCharacter,
             UnitSelectType.Friendly => !IsEnemy(unit),
             UnitSelectType.Enemies => IsEnemy(unit),
-            UnitSelectType.Ship => unit.IsStarship() && !IsEnemy(unit),
-            UnitSelectType.EnemyShip => unit.IsStarship() && IsEnemy(unit),
             UnitSelectType.Off => false,
             _ => false,
         };

@@ -1,9 +1,7 @@
-﻿using Kingmaker.Code.Utility;
-using Kingmaker.DialogSystem.Blueprints;
+﻿using Kingmaker.Code.UI.MVVM;
 
 namespace ToyBox.Features.BagOfTricks.Preview;
 
-[IsTested]
 [HarmonyPatch, ToyBoxPatchCategory("ToyBox.Features.BagOfTricks.Preview.PreviewDialogConditionsFeature")]
 public partial class PreviewDialogConditionsFeature : FeatureWithPatch {
     public override ref bool IsEnabled {
@@ -21,14 +19,28 @@ public partial class PreviewDialogConditionsFeature : FeatureWithPatch {
             return "ToyBox.Features.BagOfTricks.Preview.PreviewDialogConditionsFeature";
         }
     }
-    [HarmonyPatch(typeof(UIConstsExtensions), nameof(UIConstsExtensions.GetAnswerFormattedString)), HarmonyPriority(Priority.HigherThanNormal), HarmonyPostfix]
-    private static void GetAnswerFormattedString_Patch(BlueprintAnswer answer, ref string __result) {
+    [HarmonyPatch(typeof(BookEventAnswerView), nameof(BookEventAnswerView.SetupAnswerText)), HarmonyPriority(Priority.HigherThanNormal), HarmonyPostfix]
+    private static void GetAnswerFormattedString_Patch(BookEventAnswerView __instance) {
         try {
-            if (answer != null) {
-                var conditions = DialogPreviewUtilities.FormatConditionsAsList(answer) ?? [];
+            if (!string.IsNullOrWhiteSpace(__instance.m_AnswerText.text)) {
+                var conditions = DialogPreviewUtilities.FormatConditionsAsList(__instance.ViewModel.Answer) ?? [];
                 var conditionsText = string.Join("", conditions.Select(s => "\n" + DialogPreviewUtilities.Indent + s));
                 if (!string.IsNullOrWhiteSpace(conditionsText)) {
-                    __result += $"<size=65%>{conditionsText}</size>";
+                    __instance.m_AnswerText.text += $"<size=65%>{conditionsText}</size>";
+                }
+            }
+        } catch (Exception ex) {
+            Error(ex);
+        }
+    }
+    [HarmonyPatch(typeof(DialogAnswerBaseView), nameof(DialogAnswerBaseView.SetupAnswerText)), HarmonyPriority(Priority.HigherThanNormal), HarmonyPostfix]
+    private static void GetAnswerFormattedString_Patch(DialogAnswerBaseView __instance) {
+        try {
+            if (!string.IsNullOrWhiteSpace(__instance.m_AnswerText.text)) {
+                var conditions = DialogPreviewUtilities.FormatConditionsAsList(__instance.ViewModel.Answer) ?? [];
+                var conditionsText = string.Join("", conditions.Select(s => "\n" + DialogPreviewUtilities.Indent + s));
+                if (!string.IsNullOrWhiteSpace(conditionsText)) {
+                    __instance.m_AnswerText.text += $"<size=65%>{conditionsText}</size>";
                 }
             }
         } catch (Exception ex) {

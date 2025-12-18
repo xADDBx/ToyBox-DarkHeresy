@@ -3,7 +3,6 @@ using Kingmaker.PubSubSystem.Core;
 
 namespace ToyBox.Features.BagOfTricks.Cheats;
 
-[IsTested]
 public partial class InstantRestAfterCombatFeature : ToggledFeature, IPartyCombatHandler {
     public override ref bool IsEnabled {
         get {

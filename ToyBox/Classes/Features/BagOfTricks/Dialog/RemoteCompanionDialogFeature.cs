@@ -10,7 +10,6 @@ using Kingmaker.Utility.DotNetExtensions;
 
 namespace ToyBox.Features.BagOfTricks.Dialog;
 
-[IsTested]
 [HarmonyPatch, ToyBoxPatchCategory("ToyBox.Features.BagOfTricks.Dialog.RemoteCompanionDialogFeature")]
 public partial class RemoteCompanionDialogFeature : FeatureWithPatch {
     public override ref bool IsEnabled {
@@ -28,8 +27,8 @@ public partial class RemoteCompanionDialogFeature : FeatureWithPatch {
             return "ToyBox.Features.BagOfTricks.Dialog.RemoteCompanionDialogFeature";
         }
     }
-    [HarmonyPatch(typeof(CompanionInParty), nameof(CompanionInParty.CheckCondition)), HarmonyPostfix]
-    private static void CompanionInParty_CheckCondition_Patch(CompanionInParty __instance, ref bool __result) {
+    [HarmonyPatch(typeof(IsCompanionInParty), nameof(IsCompanionInParty.CheckCondition)), HarmonyPostfix]
+    private static void CompanionInParty_CheckCondition_Patch(IsCompanionInParty __instance, ref bool __result) {
         // No need to override if the result is already true
         if (__result) {
             return;
@@ -84,15 +83,15 @@ public partial class RemoteCompanionDialogFeature : FeatureWithPatch {
             __instance.IncludeRemote = m_OriginallyIncludedRemote;
         }
     }
-    [HarmonyPatch(typeof(DialogSpeaker), nameof(DialogSpeaker.GetEntity)), HarmonyPostfix]
-    public static void DialogSpeaker_GetEntity_Patch(DialogSpeaker __instance, ref BaseUnitEntity __result) {
-        if (__result == null && __instance.Blueprint != null) {
-            var units = Game.Instance.EntitySpawner.CreationQueue.Select((EntitySpawnController.SpawnEntry ce) => ce.Entity).OfType<BaseUnitEntity>();
+    [HarmonyPatch(typeof(DialogSpeaker), nameof(DialogSpeaker.TryGetSpeakerEntity)), HarmonyPostfix]
+    public static void DialogSpeaker_GetEntity_Patch(DialogSpeaker __instance, ref BaseUnitEntity speaker) {
+        if (speaker == null && __instance.Blueprint != null) {
+            var units = Game.Instance.Controllers.EntitySpawner.CreationQueue.Select((EntitySpawnController.SpawnEntry ce) => ce.Entity).OfType<BaseUnitEntity>();
             var maybeUnit = Game.Instance.Player.AllCrossSceneUnits.Where(u => GetInstance<ExCompanionDialogFeature>().IsEnabled || u.GetCompanionOptional()?.State != CompanionState.ExCompanion)
-                .Concat(units).Select(__instance.SelectMatchingUnit).NotNull().Distinct().Nearest(Game.Instance.DialogController.DialogPosition);
+                .Concat(units).Select(__instance.SelectMatchingUnit).NotNull().Distinct().Nearest(Game.Instance.Controllers.DialogController.DialogPosition);
             if (maybeUnit != null) {
                 __instance.ReplacedSpeakerWithErrorSpeaker = false;
-                __result = maybeUnit;
+                speaker = maybeUnit;
                 return;
             }
 

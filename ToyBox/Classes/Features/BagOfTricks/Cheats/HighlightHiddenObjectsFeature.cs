@@ -1,5 +1,4 @@
-﻿using HarmonyLib;
-using Kingmaker;
+﻿using Kingmaker;
 using Kingmaker.EntitySystem.Entities;
 using Kingmaker.EntitySystem.Entities.Base;
 using Kingmaker.View;
@@ -13,7 +12,6 @@ using UnityEngine;
 
 namespace ToyBox.Features.BagOfTricks.Cheats;
 
-[IsTested]
 [HarmonyPatch, ToyBoxPatchCategory("ToyBox.Features.BagOfTricks.Cheats.HighlightHiddenObjectsFeature")]
 public partial class HighlightHiddenObjectsFeature : FeatureWithPatch {
     protected override string HarmonyName {
@@ -44,7 +42,7 @@ public partial class HighlightHiddenObjectsFeature : FeatureWithPatch {
         base.Initialize();
         Main.ScheduleForMainThread(() => {
             if (Game.Instance?.State != null) {
-                foreach (var mapObjectEntityData in Game.Instance.State.MapObjects) {
+                foreach (var mapObjectEntityData in Game.Instance.EntityPools.MapObjects) {
                     mapObjectEntityData.View.UpdateHighlight();
                 }
             }
@@ -54,7 +52,7 @@ public partial class HighlightHiddenObjectsFeature : FeatureWithPatch {
         base.Destroy();
         Main.ScheduleForMainThread(() => {
             if (Game.Instance?.State != null) {
-                foreach (var mapObjectEntityData in Game.Instance.State.MapObjects) {
+                foreach (var mapObjectEntityData in Game.Instance.EntityPools.MapObjects) {
                     try {
                         var view = mapObjectEntityData.View;
                         HighlightDestroy(view);
@@ -85,12 +83,12 @@ public partial class HighlightHiddenObjectsFeature : FeatureWithPatch {
             }
         }
     }
-    [HarmonyPatch(typeof(MapObjectView), nameof(MapObjectView.ShouldBeHighlighted)), HarmonyTranspiler]
+    [HarmonyPatch(typeof(MapObjectView), nameof(MapObjectView.CheckHighlightConditions)), HarmonyTranspiler]
     private static IEnumerable<CodeInstruction> MapObjectView_ShouldBeHighlighted_Patch(IEnumerable<CodeInstruction> instructions) {
         var get_IsInFogOfWar = AccessTools.PropertyGetter(typeof(Entity), nameof(Entity.IsInFogOfWar));
         var get_IsRevealed = AccessTools.PropertyGetter(typeof(Entity), nameof(Entity.IsRevealed));
-        var get_IsPerceptionCheckPassed = AccessTools.PropertyGetter(typeof(MapObjectEntity), nameof(MapObjectEntity.IsAwarenessCheckPassed));
-        var get_HighlightOnHover = AccessTools.PropertyGetter(typeof(MapObjectView), nameof(MapObjectView.HighlightOnHover));
+        var get_IsPerceptionCheckPassed = AccessTools.PropertyGetter(typeof(MapObjectView), nameof(MapObjectView.IsAwarenessCheckPassed));
+        var get_IsDetectiveObjectRevealed = AccessTools.PropertyGetter(typeof(MapObjectView), nameof(MapObjectView.IsDetectiveObjectRevealed));
         var foundCall = false;
         var foundCall2 = !Settings.HighlightInFogOfWar;
         var foundCall3 = false;
@@ -105,31 +103,21 @@ public partial class HighlightHiddenObjectsFeature : FeatureWithPatch {
                 yield return popInst;
                 yield return new(OpCodes.Ldc_I4_0);
                 foundCall2 = true;
-            } else if (inst.Calls(get_HighlightOnHover)) {
-                yield return CodeInstruction.Call((MapObjectView view) => ShouldHighlightOnHover(view)).MoveLabelsFrom(inst);
+            } else if (inst.Calls(get_IsDetectiveObjectRevealed)) {
+                yield return CodeInstruction.Call((MapObjectView view) => HasDetectiveObject(view)).MoveLabelsFrom(inst);
                 foundCall3 = true;
             } else {
                 yield return inst;
             }
         }
-        Error($"{foundCall}, {foundCall2}, {foundCall3};!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         ThrowIfTrue(!foundCall || !foundCall2 || !foundCall3);
     }
-    private static bool ShouldHighlightOnHover(MapObjectView view) {
-        if (view.GetComponent<AwarenessCheckComponent>() != null) {
-            if (!Settings.HighlightHiddenTraps) {
-                if (view.Data.Parts.GetAll<InteractionPart>().Any(part => part.Settings.Trap != null) || view is TrapObjectView) {
-                    return view.HighlightOnHover;
-                }
-            }
-            return true;
-        } else {
-            return view.HighlightOnHover;
-        }
+    private static bool HasDetectiveObject(MapObjectView view) {
+        return view.Data.DetectiveObject != null;
     }
     [HarmonyPatch(typeof(MapObjectView), nameof(MapObjectView.UpdateHighlight)), HarmonyTranspiler]
     private static IEnumerable<CodeInstruction> MapObjectView_UpdateHighlight_Patch(IEnumerable<CodeInstruction> instructions) {
-        var shouldBeHighlighted = AccessTools.Method(typeof(MapObjectView), nameof(MapObjectView.ShouldBeHighlighted));
+        var shouldBeHighlighted = AccessTools.Method(typeof(MapObjectView), nameof(MapObjectView.CheckHighlightConditions));
         var foundCall = false;
         foreach (var inst in instructions) {
             yield return inst;
@@ -249,6 +237,13 @@ public partial class HighlightHiddenObjectsFeature : FeatureWithPatch {
 
         [HarmonyPatch(typeof(InteractionPart), nameof(InteractionPart.HasVisibleTrap)), HarmonyTranspiler]
         private static IEnumerable<CodeInstruction> InteractionPart_HasVisibleTrap_Patch(IEnumerable<CodeInstruction> instructions) {
+            return InteractionPartTranspiler(instructions);
+        }
+        [HarmonyPatch(typeof(NewInteractionPart), nameof(NewInteractionPart.HasVisibleTrap)), HarmonyTranspiler]
+        private static IEnumerable<CodeInstruction> NewInteractionPart_HasVisibleTrap_Patch(IEnumerable<CodeInstruction> instructions) {
+            return InteractionPartTranspiler(instructions);
+        }
+        private static IEnumerable<CodeInstruction> InteractionPartTranspiler(IEnumerable<CodeInstruction> instructions) {
             var get_IsPerceptionCheckPassed = AccessTools.PropertyGetter(typeof(MapObjectEntity), nameof(MapObjectEntity.IsAwarenessCheckPassed));
             var foundCall = false;
             foreach (var inst in instructions) {

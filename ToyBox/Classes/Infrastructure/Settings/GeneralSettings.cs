@@ -121,8 +121,7 @@ public class GeneralSettings : AbstractJsonSettings {
     public bool EnablePreventVeilThicknessFromChanging = false;
     public bool EnableCustomizePsychicPhenomena = false;
     public HashSet<string> ExcludedRandomPhenomena = [];
-    public HashSet<string> ExcludedPerilsMinor = [];
-    public HashSet<string> ExcludedPerilsMajor = [];
+    public HashSet<string> ExcludedPerils = [];
 
     // - Camera
     public bool EnableAllowZoomOnAllMapsAndCutscenes = false;
@@ -159,14 +158,12 @@ public class GeneralSettings : AbstractJsonSettings {
     public bool UseCombatExperienceMultiplier = false;
     public bool UseQuestExperienceMultiplier = false;
     public bool UseSkillCheckMultiplier = false;
-    public bool UseChallengesMultiplier = false;
-    public bool UseSpaceCombatMultiplier = false;
+    public bool UseInvestigationMultiplier = false;
     public float AllExperienceMultiplier = 1f;
     public float CombatExperienceMultiplier = 1f;
     public float QuestExperienceMultiplier = 1f;
     public float SkillCheckMultiplier = 1f;
-    public float ChallengeMultiplier = 1f;
-    public float SpaceCombatMultiplier = 1f;
+    public float InvestigationMultiplier = 1f;
 
     // - Other Multipliers
     public int? MaxWalkDistanceSetting = null;
@@ -181,7 +178,6 @@ public class GeneralSettings : AbstractJsonSettings {
     // - Dice Rolls
     public bool EnableDiceRollsOverrides = false;
     public UnitSelectType DiceRollsAllAttacksHit;
-    public UnitSelectType DiceRollsAllAttacksCrit;
     public UnitSelectType DiceRollsRollWithAdvantage;
     public UnitSelectType DiceRollsRollWithDisadvantage;
     public UnitSelectType DiceRollsAlwaysRoll100;
@@ -189,9 +185,9 @@ public class GeneralSettings : AbstractJsonSettings {
     public UnitSelectType DiceRollsAlwaysRoll1;
     public UnitSelectType DiceRollsNeverRoll100;
     public UnitSelectType DiceRollsNeverRoll1;
-    public UnitSelectType DiceRollsInitiativeAlwaysRoll10;
-    public UnitSelectType DiceRollsInitiativeAlwaysRoll5;
     public UnitSelectType DiceRollsInitiativeAlwaysRoll1;
+    public UnitSelectType DiceRollsInitiativeAlwaysRoll50;
+    public UnitSelectType DiceRollsInitiativeAlwaysRoll100;
     public UnitSelectType DiceRollsSkillChecksTake50;
     public UnitSelectType DiceRollsSkillChecksTake25;
     public UnitSelectType DiceRollsSkillChecksTake1;

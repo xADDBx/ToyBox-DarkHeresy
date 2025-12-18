@@ -1,9 +1,8 @@
 ﻿using Kingmaker.Mechanics.Entities;
-using Kingmaker.UnitLogic.Commands;
+using Kingmaker.UnitLogic.Abilities;
 
 namespace ToyBox.Features.BagOfTricks.Cheats;
 
-[IsTested]
 [HarmonyPatch, ToyBoxPatchCategory("ToyBox.Features.BagOfTricks.Cheats.NoAbilityCooldownsFeature")]
 public partial class NoAbilityCooldownsFeature : FeatureWithPatch {
     public override ref bool IsEnabled {
@@ -20,8 +19,8 @@ public partial class NoAbilityCooldownsFeature : FeatureWithPatch {
             return "ToyBox.Features.BagOfTricks.Cheats.NoAbilityCooldownsFeature";
         }
     }
-    [HarmonyPatch(typeof(UnitUseAbilityParams), nameof(UnitUseAbilityParams.IgnoreCooldown), MethodType.Getter), HarmonyPostfix]
-    private static void UnitUseAbilityParams_IgnoreCooldowns_Patch(UnitUseAbilityParams __instance, ref bool __result) {
+    [HarmonyPatch(typeof(AbilityExecutionContext), nameof(AbilityExecutionContext.IgnoreCooldown), MethodType.Getter), HarmonyPostfix]
+    private static void UnitUseAbilityParams_IgnoreCooldowns_Patch(AbilityExecutionContext __instance , ref bool __result) {
         if (__instance.Ability?.Caster is AbstractUnitEntity unit && ToyBoxUnitHelper.IsPartyOrPet(unit)) {
             __result = true;
         }

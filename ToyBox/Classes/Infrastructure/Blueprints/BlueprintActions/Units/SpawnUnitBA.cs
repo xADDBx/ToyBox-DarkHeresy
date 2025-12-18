@@ -6,7 +6,6 @@ using UnityEngine;
 
 namespace ToyBox.Infrastructure.Blueprints.BlueprintActions;
 
-[IsTested]
 public partial class SpawnUnitBA : BlueprintActionFeature, IBlueprintAction<BlueprintUnit> {
     public bool CanExecute(BlueprintUnit blueprint, params object[] parameter) {
         return IsInGame();
@@ -16,10 +15,10 @@ public partial class SpawnUnitBA : BlueprintActionFeature, IBlueprintAction<Blue
         LogExecution(blueprint, count);
         BaseUnitEntity? spawned = null;
         for (var i = 0; i < count; i++) {
-            var spawnPosition = Game.Instance.ClickEventsController.WorldPosition;
+            var spawnPosition = Game.Instance.Controllers.ClickEventsController.WorldPosition;
             var offset = 5f * UnityEngine.Random.insideUnitSphere;
             spawnPosition = new(spawnPosition.x + offset.x, spawnPosition.y, spawnPosition.z + offset.z);
-            spawned = Game.Instance.EntitySpawner.SpawnUnit(blueprint, spawnPosition, Quaternion.identity, Game.Instance.State.LoadedAreaState.MainState);
+            spawned = Game.Instance.Controllers.EntitySpawner.SpawnUnit(blueprint, spawnPosition, Quaternion.identity, Game.Instance.State.LoadedAreaState.MainState);
         }
         return spawned != null;
     }
