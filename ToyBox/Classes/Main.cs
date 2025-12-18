@@ -151,7 +151,7 @@ public static partial class Main {
                 Space(10);
 
                 if (IsInRestrictedMode) {
-                    UI.Label("Note: The game is in Alpha and so is this mod.\nI tried to be as defensive as possible, meaning features should *only* cause issues if they are activated.".Green());
+                    UI.Label("Note: The game is in Alpha and so is this mod.\nI tried to code as defensive as possible, meaning features should *only* cause issues if they are activated.".Green());
                     UI.Label("If you notice mod related issues please reach out on Nexus, GitHub or Discord!".Cyan());
 
                     UI.Label(m_ThisModWillAutomaticallyConnectLocalizedText.Green().Bold());
