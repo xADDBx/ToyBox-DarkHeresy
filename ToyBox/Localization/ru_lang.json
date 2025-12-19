@@ -1375,6 +1375,10 @@
     "Original": "Try to keep this feature activated after using it (Click for Explanation)",
     "Translated": null
   },
+  "ToyBox_Features_PartyTab_Stats_UnitModifyStatsFeature_m_OverridenByLocalizedText": {
+    "Original": "Overriden by",
+    "Translated": null
+  },
   "ToyBox_Features_PartyTab_Stats_UnitOverrideAiControlBehaviourFeature_Name": {
     "Original": "Override AI Control Behaviour",
     "Translated": null

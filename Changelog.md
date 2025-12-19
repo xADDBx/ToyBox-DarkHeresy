@@ -1,4 +1,8 @@
-### ToyBox DarkHeresy - Ver 0.1.3 (built for 0.0.3.475)
+### ToyBox DarkHeresy - Ver 0.1.4 (built for 0.0.3.480)
+- (***ADDB***) Fix Stats Editor not working.
+- (***ADDB***) Fix Alignment Editor being weird.
+
+### ToyBox DarkHeresy - Ver 0.1.3 (built for 0.0.3.477)
 - (***ADDB***) Fix Etude Editor using the wrong guid as root etude, making Etude Editor not working.
 - (***ADDB***) Slightly change the Mod UI so that Mod UI crashes are less likely to soft lock the Mod UI.
 

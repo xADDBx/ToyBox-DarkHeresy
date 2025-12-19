@@ -47,10 +47,10 @@ public partial class UnitModifyAlignmentFeature : Feature, INeedContextFeature<B
                                     ModifyAlignment(direction, rank, rank + 1);
                                 });
                                 Space(10);
-                                var val = rank;
+                                var val = rank - 1;
                                 UI.TextField(ref val, pair => {
                                     if (pair.newContent >= 0) {
-                                        ModifyAlignment(direction, rank, pair.newContent);
+                                        ModifyAlignment(direction, rank, pair.newContent + 1);
                                     }
                                 }, Width(75 * Main.UIScale));
                             }
@@ -65,7 +65,7 @@ public partial class UnitModifyAlignmentFeature : Feature, INeedContextFeature<B
         }
     }
     private static void ModifyAlignment(AlignmentAxis dir, int oldRank, int newRank) {
-        var change = newRank + 1 - oldRank;
+        var change = newRank - oldRank;
         var shift = new AlignmentShift() { Axis = dir, Value = change };
         AlignmentShiftExtension.ApplyShiftToMainCharacter(shift, new());
     }
