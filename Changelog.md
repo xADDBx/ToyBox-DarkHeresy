@@ -1,3 +1,7 @@
+### ToyBox DarkHeresy - Ver 0.1.3 (built for 0.0.3.475)
+- (***ADDB***) Fix Etude Editor using the wrong guid as root etude, making Etude Editor not working.
+- (***ADDB***) Slightly change the Mod UI so that Mod UI crashes are less likely to soft lock the Mod UI.
+
 ### ToyBox DarkHeresy - Ver 0.1.2 (built for 0.0.3.475)
 - (***ADDB***) Swap to custom UMM because Owlcat disabled official
 - (***ADDB***) Add Modify Money thingy

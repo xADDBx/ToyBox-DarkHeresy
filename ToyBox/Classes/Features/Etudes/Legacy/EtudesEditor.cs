@@ -28,7 +28,7 @@ public static class EtudesEditor {
 
     // TODO: is this still the right root etude?
     internal static string rootEtudeId =
-            "4f66e8b792ecfad46ae1d9ecfd7ecbc2";
+            "0d8d0f32e4f1486e8e34061bc7309fcc";
     public static string searchText = "";
     public static string searchTextInput = "";
     private static bool _showOnlyFlagLikes;

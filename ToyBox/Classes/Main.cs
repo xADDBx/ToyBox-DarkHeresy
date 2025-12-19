@@ -134,50 +134,50 @@ public static partial class Main {
         m_VerticalLists = newList;
     }
     private static void OnGUI(UnityModManager.ModEntry modEntry) {
-        if (m_CaughtException == null) {
-            try {
-                if (!SuccessfullyInitialized) {
-                    UI.Label(m_SomethingWentHorriblyWrongAndYou.Red().Bold());
-                    return;
+        try {
+            if (!SuccessfullyInitialized) {
+                UI.Label(m_SomethingWentHorriblyWrongAndYou.Red().Bold());
+                return;
+            }
+            if (UnityModManager.UI.Instance.mUIScale != UIScale) {
+                OnUIScaleChanged?.Invoke();
+                UIScale = UnityModManager.UI.Instance.mUIScale;
+                InvalidateBrowserCaches();
+            }
+            if (BPLoader.IsLoading) {
+                UI.ProgressBar(BPLoader.Progress, "");
+            }
+            Space(10);
+
+            if (IsInRestrictedMode) {
+                UI.Label("Note: The game is in Alpha and so is this mod.\nI tried to code as defensive as possible, meaning features should *only* cause issues if they are activated.".Green());
+                UI.Label("If you notice mod related issues please reach out on Nexus, GitHub or Discord!".Cyan());
+
+                UI.Label(m_ThisModWillAutomaticallyConnectLocalizedText.Green().Bold());
+                Feature.GetInstance<VersionCompatabilityFeature>().OnGui();
+                if (UI.Button(m_IUnderstandLocalizedText.Green().Bold())) {
+                    DisableRestrictedMode();
                 }
-                if (UnityModManager.UI.Instance.mUIScale != UIScale) {
-                    OnUIScaleChanged?.Invoke();
-                    UIScale = UnityModManager.UI.Instance.mUIScale;
-                    InvalidateBrowserCaches();
-                }
-                if (BPLoader.IsLoading) {
-                    UI.ProgressBar(BPLoader.Progress, "");
+            } else {
+                var selected = m_VisibleFeatureTabs[Settings.SelectedTab];
+                if (UI.SelectionGrid(ref selected, m_VisibleFeatureTabs, Math.Min(m_VisibleFeatureTabs.Count, 6), tab => tab.Name, Width(EffectiveWindowWidth()))) {
+                    Settings.SelectedTab = m_VisibleFeatureTabs.IndexOf(selected);
                 }
                 Space(10);
-
-                if (IsInRestrictedMode) {
-                    UI.Label("Note: The game is in Alpha and so is this mod.\nI tried to code as defensive as possible, meaning features should *only* cause issues if they are activated.".Green());
-                    UI.Label("If you notice mod related issues please reach out on Nexus, GitHub or Discord!".Cyan());
-
-                    UI.Label(m_ThisModWillAutomaticallyConnectLocalizedText.Green().Bold());
-                    Feature.GetInstance<VersionCompatabilityFeature>().OnGui();
-                    if (UI.Button(m_IUnderstandLocalizedText.Green().Bold())) {
-                        DisableRestrictedMode();
-                    }
-                } else {
-                    var selected = m_VisibleFeatureTabs[Settings.SelectedTab];
-                    if (UI.SelectionGrid(ref selected, m_VisibleFeatureTabs, Math.Min(m_VisibleFeatureTabs.Count, 6), tab => tab.Name, Width(EffectiveWindowWidth()))) {
-                        Settings.SelectedTab = m_VisibleFeatureTabs.IndexOf(selected);
-                    }
-                    Space(10);
-                    Div.DrawDiv();
-                    Space(10);
+                Div.DrawDiv();
+                Space(10);
+                if (m_CaughtException == null) {
                     selected.OnGui();
+                } else {
+                    UI.Label(m_CaughtException.ToString());
+                    if (UI.Button(SharedStrings.ResetLabel)) {
+                        m_CaughtException = null;
+                    }
                 }
-            } catch (Exception ex) {
-                Error(ex);
-                m_CaughtException = ex;
             }
-        } else {
-            UI.Label(m_CaughtException.ToString());
-            if (UI.Button(SharedStrings.ResetLabel)) {
-                m_CaughtException = null;
-            }
+        } catch (Exception ex) {
+            Error(ex);
+            m_CaughtException = ex;
         }
     }
     private static void OnSaveGUI(UnityModManager.ModEntry modEntry) {
