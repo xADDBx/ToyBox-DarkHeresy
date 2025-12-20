@@ -1,6 +1,7 @@
 ﻿using Kingmaker;
 using Kingmaker.Utility.DotNetExtensions;
 using System.Diagnostics;
+using UnityModManagerNet;
 
 namespace ToyBox.Features.SettingsTab.Other;
 
@@ -47,7 +48,9 @@ public partial class LazyInitFeature : FeatureWithPatch, INeedEarlyInitFeature {
         });
         Main.SuccessfullyInitialized = true;
         Log($"Waited {sw.ElapsedMilliseconds}ms for lazy init finish");
-
+    }
+    [HarmonyPatch(typeof(UnityModManager.UI), nameof(UnityModManager.UI.Awake)), HarmonyPostfix]
+    private static void UnityModManager_UI_Awake_Patch() {
         if (FeatureTab.FailedFeatures.Count > 0) {
             Main.ModEntry.Info.DisplayName += ($" {FeatureTab.FailedFeatures.Count} " + m_FeaturesFailedInitialization_LocalizedText).Orange().Bold();
             ToggleModWindow();

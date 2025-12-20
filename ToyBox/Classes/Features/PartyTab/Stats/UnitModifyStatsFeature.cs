@@ -57,7 +57,7 @@ public partial class UnitModifyStatsFeature : FeatureWithPatch, INeedContextFeat
         }
         return name;
     }
-    private static readonly StatType[] m_Divider = [StatType.SkillAthletics, StatType.HitPoints];
+    private static readonly StatType[] m_Divider = [StatType.BallisticSkill, StatType.SkillAthletics, StatType.HitPoints];
     public void OnGui(BaseUnitEntity unit) {
         base.OnGui();
         if (IsEnabled) {

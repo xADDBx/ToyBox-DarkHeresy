@@ -1,3 +1,6 @@
+### ToyBox DarkHeresy - Ver 0.1.5 (built for 0.0.3.480)
+- (***ADDB***) Fix ToyBox crashing Main Menu UI if feature init failed. Whoopsie. Something something fail early.
+
 ### ToyBox DarkHeresy - Ver 0.1.4 (built for 0.0.3.480)
 - (***ADDB***) Fix Stats Editor not working.
 - (***ADDB***) Fix Alignment Editor being weird.
