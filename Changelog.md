@@ -1,3 +1,7 @@
+### ToyBox DarkHeresy - Ver 0.1.6 (built for 0.0.3.480)
+- (***ADDB***) Fix activating Highlight Hidden Objects in Fog of War erroring the feature.
+- (***ADDB***) Highlight in Fog of War/Hidden traps now activate without restarting the game.
+
 ### ToyBox DarkHeresy - Ver 0.1.5 (built for 0.0.3.480)
 - (***ADDB***) Fix ToyBox crashing Main Menu UI if feature init failed. Whoopsie. Something something fail early.
 

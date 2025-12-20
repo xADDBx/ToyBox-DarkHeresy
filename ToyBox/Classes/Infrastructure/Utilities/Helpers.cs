@@ -49,8 +49,12 @@ public static class Helpers {
         }
         return max;
     }
-    public static void ToggleModWindow() {
-        UnityModManager.UI.Instance.ToggleWindow();
+    public static void ToggleModWindow(bool? open = null) {
+        if (open.HasValue) {
+            UnityModManager.UI.Instance.ToggleWindow(open.Value);
+        } else {
+            UnityModManager.UI.Instance.ToggleWindow();
+        }
     }
     public static void LogExecution(Feature feature, params object?[] parameter) {
         var toLog = "Executed action " + feature.Name;

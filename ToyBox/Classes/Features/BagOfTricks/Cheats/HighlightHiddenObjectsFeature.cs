@@ -1,6 +1,5 @@
 ﻿using Kingmaker;
 using Kingmaker.EntitySystem.Entities;
-using Kingmaker.EntitySystem.Entities.Base;
 using Kingmaker.View;
 using Kingmaker.View.MapObjects;
 using Kingmaker.View.MapObjects.InteractionComponentBase;
@@ -74,19 +73,19 @@ public partial class HighlightHiddenObjectsFeature : FeatureWithPatch {
             if (Settings.HighlightHiddenObjects) {
                 using (HorizontalScope()) {
                     Space(50);
-                    _ = UI.Toggle(m_AlsoHighlightHiddenTrapsText, "", ref Settings.HighlightHiddenTraps, Initialize, Reinitialize);
+                    _ = UI.Toggle(m_AlsoHighlightHiddenTrapsText, "", ref Settings.HighlightHiddenTraps, Reinitialize, Reinitialize);
                 }
                 using (HorizontalScope()) {
                     Space(50);
-                    _ = UI.Toggle(m_AlsoHighlightInFogOfWarText, "", ref Settings.HighlightInFogOfWar, Initialize, Reinitialize);
+                    _ = UI.Toggle(m_AlsoHighlightInFogOfWarText, "", ref Settings.HighlightInFogOfWar, Reinitialize, Reinitialize);
                 }
             }
         }
     }
     [HarmonyPatch(typeof(MapObjectView), nameof(MapObjectView.CheckHighlightConditions)), HarmonyTranspiler]
-    private static IEnumerable<CodeInstruction> MapObjectView_ShouldBeHighlighted_Patch(IEnumerable<CodeInstruction> instructions) {
-        var get_IsInFogOfWar = AccessTools.PropertyGetter(typeof(Entity), nameof(Entity.IsInFogOfWar));
-        var get_IsRevealed = AccessTools.PropertyGetter(typeof(Entity), nameof(Entity.IsRevealed));
+    private static IEnumerable<CodeInstruction> MapObjectView_CheckHighlightConditions_Patch(IEnumerable<CodeInstruction> instructions) {
+        var get_IsInFogOfWar = AccessTools.PropertyGetter(typeof(MapObjectView), nameof(MapObjectView.IsInFogOfWar));
+        var get_IsRevealed = AccessTools.PropertyGetter(typeof(MapObjectView), nameof(MapObjectView.IsRevealed));
         var get_IsPerceptionCheckPassed = AccessTools.PropertyGetter(typeof(MapObjectView), nameof(MapObjectView.IsAwarenessCheckPassed));
         var get_IsDetectiveObjectRevealed = AccessTools.PropertyGetter(typeof(MapObjectView), nameof(MapObjectView.IsDetectiveObjectRevealed));
         var foundCall = false;

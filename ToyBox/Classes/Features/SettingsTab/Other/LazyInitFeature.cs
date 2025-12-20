@@ -35,7 +35,11 @@ public partial class LazyInitFeature : FeatureWithPatch, INeedEarlyInitFeature {
     }
     [HarmonyPatch(typeof(GameMainMenu), nameof(GameMainMenu.Awake)), HarmonyPostfix]
     private static void GameMainMenu_Awake_Postfix() {
-        EnsureFinished();
+        try {
+            EnsureFinished();
+        } catch (Exception ex) {
+            Error(ex);
+        }
     }
     public static void EnsureFinished() {
         Log($"Lazy init had {Stopwatch.ElapsedMilliseconds}ms before waiting");
@@ -51,9 +55,13 @@ public partial class LazyInitFeature : FeatureWithPatch, INeedEarlyInitFeature {
     }
     [HarmonyPatch(typeof(UnityModManager.UI), nameof(UnityModManager.UI.Awake)), HarmonyPostfix]
     private static void UnityModManager_UI_Awake_Patch() {
-        if (FeatureTab.FailedFeatures.Count > 0) {
-            Main.ModEntry.Info.DisplayName += ($" {FeatureTab.FailedFeatures.Count} " + m_FeaturesFailedInitialization_LocalizedText).Orange().Bold();
-            ToggleModWindow();
+        try {
+            if (FeatureTab.FailedFeatures.Count > 0) {
+                Main.ModEntry.Info.DisplayName += ($" {FeatureTab.FailedFeatures.Count} " + m_FeaturesFailedInitialization_LocalizedText).Orange().Bold();
+                ToggleModWindow(true);
+            }
+        } catch (Exception ex) {
+            Error(ex);
         }
     }
     [LocalizedString("ToyBox_Infrastructure_LazyInit_X_Amount_Of_FeaturesFailedInitialization_LocalizedText", "features failed initialization!")]
