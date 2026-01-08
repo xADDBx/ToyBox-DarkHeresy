@@ -80,8 +80,7 @@ public partial class ObjectHighlightToggleFeature : FeatureWithPatch, IGameModeH
                     m_JustChangedViaBinding = false;
                     return false;
                 }
-                _ = Task.Run(() => {
-                    Thread.Sleep(250);
+                _ = Task.Delay(250).ContinueWith(_ => {
                     m_JustChangedViaBinding = false;
                 });
             }
