@@ -2,6 +2,7 @@ using System.Collections.Concurrent;
 using System.Diagnostics;
 using ToyBox.Features.SettingsFeatures.UpdateAndIntegrity;
 using ToyBox.Features.SettingsTab.Other;
+using UnityEngine;
 using UnityModManagerNet;
 
 namespace ToyBox;
@@ -170,8 +171,12 @@ public static partial class Main {
                     selected.OnGui();
                 } else {
                     UI.Label(m_CaughtException.ToString());
-                    if (UI.Button(SharedStrings.ResetLabel)) {
-                        m_CaughtException = null;
+                    using (HorizontalScope()) {
+                        GUILayout.FlexibleSpace();
+                        if (UI.Button(SharedStrings.ResetLabel.Orange().Bold().SizePercent(120))) {
+                            m_CaughtException = null;
+                        }
+                        GUILayout.FlexibleSpace();
                     }
                 }
             }
