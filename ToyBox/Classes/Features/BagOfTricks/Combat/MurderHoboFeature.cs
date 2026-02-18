@@ -21,8 +21,8 @@ public partial class MurderHoboFeature : FeatureWithPatch, IToggledWithBinding {
             return ref Settings.EnableMurderHobo;
         }
     }
-    public override void Initialize() {
-        base.Initialize();
+    public override void Enable() {
+        base.Enable();
         Keybind = Hotkeys.MaybeGetHotkey(GetType());
     }
     public Hotkey? Keybind {
@@ -33,9 +33,9 @@ public partial class MurderHoboFeature : FeatureWithPatch, IToggledWithBinding {
         LogExecution();
         IsEnabled = !IsEnabled;
         if (IsEnabled) {
-            Initialize();
+            Enable();
         } else {
-            Destroy();
+            Disable();
         }
     }
     public void LogExecution(params object?[] parameter) {

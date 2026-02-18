@@ -8,16 +8,16 @@ public partial class GameTimeScaleFeature : FeatureWithFloatSlider {
             return Value != 1f;
         }
     }
-    public override void Initialize() {
-        base.Initialize();
+    public override void Enable() {
+        base.Enable();
         if (GetInstance<GameAlternateTimeScaleFeature>().IsEnabled) {
             Game.Instance.Controllers.TimeController.DebugTimeScale = Settings.GameAlternateTimeScaleMultiplier;
         } else if (IsEnabled) {
             Game.Instance.Controllers.TimeController.DebugTimeScale = Value;
         }
     }
-    public override void Destroy() {
-        base.Destroy();
+    public override void Disable() {
+        base.Disable();
         if (GetInstance<GameAlternateTimeScaleFeature>().IsEnabled) {
             Game.Instance.Controllers.TimeController.DebugTimeScale = Settings.GameAlternateTimeScaleMultiplier;
         } else {

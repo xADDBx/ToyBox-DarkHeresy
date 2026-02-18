@@ -26,10 +26,10 @@ public partial class MovementSpeedMultiplierFeature : FeatureWithPatch {
             if (UI.LogSlider(ref tmp, 0f, 20f, 1f, 2, null, AutoWidth(), GUILayout.MinWidth(50), GUILayout.MinWidth(150))) {
                 if (tmp == 1f) {
                     Settings.MovementSpeedMultiplier = null;
-                    Destroy();
+                    Disable();
                 } else {
                     Settings.MovementSpeedMultiplier = tmp;
-                    Initialize();
+                    Enable();
                 }
             }
             Space(10);

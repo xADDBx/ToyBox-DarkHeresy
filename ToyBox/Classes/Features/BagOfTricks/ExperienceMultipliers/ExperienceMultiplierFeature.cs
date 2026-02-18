@@ -1,8 +1,5 @@
-﻿using Kingmaker.AreaLogic.QuestSystem;
-using Kingmaker.Blueprints.Area;
-using Kingmaker.Blueprints.Quests;
+﻿using Kingmaker.Blueprints.Quests;
 using Kingmaker.EntitySystem.Entities;
-using Kingmaker.Framework.DetectiveSystem;
 using Kingmaker.Gameplay.Features.Experience;
 using UnityEngine;
 
@@ -29,8 +26,8 @@ public partial class ExperienceMultiplierFeature : FeatureWithPatch {
     }
     private void MaybeReset() {
         if (m_IsEnabled != IsEnabled) {
-            Destroy();
-            Initialize();
+            Disable();
+            Enable();
         }
     }
     public override void OnGui() {
@@ -45,7 +42,7 @@ public partial class ExperienceMultiplierFeature : FeatureWithPatch {
                 MaybeReset();
             }
             if (Settings.UseCombatExperienceMultiplier) {
-                UI.LogSlider(ref Settings.CombatExperienceMultiplier, 0f, 100f, 1f, 1);
+                _ = UI.LogSlider(ref Settings.CombatExperienceMultiplier, 0f, 100f, 1f, 1);
             }
         }
         using (HorizontalScope()) {
@@ -53,7 +50,7 @@ public partial class ExperienceMultiplierFeature : FeatureWithPatch {
                 MaybeReset();
             }
             if (Settings.UseQuestExperienceMultiplier) {
-                UI.LogSlider(ref Settings.QuestExperienceMultiplier, 0f, 100f, 1f, 1);
+                _ = UI.LogSlider(ref Settings.QuestExperienceMultiplier, 0f, 100f, 1f, 1);
             }
         }
         using (HorizontalScope()) {
@@ -61,7 +58,7 @@ public partial class ExperienceMultiplierFeature : FeatureWithPatch {
                 MaybeReset();
             }
             if (Settings.UseSkillCheckMultiplier) {
-                UI.LogSlider(ref Settings.SkillCheckMultiplier, 0f, 100f, 1f, 1);
+                _ = UI.LogSlider(ref Settings.SkillCheckMultiplier, 0f, 100f, 1f, 1);
             }
         }
         using (HorizontalScope()) {
@@ -69,7 +66,7 @@ public partial class ExperienceMultiplierFeature : FeatureWithPatch {
                 MaybeReset();
             }
             if (Settings.UseInvestigationMultiplier) {
-                UI.LogSlider(ref Settings.InvestigationMultiplier, 0f, 100f, 1f, 1);
+                _ = UI.LogSlider(ref Settings.InvestigationMultiplier, 0f, 100f, 1f, 1);
             }
         }
     }

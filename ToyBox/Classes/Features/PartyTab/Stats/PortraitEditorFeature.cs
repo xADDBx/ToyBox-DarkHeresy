@@ -13,15 +13,15 @@ public partial class PortraitEditorFeature : Feature, INeedContextFeature<BaseUn
     [LocalizedString("ToyBox_Features_PartyTab_Stats_PortraitEditorFeature_Description", "Allows changing the portrait of a unit to a custom portrait or another blueprint (built-in) portrait. You need to manually update the UI (change area/reload game) to make this change visible on the top bar.")]
     public override partial string Description { get; }
     private static bool m_IsSubscribed = false;
-    public override void Initialize() {
-        base.Initialize();
+    public override void Enable() {
+        base.Enable();
         if (!m_IsSubscribed) {
             Main.OnHideGUIAction += UnloadPortraits;
             m_IsSubscribed = true;
         }
     }
-    public override void Destroy() {
-        base.Destroy();
+    public override void Disable() {
+        base.Disable();
         if (m_IsSubscribed) {
             Main.OnHideGUIAction -= UnloadPortraits;
             m_IsSubscribed = false;
@@ -64,11 +64,11 @@ public partial class PortraitEditorFeature : Feature, INeedContextFeature<BaseUn
     private Browser<string>? m_CustomPortraitBrowser;
     public const int PortraitsPerRow = 6;
     private void CustomPortraitPicker(BaseUnitEntity unit) {
-        UI.DisclosureToggle(ref m_ShowCustomPortraitPicker, m_ShowCustomPortraitPickerLocalizedText);
+        _ = UI.DisclosureToggle(ref m_ShowCustomPortraitPicker, m_ShowCustomPortraitPickerLocalizedText);
         if (m_ShowCustomPortraitPicker) {
             using (HorizontalScope()) {
                 UI.Label(m_NameOfTheNewCustomPortrait_LocalizedText, Width(m_NewCustomPortraitLabelWidth));
-                UI.TextField(ref m_NewCustomPortraitName, null, GUILayout.MinWidth(Main.UIScale * 200), AutoWidth());
+                _ = UI.TextField(ref m_NewCustomPortraitName, null, GUILayout.MinWidth(Main.UIScale * 200), AutoWidth());
                 if (UI.Button(m_ChangePortraitLocalizedText)) {
                     if (CustomPortraitsManager.Instance.GetExistingCustomPortraitIds().Contains(m_NewCustomPortraitName)) {
                         unit.UISettings.SetPortrait(new PortraitData(m_NewCustomPortraitName));
@@ -117,7 +117,7 @@ public partial class PortraitEditorFeature : Feature, INeedContextFeature<BaseUn
     private bool m_ShowBlueprintPortraitPicker = false;
     private Browser<BlueprintPortrait>? m_BlueprintPortraitBrowser;
     private void BlueprintPortraitPicker(BaseUnitEntity unit) {
-        UI.DisclosureToggle(ref m_ShowBlueprintPortraitPicker, m_ShowBlueprintPortraitPickerLocalizedText);
+        _ = UI.DisclosureToggle(ref m_ShowBlueprintPortraitPicker, m_ShowBlueprintPortraitPickerLocalizedText);
         if (m_ShowBlueprintPortraitPicker) {
             using (HorizontalScope()) {
                 UI.Label(m_NameOfTheNewBlueprintportrait_LocalizedText, Width(m_NewBlueprintPortraitLabelWidth));
@@ -239,7 +239,7 @@ public partial class PortraitEditorFeature : Feature, INeedContextFeature<BaseUn
                 } else {
                     GUILayout.Label(sprite.texture, GUI.skin.button, Width(w), Height(h));
                 }
-                UI.Button(m_SavePortraitAsPngLocalizedText, () => {
+                _ = UI.Button(m_SavePortraitAsPngLocalizedText, () => {
                     try {
                         var portraitDir = new DirectoryInfo(Path.Combine(Main.ModEntry.Path, "Portraits", portrait.name));
                         if (!portraitDir.Exists) {

@@ -2,11 +2,8 @@
 using Kingmaker.UnitLogic.Buffs;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
 using Kingmaker.UnitLogic.Mechanics;
-using ToyBox.Infrastructure.Blueprints;
 using ToyBox.Infrastructure.Utilities;
 using UnityEngine;
-using UnityEngine.TerrainTools;
-using static Kingmaker.UnitLogic.Buffs.Buff.Scope;
 
 namespace ToyBox.Features.BagOfTricks.OtherMultipliers;
 
@@ -28,10 +25,10 @@ public partial class BuffDurationMultiplierFeature : FeatureWithPatch {
             if (UI.LogSlider(ref tmp, 0f, 10000f, 1f, 2, null, AutoWidth(), GUILayout.MinWidth(50), GUILayout.MinWidth(150))) {
                 if (tmp == 1f) {
                     Settings.BuffDurationMultiplier = null;
-                    Destroy();
+                    Disable();
                 } else {
                     Settings.BuffDurationMultiplier = tmp;
-                    Initialize();
+                    Enable();
                 }
             }
             Space(10);
@@ -39,7 +36,7 @@ public partial class BuffDurationMultiplierFeature : FeatureWithPatch {
             Space(10);
             UI.Label(Description.Green());
         }
-        UI.DisclosureToggle(ref m_ShowExclusionEditor, m_ManageExceptionsToBuffDurationMuLocalizedText);
+        _ = UI.DisclosureToggle(ref m_ShowExclusionEditor, m_ManageExceptionsToBuffDurationMuLocalizedText);
         if (m_ShowExclusionEditor) {
             if (m_ExclusionBrowser == null) {
                 if (BPLoader.CanStart) {
@@ -56,13 +53,13 @@ public partial class BuffDurationMultiplierFeature : FeatureWithPatch {
                             var desc = BPHelper.GetDescription(buff);
                             if (isExcluded) {
                                 if (UI.Button(m_StopExcludingLocalizedText.Cyan(), null, null, Width(m_ButtonWidth))) {
-                                    Settings.BuffDurationMultiplierExclusions.Remove(buff.AssetGuid);
+                                    _ = Settings.BuffDurationMultiplierExclusions.Remove(buff.AssetGuid);
                                     updateItems = !m_ExclusionBrowser.ShowAll;
                                 }
                                 name = name.Cyan();
                             } else {
                                 if (UI.Button(m_ExcludeLocalizedText, null, null, Width(m_ButtonWidth))) {
-                                    Settings.BuffDurationMultiplierExclusions.Add(buff.AssetGuid);
+                                    _ = Settings.BuffDurationMultiplierExclusions.Add(buff.AssetGuid);
                                     updateItems = !m_ExclusionBrowser.ShowAll;
                                 }
                                 name = name.Green();
@@ -70,7 +67,7 @@ public partial class BuffDurationMultiplierFeature : FeatureWithPatch {
                             Space(10);
                             UI.Label(name);
                             Space(5);
-                            GUILayout.TextArea(buff.AssetGuid, GUILayout.ExpandWidth(false));
+                            _ = GUILayout.TextArea(buff.AssetGuid, GUILayout.ExpandWidth(false));
                             if (desc != null) {
                                 UI.Label(desc);
                             }

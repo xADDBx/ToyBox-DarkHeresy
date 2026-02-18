@@ -31,8 +31,8 @@ public partial class CustomizePsychicPhenomenaFeature : FeatureWithPatch, INeedE
             return ref Settings.EnableCustomizePsychicPhenomena;
         }
     }
-    public override void Destroy() {
-        base.Destroy();
+    public override void Disable() {
+        base.Disable();
         RestorePhenomena();
     }
     private void BackupPhenomena() {
@@ -89,7 +89,7 @@ public partial class CustomizePsychicPhenomenaFeature : FeatureWithPatch, INeedE
     }
     private bool m_IsCustomizing = false;
     public override void OnGui() {
-        _ = UI.Toggle(Name, Description, ref IsEnabled, Initialize, Destroy);
+        _ = UI.Toggle(Name, Description, ref IsEnabled, Enable, Disable);
         if (Settings.EnableCustomizePsychicPhenomena) {
             using (HorizontalScope()) {
                 Space(40);

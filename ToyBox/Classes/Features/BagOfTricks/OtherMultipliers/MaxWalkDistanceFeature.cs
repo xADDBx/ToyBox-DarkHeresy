@@ -1,5 +1,4 @@
-﻿using Kingmaker.Blueprints;
-using Kingmaker.Blueprints.JsonSystem;
+﻿using Kingmaker.Blueprints.JsonSystem;
 using Kingmaker.Blueprints.Root;
 using UnityEngine;
 
@@ -19,14 +18,14 @@ public partial class MaxWalkDistanceFeature : FeatureWithPatch {
             return ref m_IsEnabled;
         }
     }
-    public override void Initialize() {
-        base.Initialize();
+    public override void Enable() {
+        base.Enable();
         if (IsEnabled && m_OriginalMaxWalkDistance.HasValue) {
             ConfigRoot.Instance.SystemMechanics.MaxWalkDistance = Settings.MaxWalkDistanceSetting!.Value;
         }
     }
-    public override void Destroy() {
-        base.Destroy();
+    public override void Disable() {
+        base.Disable();
         if (m_OriginalMaxWalkDistance.HasValue) {
             ConfigRoot.Instance.SystemMechanics.MaxWalkDistance = m_OriginalMaxWalkDistance.Value;
         }
@@ -44,10 +43,10 @@ public partial class MaxWalkDistanceFeature : FeatureWithPatch {
             if (UI.LogSlider(ref tmp, 0, 1000, m_OriginalMaxWalkDistance.Value, null, null, AutoWidth(), GUILayout.MinWidth(50), GUILayout.MaxWidth(150))) {
                 if (tmp == m_OriginalMaxWalkDistance.Value) {
                     Settings.MaxWalkDistanceSetting = null;
-                    Destroy();
+                    Disable();
                 } else {
                     Settings.MaxWalkDistanceSetting = tmp;
-                    Initialize();
+                    Enable();
                 }
             }
             Space(10);

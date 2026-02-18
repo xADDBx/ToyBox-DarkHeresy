@@ -31,6 +31,7 @@ public abstract partial class FeatureTab {
                 feature.Initialize();
             } catch (Exception ex) {
                 Error($"Failed to early initialize feature {feature.Name}\n{ex}", false);
+                feature.Unload();
                 _ = FailedFeatures.Add(feature);
             }
         }
@@ -71,16 +72,16 @@ public abstract partial class FeatureTab {
                     feature.Initialize();
                 } catch (Exception ex) {
                     Error($"Failed to initialize feature {feature.Name}\n{ex}", false);
-                    feature.Destroy();
+                    feature.Unload();
                     _ = FailedFeatures.Add(feature);
                 }
             }
         }
         Debug($"!!Threaded!!: {GetType().Name} lazy init took {a.ElapsedMilliseconds}ms");
     }
-    public virtual void DestroyAll() {
+    public virtual void DisposeAll() {
         foreach (var feature in Features) {
-            feature.Destroy();
+            feature.Unload();
         }
     }
     public virtual void OnGui() {

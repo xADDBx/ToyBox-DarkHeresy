@@ -34,10 +34,10 @@ public partial class PartyFeatureTab : FeatureTab {
         Main.OnUIScaleChanged += RefreshNameCache;
         base.InitializeAll();
     }
-    public override void DestroyAll() {
+    public override void DisposeAll() {
         Main.OnHideGUIAction -= Refresh;
         Main.OnUIScaleChanged -= RefreshNameCache;
-        base.DestroyAll();
+        base.DisposeAll();
     }
     public PartyFeatureTab() {
         AddFeature(new RenameUnitFeature());

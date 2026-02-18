@@ -46,13 +46,13 @@ public partial class SearchAndPickFeature : Feature {
                     if (m_ShowCollationCategoryPicker) {
                         using (VerticalScope()) {
                             var feature = GetInstance<SortCollationCategoriesByCountSetting>();
-                            if (UI.Toggle(feature.Name.Cyan(), null, ref feature.IsEnabled, feature.Initialize, feature.Destroy)) {
+                            if (UI.Toggle(feature.Name.Cyan(), null, ref feature.IsEnabled, feature.Enable, feature.Disable)) {
                                 SetCategoryComparer();
                             }
                             UI.Label((m_CurrentCollationCategoryLocalizedText + ": ").Green() + m_CurrentCollationCategory.Cyan());
                             m_CollationCategoryBrowser!.OnGUI(category => {
                                 if (category == m_CurrentCollationCategory) {
-                                    GUILayout.Toggle(true, category.Orange() + $" ({m_BlueprintFilter.GetCountForCategory(category)!.Value})", UI.LeftAlignedButtonStyle, Width(categoryWidth));
+                                    _ = GUILayout.Toggle(true, category.Orange() + $" ({m_BlueprintFilter.GetCountForCategory(category)!.Value})", UI.LeftAlignedButtonStyle, Width(categoryWidth));
                                 } else {
                                     if (GUILayout.Toggle(false, category.Yellow() + $" ({m_BlueprintFilter.GetCountForCategory(category)!.Value})", UI.LeftAlignedButtonStyle, Width(categoryWidth))) {
                                         m_CurrentCollationCategory = category;
@@ -63,15 +63,15 @@ public partial class SearchAndPickFeature : Feature {
                         }
                     }
                     using (VerticalScope()) {
-                        UI.DisclosureToggle(ref m_ShowCollationCategoryPicker, m_ShowCategoryPickerLocalizedText.Cyan());
-                        UI.DisclosureToggle(ref m_ShowCharacterFilterPicker, m_ShowCharacterFilterPickerLocalizedText.Cyan());
+                        _ = UI.DisclosureToggle(ref m_ShowCollationCategoryPicker, m_ShowCategoryPickerLocalizedText.Cyan());
+                        _ = UI.DisclosureToggle(ref m_ShowCharacterFilterPicker, m_ShowCharacterFilterPickerLocalizedText.Cyan());
                         if (m_ShowCharacterFilterPicker) {
                             using (HorizontalScope()) {
                                 Space(10);
-                                CharacterPicker.OnFilterPickerGUI();
+                                _ = CharacterPicker.OnFilterPickerGUI();
                             }
                         }
-                        CharacterPicker.OnCharacterPickerGUI();
+                        _ = CharacterPicker.OnCharacterPickerGUI();
                         m_SearchNPickBrowser!.OnGUI(bp => BlueprintUI.BlueprintRowGUI(m_SearchNPickBrowser, bp, CharacterPicker.CurrentUnit), BlueprintUI.BlueprintHeaderGUI);
                     }
                 } else {

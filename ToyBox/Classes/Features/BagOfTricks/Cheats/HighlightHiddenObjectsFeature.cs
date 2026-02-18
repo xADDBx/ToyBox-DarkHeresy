@@ -37,8 +37,8 @@ public partial class HighlightHiddenObjectsFeature : FeatureWithPatch {
     private const string m_DecalName = "ToyBox.DecalHiddenHighlighter";
     private static readonly Color m_HighlightColor0 = new(1.0f, 0.0f, 1.0f, 0.8f);
     private static readonly Color m_HighlightColor1 = new(0.0f, 0.0f, 1.0f, 1.0f);
-    public override void Initialize() {
-        base.Initialize();
+    public override void Enable() {
+        base.Enable();
         Main.ScheduleForMainThread(() => {
             if (Game.Instance?.State != null) {
                 foreach (var mapObjectEntityData in Game.Instance.EntityPools.MapObjects) {
@@ -47,8 +47,8 @@ public partial class HighlightHiddenObjectsFeature : FeatureWithPatch {
             }
         });
     }
-    public override void Destroy() {
-        base.Destroy();
+    public override void Disable() {
+        base.Disable();
         Main.ScheduleForMainThread(() => {
             if (Game.Instance?.State != null) {
                 foreach (var mapObjectEntityData in Game.Instance.EntityPools.MapObjects) {
@@ -64,12 +64,12 @@ public partial class HighlightHiddenObjectsFeature : FeatureWithPatch {
         });
     }
     public void Reinitialize() {
-        Destroy();
-        Initialize();
+        Disable();
+        Enable();
     }
     public override void OnGui() {
         using (VerticalScope()) {
-            _ = UI.Toggle(Name, Description, ref Settings.HighlightHiddenObjects, Initialize, Destroy);
+            _ = UI.Toggle(Name, Description, ref Settings.HighlightHiddenObjects, Enable, Disable);
             if (Settings.HighlightHiddenObjects) {
                 using (HorizontalScope()) {
                     Space(50);

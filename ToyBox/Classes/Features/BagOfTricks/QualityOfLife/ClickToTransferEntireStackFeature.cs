@@ -19,8 +19,8 @@ public partial class ClickToTransferEntireStackFeature : FeatureWithPatch, ITogg
         get;
         set;
     }
-    public override void Initialize() {
-        base.Initialize();
+    public override void Enable() {
+        base.Enable();
         Keybind = Hotkeys.MaybeGetHotkey(GetType());
     }
     protected override string HarmonyName {
