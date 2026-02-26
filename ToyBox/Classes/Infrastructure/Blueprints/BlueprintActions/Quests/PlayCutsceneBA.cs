@@ -2,17 +2,18 @@
 using Kingmaker.Code.Framework.CutsceneSystem;
 using Kingmaker.Designers.EventConditionActionSystem.ContextData;
 using Kingmaker.ElementsSystem.ContextData;
+using ToyBox.Classes.Infrastructure.Features;
 using ToyBox.Infrastructure.Utilities;
 
 namespace ToyBox.Infrastructure.Blueprints.BlueprintActions;
 
 public partial class PlayCutsceneBA : BlueprintActionFeature, IBlueprintAction<BlueprintCutscene> {
 
-    public bool CanExecute(BlueprintCutscene blueprint, params object[] parameter) {
+    public bool CanExecute(BlueprintCutscene blueprint, ActionParameter parameter) {
         return IsInGame();
     }
 
-    private bool Execute(BlueprintCutscene blueprint) {
+    public bool Execute(BlueprintCutscene blueprint, ActionParameter parameter) {
         LogExecution(blueprint);
         ToggleModWindow();
 
@@ -27,11 +28,11 @@ public partial class PlayCutsceneBA : BlueprintActionFeature, IBlueprintAction<B
 
         return true;
     }
-    public bool? OnGui(BlueprintCutscene blueprint, bool isFeatureSearch, params object[] parameter) {
+    public bool? OnGui(BlueprintCutscene blueprint, bool isFeatureSearch, ActionParameter parameter) {
         bool? result = null;
-        if (CanExecute(blueprint)) {
+        if (CanExecute(blueprint, parameter)) {
             _ = UI.Button(StyleActionString(m_PlayText, isFeatureSearch), () => {
-                result = Execute(blueprint);
+                result = Execute(blueprint, parameter);
             });
         } else if (isFeatureSearch) {
             UI.Label(SharedStrings.ThisCannotBeUsedFromTheMainMenu.Red().Bold());
@@ -45,7 +46,7 @@ public partial class PlayCutsceneBA : BlueprintActionFeature, IBlueprintAction<B
 
     public override void OnGui() {
         if (GetContext(out var bp)) {
-            _ = OnGui(bp!, true);
+            _ = OnGui(bp!, true, default);
         }
     }
     [LocalizedString("ToyBox_Infrastructure_Blueprints_BlueprintActions_PlayCutsceneBA_Name", "Play Cutscene")]

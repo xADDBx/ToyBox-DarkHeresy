@@ -1,11 +1,10 @@
-﻿using Kingmaker;
-using Kingmaker.Blueprints;
+﻿using Kingmaker.Blueprints;
 using Kingmaker.Code.View.Bridge.Enums;
 using Kingmaker.EntitySystem.Entities;
 using Kingmaker.PubSubSystem;
 using Kingmaker.PubSubSystem.Core;
-using Kingmaker.UI.Events;
 using Kingmaker.UnitLogic.Levelup.Components;
+using ToyBox.Classes.Infrastructure.Features;
 using ToyBox.Features.LevelUp;
 using ToyBox.Infrastructure.Utilities;
 using UnityEngine;
@@ -17,12 +16,12 @@ public partial class RespecUnitAction : FeatureWithAction, INeedContextFeature<B
     public override partial string Name { get; }
     [LocalizedString("ToyBox_Features_PartyTab_Actions_RespecUnitAction_Description", "Respecs the specified unit and closes the mod UI.")]
     public override partial string Description { get; }
-    public bool CanExecute(params object[] parameter) {
-        if (parameter.Length > 0 && parameter[0] is BaseUnitEntity unit) {
+    public override bool CanExecute(ActionParameter parameter) {
+        if (parameter.UnitParam is BaseUnitEntity unit) {
             if (unit.LifeState.IsDead || unit.IsPet) {
                 return false;
             }
-            CharacterLevelLimit component = unit.OriginalBlueprint.GetComponent<CharacterLevelLimit>();
+            var component = unit.OriginalBlueprint.GetComponent<CharacterLevelLimit>();
             var num = (component != null) ? component.LevelLimit : 0;
             if (GetInstance<RespecFromLevelXFeature>().IsEnabled) {
                 return unit.Progression.CharacterLevel > Settings.CurrentRespecLevelSetting;
@@ -33,10 +32,10 @@ public partial class RespecUnitAction : FeatureWithAction, INeedContextFeature<B
             return false;
         }
     }
-    public override void ExecuteAction(params object[] parameter) {
+    public override void ExecuteAction(ActionParameter parameter) {
         LogExecution(parameter);
         ToggleModWindow();
-        var unit = (BaseUnitEntity)parameter[0];
+        var unit = parameter.UnitParam!;
         unit.Progression.Respec();
         EventBus.RaiseEvent(delegate (IServiceWindowUIHandler h) {
             h.HandleOpenCharacterInfo(CharInfoPageType.LevelProgression, unit);
@@ -56,14 +55,15 @@ public partial class RespecUnitAction : FeatureWithAction, INeedContextFeature<B
 
     private static readonly TimedCache<float> m_WidthCache = new(() => CalculateLargestLabelWidth([m_RespecLocalizedText], GUI.skin.button));
     public void OnGui(BaseUnitEntity unit, bool isFeatureSearch = false, bool narrow = false) {
-        if (CanExecute(unit)) {
+        var parameter = new ActionParameter(unit);
+        if (CanExecute(parameter)) {
             if (narrow) {
                 if (UI.Button(m_RespecLocalizedText, null, null, Width(m_WidthCache))) {
-                    ExecuteAction(unit);
+                    ExecuteAction(parameter);
                 }
             } else {
                 if (UI.Button(m_RespecLocalizedText)) {
-                    ExecuteAction(unit);
+                    ExecuteAction(parameter);
                 }
             }
         } else if (isFeatureSearch) {

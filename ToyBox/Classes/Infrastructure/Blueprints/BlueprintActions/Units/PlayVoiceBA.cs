@@ -1,6 +1,6 @@
-﻿using Kingmaker.Blueprints;
-using Kingmaker.EntitySystem.Entities;
+﻿using Kingmaker.EntitySystem.Entities;
 using Kingmaker.Visual.Sound;
+using ToyBox.Classes.Infrastructure.Features;
 using ToyBox.Infrastructure.Blueprints.BlueprintActions;
 using ToyBox.Infrastructure.Utilities;
 
@@ -12,15 +12,12 @@ public partial class PlayVoiceBA : BlueprintActionFeature, IBlueprintAction<Blue
     [LocalizedString("ToyBox_Classes_Infrastructure_Blueprints_BlueprintActions_Units_PlayVoiceBA_Description", "Plays the PartyMemberUnconscious sound with the specified voice (if that sound doesn't exist for said voice nothing happens).")]
     public override partial string Description { get; }
 
-    public bool CanExecute(BlueprintUnitAsksList blueprint, params object[] parameter) {
-        if (parameter.Length > 0 && parameter[0] is BaseUnitEntity) {
-            return true;
-        }
-        return false;
+    public bool CanExecute(BlueprintUnitAsksList blueprint, ActionParameter parameter) {
+        return parameter.UnitParam != null;
     }
-    private bool Execute(BlueprintUnitAsksList blueprint, params object[] parameter) {
+    public bool Execute(BlueprintUnitAsksList blueprint, ActionParameter parameter) {
         LogExecution(blueprint, parameter);
-        var unit = (BaseUnitEntity)parameter[0];
+        var unit = parameter.UnitParam!;
         if (unit.Asks.List == blueprint) {
             return new AskWrapper(blueprint.PartyMemberUnconscious, unit.View.Asks).Schedule();
         } else {
@@ -31,7 +28,7 @@ public partial class PlayVoiceBA : BlueprintActionFeature, IBlueprintAction<Blue
             });
         }
     }
-    public bool? OnGui(BlueprintUnitAsksList blueprint, bool isFeatureSearch, params object[] parameter) {
+    public bool? OnGui(BlueprintUnitAsksList blueprint, bool isFeatureSearch, ActionParameter parameter) {
         bool? result = null;
         if (CanExecute(blueprint, parameter)) {
             _ = UI.Button(StyleActionString(PlayExampleLocalizedText, isFeatureSearch), () => {
@@ -52,7 +49,7 @@ public partial class PlayVoiceBA : BlueprintActionFeature, IBlueprintAction<Blue
 
     public override void OnGui() {
         if (GetContext(out BlueprintUnitAsksList? bp) && GetContext(out BaseUnitEntity? unit)) {
-            _ = OnGui(bp!, true, unit!);
+            _ = OnGui(bp!, true, new(unit));
         }
     }
 

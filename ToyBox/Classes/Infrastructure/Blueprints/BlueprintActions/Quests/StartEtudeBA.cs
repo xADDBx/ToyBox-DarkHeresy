@@ -1,23 +1,24 @@
 ﻿using Kingmaker;
 using Kingmaker.AreaLogic.Etudes;
+using ToyBox.Classes.Infrastructure.Features;
 using ToyBox.Infrastructure.Utilities;
 
 namespace ToyBox.Infrastructure.Blueprints.BlueprintActions;
 
 public partial class StartEtudeBA : BlueprintActionFeature, IBlueprintAction<BlueprintEtude> {
-    public bool CanExecute(BlueprintEtude blueprint, params object[] parameter) {
+    public bool CanExecute(BlueprintEtude blueprint, ActionParameter parameter) {
         return IsInGame() && Game.Instance.EtudesSystem.EtudeIsNotStarted(blueprint);
     }
-    private bool Execute(BlueprintEtude blueprint) {
+    public bool Execute(BlueprintEtude blueprint, ActionParameter parameter) {
         LogExecution(blueprint);
         Game.Instance.EtudesSystem.StartEtude(blueprint);
         return true;
     }
-    public bool? OnGui(BlueprintEtude blueprint, bool isFeatureSearch, params object[] parameter) {
+    public bool? OnGui(BlueprintEtude blueprint, bool isFeatureSearch, ActionParameter parameter) {
         bool? result = null;
-        if (CanExecute(blueprint)) {
+        if (CanExecute(blueprint, parameter)) {
             _ = UI.Button(StyleActionString(m_StartText, isFeatureSearch), () => {
-                result = Execute(blueprint);
+                result = Execute(blueprint, parameter);
             });
         } else if (isFeatureSearch) {
             if (IsInGame()) {
@@ -35,7 +36,7 @@ public partial class StartEtudeBA : BlueprintActionFeature, IBlueprintAction<Blu
 
     public override void OnGui() {
         if (GetContext(out var bp)) {
-            _ = OnGui(bp!, true);
+            _ = OnGui(bp!, true, default);
         }
     }
     [LocalizedString("ToyBox_Infrastructure_Blueprints_BlueprintActions_StartEtudeBA_Name", "Start Etude")]

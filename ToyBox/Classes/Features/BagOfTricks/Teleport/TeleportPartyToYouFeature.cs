@@ -1,6 +1,7 @@
 ﻿using Kingmaker;
 using Kingmaker.Cheats;
 using Kingmaker.GameModes;
+using ToyBox.Classes.Infrastructure.Features;
 
 namespace ToyBox.Features.BagOfTricks.Teleport;
 
@@ -9,9 +10,11 @@ public partial class TeleportPartyToYouFeature : FeatureWithBindableAction {
     public override partial string Name { get; }
     [LocalizedString("ToyBox_Features_BagOfTricks_Teleport_TeleportPartyToYouFeature_Description", "Teleports your party members and pets to the main character unit.")]
     public override partial string Description { get; }
-
-    public override void ExecuteAction(params object[] parameter) {
-        if (IsInGame() && (Game.Instance.CurrentModeType == GameModeType.Default || Game.Instance.CurrentModeType == GameModeType.Pause)) {
+    public override bool CanExecute(ActionParameter parameter) {
+        return IsInGame() && (Game.Instance.CurrentModeType == GameModeType.Default || Game.Instance.CurrentModeType == GameModeType.Pause);
+    }
+    public override void ExecuteAction(ActionParameter parameter) {
+        if (CanExecute(parameter)) {
             var position = Game.Instance.Player.MainCharacterEntity.Position;
             var units = Game.Instance.Player.m_PartyAndPets ?? [];
             LogExecution(position, units);

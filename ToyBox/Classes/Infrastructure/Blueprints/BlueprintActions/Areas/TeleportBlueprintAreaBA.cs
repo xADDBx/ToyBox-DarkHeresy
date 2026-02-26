@@ -1,13 +1,14 @@
 ﻿using Kingmaker;
 using Kingmaker.Blueprints.Area;
 using Kingmaker.EntitySystem.Persistence;
+using ToyBox.Classes.Infrastructure.Features;
 using ToyBox.Infrastructure.Utilities;
 
 namespace ToyBox.Infrastructure.Blueprints.BlueprintActions;
 
 public partial class TeleportBlueprintAreaBA : BlueprintActionFeature, IBlueprintAction<BlueprintArea> {
     private static readonly Dictionary<BlueprintArea, BlueprintAreaEnterPoint?> m_MappingCache = [];
-    public bool CanExecute(BlueprintArea blueprint, params object[] parameter) {
+    public bool CanExecute(BlueprintArea blueprint, ActionParameter parameter) {
         if (!m_MappingCache.TryGetValue(blueprint, out var mapping)) {
             var bps = BPLoader.GetBlueprintsOfType<BlueprintAreaEnterPoint>();
             if (bps != null) {
@@ -18,7 +19,7 @@ public partial class TeleportBlueprintAreaBA : BlueprintActionFeature, IBlueprin
         return IsInGame() && mapping != null;
     }
 
-    private bool Execute(BlueprintArea blueprint, params object[] parameter) {
+    public bool Execute(BlueprintArea blueprint, ActionParameter parameter) {
         if (m_MappingCache.TryGetValue(blueprint, out var mapping)) {
             LogExecution(blueprint, mapping, parameter);
             Game.Instance.LoadArea(mapping, AutoSaveMode.None, null);
@@ -27,7 +28,7 @@ public partial class TeleportBlueprintAreaBA : BlueprintActionFeature, IBlueprin
             return false;
         }
     }
-    public bool? OnGui(BlueprintArea blueprint, bool isFeatureSearch, params object[] parameter) {
+    public bool? OnGui(BlueprintArea blueprint, bool isFeatureSearch, ActionParameter parameter) {
         bool? result = null;
         if (CanExecute(blueprint, parameter)) {
             _ = UI.Button(StyleActionString(m_Teleport, isFeatureSearch), () => {
@@ -42,7 +43,7 @@ public partial class TeleportBlueprintAreaBA : BlueprintActionFeature, IBlueprin
 
     public override void OnGui() {
         if (GetContext(out var bp)) {
-            _ = OnGui(bp!, true);
+            _ = OnGui(bp!, true, default);
         }
     }
     [LocalizedString("ToyBox_Infrastructure_Blueprints_BlueprintActions_TeleportBlueprintAreaBA_TeleportText", "Teleport")]

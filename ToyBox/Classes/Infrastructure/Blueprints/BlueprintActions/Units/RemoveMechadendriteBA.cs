@@ -1,7 +1,7 @@
-﻿using Kingmaker;
-using Kingmaker.Blueprints.Items.Equipment;
+﻿using Kingmaker.Blueprints.Items.Equipment;
 using Kingmaker.EntitySystem.Entities;
 using Kingmaker.Utility.DotNetExtensions;
+using ToyBox.Classes.Infrastructure.Features;
 using ToyBox.Infrastructure.Utilities;
 
 namespace ToyBox.Infrastructure.Blueprints.BlueprintActions;
@@ -12,29 +12,29 @@ public partial class RemoveMechadendriteBA : BlueprintActionFeature, IBlueprintA
     [LocalizedString("ToyBox_Infrastructure_Blueprints_BlueprintActions_RemoveMechadendriteBA_Description", "Removes the specified mechadendrite from the specified unit.")]
     public override partial string Description { get; }
 
-    public bool CanExecute(BlueprintItemMechadendrite blueprint, params object[] parameter) {
-        if (parameter.Length > 0 && parameter[0] is BaseUnitEntity unit) {
+    public bool CanExecute(BlueprintItemMechadendrite blueprint, ActionParameter parameter) {
+        if (parameter.UnitParam is BaseUnitEntity unit) {
             return unit.Body.Mechadendrites.Any(slot => slot?.Item?.Blueprint == blueprint);
         } else {
             return false;
         }
     }
-    private bool Execute(BlueprintItemMechadendrite blueprint, params object[] parameter) {
+    public bool Execute(BlueprintItemMechadendrite blueprint, ActionParameter parameter) {
         LogExecution(blueprint, parameter);
-        var ch = (BaseUnitEntity)parameter[0];
+        var ch = parameter.UnitParam!;
         var slot = ch.Body.Mechadendrites.First(slot => slot?.Item?.Blueprint == blueprint);
         var item = slot.Item;
-        slot.RemoveItem(true, true);
-        ch.Body.Mechadendrites.Remove(slot);
-        ch.View.Mechadendrites.Remove(item);
+        _ = slot.RemoveItem(true, true);
+        _ = ch.Body.Mechadendrites.Remove(slot);
+        _ = ch.View.Mechadendrites.Remove(item);
         try {
-            GetMainInventory()!.Remove(item);
+            _ = GetMainInventory()!.Remove(item);
         } catch (Exception ex) {
             Log($"Exception while removing Mechadendrite Entity from inventory:\n{ex}");
         }
         return true;
     }
-    public bool? OnGui(BlueprintItemMechadendrite blueprint, bool isFeatureSearch, params object[] parameter) {
+    public bool? OnGui(BlueprintItemMechadendrite blueprint, bool isFeatureSearch, ActionParameter parameter) {
         bool? result = null;
         if (CanExecute(blueprint, parameter)) {
             _ = UI.Button(StyleActionString(m_RemoveLocalizedText, isFeatureSearch), () => {
@@ -47,7 +47,7 @@ public partial class RemoveMechadendriteBA : BlueprintActionFeature, IBlueprintA
     }
     public override void OnGui() {
         if (GetContext(out BlueprintItemMechadendrite? bp) && GetContext(out BaseUnitEntity? unit)) {
-            _ = OnGui(bp!, true, unit!);
+            _ = OnGui(bp!, true, new(unit));
         }
     }
     public bool GetContext(out BaseUnitEntity? context) {

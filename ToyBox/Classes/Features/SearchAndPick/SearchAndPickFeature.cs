@@ -20,7 +20,7 @@ public partial class SearchAndPickFeature : Feature {
     public override void OnGui() {
         using (HorizontalScope()) {
             m_BlueprintFilter = BlueprintFilters.Filters[Settings.CurrentSearchAndPickBlueprintFilter];
-            if (UI.SelectionGrid(ref m_BlueprintFilter, BlueprintFilters.Filters, 1, filter => filter.Name, Width(m_FilterWidth + 10 * Main.UIScale))) {
+            if (UI.SelectionGrid(ref m_BlueprintFilter, BlueprintFilters.Filters, 1, filter => filter.Name, Width(m_FilterWidth + (10 * Main.UIScale)))) {
                 m_CurrentCollationCategory = null;
                 Settings.CurrentSearchAndPickBlueprintFilter = BlueprintFilters.Filters.IndexOf(m_BlueprintFilter);
             }
@@ -40,7 +40,7 @@ public partial class SearchAndPickFeature : Feature {
                         }, s => s, categories, showDivBetweenItems: false, overridePageWidth: categoryWidth, orderInitialCollection: true);
                         SetCategoryComparer();
                         m_CollationCategoryBrowser.UpdateItems(categories);
-                        m_SearchNPickBrowser ??= new(BPHelper.GetSortKey, BPHelper.GetSearchKey, overridePageWidth: (int)(EffectiveWindowWidth() - (m_FilterWidth + 20 * Main.UIScale)), orderInitialCollection: true);
+                        m_SearchNPickBrowser ??= new(BPHelper.GetSortKey, BPHelper.GetSearchKey, overridePageWidth: (int)(EffectiveWindowWidth() - (m_FilterWidth + (20 * Main.UIScale))), orderInitialCollection: true);
                         m_SearchNPickBrowser.UpdateItems(m_BlueprintFilter.GetCollatedBlueprints(m_CurrentCollationCategory)!);
                     }
                     if (m_ShowCollationCategoryPicker) {

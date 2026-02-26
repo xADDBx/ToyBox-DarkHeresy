@@ -1,22 +1,29 @@
 ﻿using Kingmaker.Blueprints;
 using ToyBox.Classes.Infrastructure.Blueprints.BlueprintActions.Units;
+using ToyBox.Classes.Infrastructure.Features;
 using ToyBox.Infrastructure.Blueprints.BlueprintActions.Units;
 
 namespace ToyBox.Infrastructure.Blueprints.BlueprintActions;
 
 public interface IExecutableAction<in T> where T : SimpleBlueprint {
     // Null - Nothing happened; False - Action execution failed; True - Action execution succeeded
-    abstract bool? OnGui(T blueprint, bool isFeatureSearch, params object[] parameter);
+    abstract bool? OnGui(T blueprint, bool isFeatureSearch, ActionParameter parameter);
 }
 public interface IBlueprintAction<T> : IExecutableAction<T>, INeedContextFeature<T> where T : SimpleBlueprint {
-    abstract bool CanExecute(T blueprint, params object[] parameter);
+    abstract bool CanExecute(T blueprint, ActionParameter parameter);
+    abstract bool Execute(T blueprint, ActionParameter parameter);
 }
 public abstract class BlueprintActionFeature : FeatureWithAction {
     private static readonly List<object> m_AllActions = [];
     private static readonly Dictionary<Type, object> m_ActionsForType = [];
     private static readonly Dictionary<(Type, Type), object> m_ExactActionsForType = [];
-    public override void ExecuteAction(params object[] parameter) {
-        LogExecution(parameter);
+    // Adapter to allow FeatureWithAction inheritance.
+    // Might need adjustments in the future if BlueprintActions should be allowed for hotkeys
+    public override void ExecuteAction(ActionParameter parameter) {
+        throw new NotImplementedException("By Design");
+    }
+    public override bool CanExecute(ActionParameter parameter) {
+        throw new NotImplementedException("By Design");
     }
     protected BlueprintActionFeature() {
         m_AllActions.Add(this);

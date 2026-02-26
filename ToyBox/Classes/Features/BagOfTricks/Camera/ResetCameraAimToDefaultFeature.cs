@@ -1,4 +1,5 @@
 ﻿using Kingmaker.View;
+using ToyBox.Classes.Infrastructure.Features;
 
 namespace ToyBox.Features.BagOfTricks.Camera;
 
@@ -10,9 +11,12 @@ public partial class ResetCameraAimToDefaultFeature : FeatureWithBindableAction 
     public override void Enable() {
         base.Enable();
     }
-    public override void ExecuteAction(params object[] parameter) {
+    public override bool CanExecute(ActionParameter parameter) {
+        return true;
+    }
+    public override void ExecuteAction(ActionParameter parameter) {
         LogExecution(parameter);
         var rig = CameraRig.Instance;
-        rig?.m_TargetRotate.x = 0;
+        _ = rig?.m_TargetRotate.x = 0;
     }
 }

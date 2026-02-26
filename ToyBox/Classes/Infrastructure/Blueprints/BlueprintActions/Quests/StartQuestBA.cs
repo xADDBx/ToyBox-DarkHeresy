@@ -1,24 +1,25 @@
 ﻿using Kingmaker;
 using Kingmaker.Blueprints.Quests;
+using ToyBox.Classes.Infrastructure.Features;
 using ToyBox.Infrastructure.Utilities;
 
 namespace ToyBox.Infrastructure.Blueprints.BlueprintActions;
 
 public partial class StartQuestBA : BlueprintActionFeature, IBlueprintAction<BlueprintQuest> {
 
-    public bool CanExecute(BlueprintQuest blueprint, params object[] parameter) {
+    public bool CanExecute(BlueprintQuest blueprint, ActionParameter parameter) {
         return IsInGame() && Game.Instance.QuestBook.GetQuest(blueprint) == null;
     }
-    private bool Execute(BlueprintQuest blueprint) {
+    public bool Execute(BlueprintQuest blueprint, ActionParameter parameter) {
         LogExecution(blueprint);
         Game.Instance.QuestBook.GiveObjective(blueprint.Objectives.First());
         return true;
     }
-    public bool? OnGui(BlueprintQuest blueprint, bool isFeatureSearch, params object[] parameter) {
+    public bool? OnGui(BlueprintQuest blueprint, bool isFeatureSearch, ActionParameter parameter) {
         bool? result = null;
-        if (CanExecute(blueprint)) {
+        if (CanExecute(blueprint, parameter)) {
             _ = UI.Button(StyleActionString(m_StartText, isFeatureSearch), () => {
-                result = Execute(blueprint);
+                result = Execute(blueprint, parameter);
             });
         } else if (isFeatureSearch) {
             if (IsInGame()) {
@@ -36,7 +37,7 @@ public partial class StartQuestBA : BlueprintActionFeature, IBlueprintAction<Blu
 
     public override void OnGui() {
         if (GetContext(out var bp)) {
-            _ = OnGui(bp!, true);
+            _ = OnGui(bp!, true, default);
         }
     }
     [LocalizedString("ToyBox_Infrastructure_Blueprints_BlueprintActions_StartQuestBA_Name", "Start Quest")]

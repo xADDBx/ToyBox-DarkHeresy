@@ -1,10 +1,11 @@
 ﻿using Kingmaker.Code.UI.MVVM;
+using ToyBox.Classes.Infrastructure.Features;
 using ToyBox.Infrastructure.Keybinds;
 
 namespace ToyBox.Features.BagOfTricks.QualityOfLife;
 
 [HarmonyPatch, ToyBoxPatchCategory("ToyBox.Features.BagOfTricks.QualityOfLife.ClickToTransferEntireStackFeature")]
-public partial class ClickToTransferEntireStackFeature : FeatureWithPatch, IToggledWithBinding {
+public partial class ClickToTransferEntireStackFeature : FeatureWithPatch, IToggleWithPseudoBinding {
     public override ref bool IsEnabled {
         get {
             return ref Settings.EnableClickToTransferEntireStack;
@@ -28,12 +29,12 @@ public partial class ClickToTransferEntireStackFeature : FeatureWithPatch, ITogg
             return "ToyBox.Features.BagOfTricks.QualityOfLife.ClickToTransferEntireStackFeature";
         }
     }
-    public void ExecuteAction(params object[] parameter) {
-        throw new NotImplementedException();
+    public void ExecuteAction(ActionParameter parameter) {
+        throw new NotImplementedException("By Design");
     }
 
-    public void LogExecution(params object[] parameter) {
-        throw new NotImplementedException();
+    public void LogExecution(ActionParameter parameter) {
+        throw new NotImplementedException("By Design");
     }
     [HarmonyPatch(typeof(InventorySlotView), nameof(InventorySlotView.OnClick)), HarmonyPrefix]
     public static bool InventorySlotView_OnClick_Patch(InventorySlotView __instance) {

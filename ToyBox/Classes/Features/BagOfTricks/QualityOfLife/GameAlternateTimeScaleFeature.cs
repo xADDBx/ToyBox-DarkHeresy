@@ -1,4 +1,5 @@
 ﻿using Kingmaker;
+using ToyBox.Classes.Infrastructure.Features;
 using ToyBox.Infrastructure.Keybinds;
 using ToyBox.Infrastructure.Utilities;
 using UnityEngine;
@@ -46,8 +47,8 @@ public partial class GameAlternateTimeScaleFeature : ToggledFeature, IBindableFe
             }
         }
     }
-    public void ExecuteAction(params object[] parameter) {
-        LogExecution();
+    public void ExecuteAction(ActionParameter parameter) {
+        LogExecution(parameter);
         IsEnabled = !IsEnabled;
         if (IsEnabled) {
             Enable();
@@ -56,7 +57,7 @@ public partial class GameAlternateTimeScaleFeature : ToggledFeature, IBindableFe
         }
     }
 
-    public void LogExecution(params object[] parameter) {
+    public void LogExecution(ActionParameter parameter) {
         Helpers.LogExecution(this, parameter);
     }
 }

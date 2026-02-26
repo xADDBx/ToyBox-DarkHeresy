@@ -2,6 +2,7 @@
 using Kingmaker.Cheats;
 using Kingmaker.EntitySystem.Entities;
 using Kingmaker.GameModes;
+using ToyBox.Classes.Infrastructure.Features;
 
 namespace ToyBox.Features.BagOfTricks.Teleport;
 
@@ -10,9 +11,11 @@ public partial class TeleportMainToCursorFeature : FeatureWithBindableAction {
     public override partial string Name { get; }
     [LocalizedString("ToyBox_Features_BagOfTricks_Teleport_TeleportMainToCursorFeature_Description", "Teleports your main character unit to the position your mouse points at.")]
     public override partial string Description { get; }
-
-    public override void ExecuteAction(params object[] parameter) {
-        if (IsInGame() && (Game.Instance.CurrentModeType == GameModeType.Default || Game.Instance.CurrentModeType == GameModeType.Pause)) {
+    public override bool CanExecute(ActionParameter parameter) {
+        return IsInGame() && (Game.Instance.CurrentModeType == GameModeType.Default || Game.Instance.CurrentModeType == GameModeType.Pause);
+    }
+    public override void ExecuteAction(ActionParameter parameter) {
+        if (CanExecute(parameter)) {
             var position = GetCursorPositionInWorld();
             List<BaseUnitEntity> units = [Game.Instance.Player.MainCharacterEntity];
             LogExecution(position, units);
