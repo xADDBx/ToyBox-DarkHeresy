@@ -4,9 +4,9 @@ public enum EtudeState {
     NotStarted = 0,
     Started = 1,
     Active = 2,
-    CompleteBeforeActive = 3,
+    PreCompleted = 3,
     Completed = 4,
-    CompletionBlocked = 5
+    CompletionInProgress = 5
 }
 public static partial class EtudeState_Localizer {
     public static string GetLocalized(this EtudeState type) {
@@ -14,9 +14,9 @@ public static partial class EtudeState_Localizer {
             EtudeState.NotStarted => m_NotStartedLocalizedText,
             EtudeState.Started => m_StartedLocalizedText,
             EtudeState.Active => m_ActiveLocalizedText,
-            EtudeState.CompleteBeforeActive => m_CompleteBeforeActiveLocalizedText,
+            EtudeState.PreCompleted => m_PreCompletedLocalizedText,
             EtudeState.Completed => m_CompletedLocalizedText,
-            EtudeState.CompletionBlocked => m_CompletionBlockedLocalizedText,
+            EtudeState.CompletionInProgress => m_CompletionInProgressLocalizedText,
             _ => "!!Error Unknown EtudeState!!",
         };
     }
@@ -27,10 +27,10 @@ public static partial class EtudeState_Localizer {
     private static partial string m_StartedLocalizedText { get; }
     [LocalizedString("ToyBox_Infrastructure_Enums_EtudeState_Localizer_m_ActiveLocalizedText", "Active")]
     private static partial string m_ActiveLocalizedText { get; }
-    [LocalizedString("ToyBox_Infrastructure_Enums_EtudeState_Localizer_m_CompleteBeforeActiveLocalizedText", "Complete Before Active")]
-    private static partial string m_CompleteBeforeActiveLocalizedText { get; }
+    [LocalizedString("ToyBox_Infrastructure_Enums_EtudeState_Localizer_m_PreCompletedLocalizedText", "Pre Completed")]
+    private static partial string m_PreCompletedLocalizedText { get; }
     [LocalizedString("ToyBox_Infrastructure_Enums_EtudeState_Localizer_m_CompletedLocalizedText", "Completed")]
     private static partial string m_CompletedLocalizedText { get; }
-    [LocalizedString("ToyBox_Infrastructure_Enums_EtudeState_Localizer_m_CompletionBlockedLocalizedText", "Completion Blocked")]
-    private static partial string m_CompletionBlockedLocalizedText { get; }
+    [LocalizedString("ToyBox_Infrastructure_Enums_EtudeState_Localizer_m_CompletionInProgressLocalizedText", "Completion in Progress")]
+    private static partial string m_CompletionInProgressLocalizedText { get; }
 }

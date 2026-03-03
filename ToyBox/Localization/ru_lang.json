@@ -1355,6 +1355,10 @@
     "Original": "Toggles the characters gender between male and female.",
     "Translated": null
   },
+  "ToyBox_Features_PartyTab_Stats_ChangeGenderFeature_m_UnitGenderIs_Unknown_AndDoesNotCLocalizedText": {
+    "Original": "Unit Gender is \"Unknown\" and does not currently support switching.",
+    "Translated": null
+  },
   "ToyBox_Features_PartyTab_Stats_PortraitEditorFeature_Name": {
     "Original": "Change Unit Portrait",
     "Translated": null
@@ -2435,16 +2439,16 @@
     "Original": "Active",
     "Translated": null
   },
-  "ToyBox_Infrastructure_Enums_EtudeState_Localizer_m_CompleteBeforeActiveLocalizedText": {
-    "Original": "Complete Before Active",
+  "ToyBox_Infrastructure_Enums_EtudeState_Localizer_m_PreCompletedLocalizedText": {
+    "Original": "Pre Completed",
     "Translated": null
   },
   "ToyBox_Infrastructure_Enums_EtudeState_Localizer_m_CompletedLocalizedText": {
     "Original": "Completed",
     "Translated": null
   },
-  "ToyBox_Infrastructure_Enums_EtudeState_Localizer_m_CompletionBlockedLocalizedText": {
-    "Original": "Completion Blocked",
+  "ToyBox_Infrastructure_Enums_EtudeState_Localizer_m_CompletionInProgressLocalizedText": {
+    "Original": "Completion in Progress",
     "Translated": null
   },
   "ToyBox_Infrastructure_Enums_LogLevel_Localizer_ErrorText": {
