@@ -134,6 +134,7 @@ public static partial class Main {
         }
         m_VerticalLists = newList;
     }
+    private static bool m_ShowBlueprintLoadingProgress = false;
     private static void OnGUI(UnityModManager.ModEntry modEntry) {
         try {
             if (!SuccessfullyInitialized) {
@@ -145,7 +146,10 @@ public static partial class Main {
                 UIScale = UnityModManager.UI.Instance.mUIScale;
                 InvalidateBrowserCaches();
             }
-            if (BPLoader.IsLoading) {
+            if (ImguiCanChangeStateAtBeginning()) {
+                m_ShowBlueprintLoadingProgress = BPLoader.IsLoading;
+            }
+            if (m_ShowBlueprintLoadingProgress) {
                 UI.ProgressBar(BPLoader.Progress, "");
             }
             Space(10);
@@ -173,7 +177,7 @@ public static partial class Main {
                     UI.Label(m_CaughtException.ToString());
                     using (HorizontalScope()) {
                         GUILayout.FlexibleSpace();
-                        if (UI.Button(SharedStrings.ResetLabel.Orange().Bold().SizePercent(120))) {
+                        if (UI.Button(SharedStrings.ResetLabel.Orange().Bold().SizePercent(130))) {
                             m_CaughtException = null;
                         }
                         GUILayout.FlexibleSpace();
@@ -182,7 +186,7 @@ public static partial class Main {
             }
         } catch (Exception ex) {
             Error(ex);
-            m_CaughtException = ex;
+            m_CaughtException ??= ex;
         }
     }
     private static void OnSaveGUI(UnityModManager.ModEntry modEntry) {

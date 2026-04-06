@@ -194,7 +194,7 @@ public static partial class BlueprintFilters {
     [LocalizedString("ToyBox_Features_SearchAndPick_BlueprintFilters_m_CuesLocalizedText", "Cues")]
     private static partial string m_CuesLocalizedText { get; }
 }
-public partial class BlueprintFilter<T> : IBlueprintFilter<T> where T : SimpleBlueprint {
+public partial class BlueprintFilter<T> : IBlueprintFilter<T> where T : notnull, SimpleBlueprint {
     public string Name { get; }
     private bool m_StartedCollating = false;
     public bool IsCollating {
@@ -230,7 +230,7 @@ public partial class BlueprintFilter<T> : IBlueprintFilter<T> where T : SimpleBl
                 var parameter = Expression.Parameter(typeof(SimpleBlueprint), "bp");
                 var propertyAccess = Expression.Property(Expression.Convert(parameter, type), prop);
                 var lambda = Expression.Lambda<Func<SimpleBlueprint, bool>>(propertyAccess, parameter);
-                Func<SimpleBlueprint, bool> compiled = lambda.Compile();
+                var compiled = lambda.Compile();
                 accessors.Add((compiled, prop.Name));
             }
         }
@@ -306,7 +306,7 @@ public partial class BlueprintFilter<T> : IBlueprintFilter<T> where T : SimpleBl
                 Main.ScheduleForMainThread(() => {
                     IsCollating = true;
                     m_CollatedBlueprintsCache = [];
-                    Task.Run(() => {
+                    _ = Task.Run(() => {
                         foreach (var bp in bps) {
                             try {
                                 foreach (var key in GetCollationCategories(bp)) {
@@ -367,7 +367,7 @@ public partial class BlueprintFilter<T> : IBlueprintFilter<T> where T : SimpleBl
                 }
             }
         }
-        m_CollatedBlueprintsCache.TryGetValue(category, out var collated);
+        _ = m_CollatedBlueprintsCache.TryGetValue(category, out var collated);
         return collated;
     }
 
