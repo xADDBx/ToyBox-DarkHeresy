@@ -1,8 +1,8 @@
 ﻿using Kingmaker.Blueprints.Root;
 using Kingmaker.EntitySystem.Entities;
-using Kingmaker.EntitySystem.Stats;
 using Kingmaker.EntitySystem.Stats.Base;
 using Kingmaker.UnitLogic;
+using System.Runtime.CompilerServices;
 using ToyBox.Infrastructure.Utilities;
 using UnityEngine;
 
@@ -57,7 +57,7 @@ public partial class UnitModifyStatsFeature : FeatureWithPatch, INeedContextFeat
         }
         return name;
     }
-    private static readonly StatType[] m_Divider = [StatType.BallisticSkill, StatType.SkillAthletics, StatType.HitPoints];
+    private static readonly StatType[] m_Divider = [StatType.BallisticSkill, StatType.SkillAthletics, StatType.MaxHitPoints];
     public void OnGui(BaseUnitEntity unit) {
         base.OnGui();
         if (IsEnabled) {
@@ -72,71 +72,48 @@ public partial class UnitModifyStatsFeature : FeatureWithPatch, INeedContextFeat
                         if (m_Divider.Contains(stat)) {
                             Div.DrawDiv();
                         }
-                        var modifiableValue = unit.Stats.GetStatOptional(stat);
-                        var baseValue = 0;
-                        var modifiedValue = 0;
-                        if (modifiableValue != null) {
-                            baseValue = modifiableValue.BaseValue;
-                            modifiedValue = modifiableValue.ModifiedValue;
-                        } else {
-                            // Note: We *could* support this by just not skipping the iteration here.
-                            // And adding a nullable check to modifiableValue.m_Override != null
-                            continue;
-                        }
+                        var statResult = unit.Actor.GetStat(stat);
+                        var baseValue = statResult.BaseValue;
+                        var modifiedValue = statResult.ModifiedValue;
                         var change = 0;
                         using (HorizontalScope()) {
                             Space(10);
                             var name = GetText(stat);
-                            if (modifiableValue.m_Override != null) {
-                                name += $" ({m_OverridenByLocalizedText}: {GetText(modifiableValue.m_Override.m_Type)})";
+                            if (statResult.FullOverrideStat != null) {
+                                name += $" ({m_OverridenByLocalizedText}: {GetText(statResult.FullOverrideStat.Value)})";
                             }
                             UI.Label(name, Width(m_LabelWidth));
                             _ = UI.Button("<", () => {
-                                if (modifiableValue == null) {
-                                    modifiableValue = AddStat(stat, unit);
-                                    baseValue = modifiableValue.BaseValue;
-                                    modifiedValue = modifiableValue.ModifiedValue;
-                                }
                                 change -= 1;
                             });
-                            UI.Label($" {modifiedValue} ".Bold().Orange(), Width(50 * Main.UIScale));
+                            UI.Label($" {modifiedValue} ({baseValue}) ".Bold().Orange(), Width(120 * Main.UIScale));
                             _ = UI.Button(">", () => {
-                                if (modifiableValue == null) {
-                                    modifiableValue = AddStat(stat, unit);
-                                    baseValue = modifiableValue.BaseValue;
-                                    modifiedValue = modifiableValue.ModifiedValue;
-                                }
                                 change += 1;
                             });
                             Space(10);
                             var val = modifiedValue;
-                            UI.TextField(ref val, pair => {
-                                if (modifiableValue == null) {
-                                    modifiableValue = AddStat(stat, unit);
-                                    baseValue = modifiableValue.BaseValue;
-                                    modifiedValue = modifiableValue.ModifiedValue;
-                                }
-                                change += pair.newContent - modifiableValue.ModifiedValue;
+                            _ = UI.TextField(ref val, pair => {
+                                change += pair.newContent - statResult.ModifiedValue;
                             }, Width(75 * Main.UIScale));
                         }
                         if (change != 0) {
                             if (InSaveSettings != null) {
-                                InSaveSettings.AppliedUnitStatChanges.TryGetValue(unit.UniqueId, out var dict);
+                                _ = InSaveSettings.AppliedUnitStatChanges.TryGetValue(unit.UniqueId, out var dict);
                                 dict ??= [];
                                 if (dict.TryGetValue(stat, out var current)) {
                                     current += change;
                                     if (current == 0) {
-                                        dict.Remove(stat);
+                                        _ = dict.Remove(stat);
                                     } else {
                                         dict[stat] = current;
                                     }
                                 } else {
                                     dict[stat] = change;
                                 }
-                                modifiableValue.m_BaseValue = baseValue + change;
-                                modifiableValue.UpdateValue();
                                 InSaveSettings.AppliedUnitStatChanges[unit.UniqueId] = dict;
                                 InSaveSettings.Save();
+                                unit.Actor.InvalidateStatBaseValueCache();
+                                unit.Actor.NotifyStatChanged(stat);
                             }
                         }
                     }
@@ -146,7 +123,12 @@ public partial class UnitModifyStatsFeature : FeatureWithPatch, INeedContextFeat
     }
     [HarmonyPatch(typeof(BaseUnitEntity), nameof(BaseUnitEntity.GetStatBaseValue)), HarmonyPostfix]
     private static void UnitHelper_CreatePreview_Patch(BaseUnitEntity __instance, StatType type, ref StatBaseValue __result) {
-        if (InSaveSettings?.AppliedUnitStatChanges.TryGetValue(__instance.UniqueId, out var changes) ?? false) {
+        Dictionary<StatType, int>? changes = null;
+        _ = InSaveSettings?.AppliedUnitStatChanges.TryGetValue(__instance.UniqueId, out changes);
+        if (changes == null) {
+            _ = m_PreviewUnitStatChanges.TryGetValue(__instance, out changes);
+        }
+        if (changes != null) {
             if (changes.TryGetValue(type, out var change)) {
                 try {
                     __result = new(__result.Value + change, __result.Enabled, __result.Forced);
@@ -156,30 +138,17 @@ public partial class UnitModifyStatsFeature : FeatureWithPatch, INeedContextFeat
             }
         }
     }
+    private static readonly ConditionalWeakTable<BaseUnitEntity, Dictionary<StatType, int>> m_PreviewUnitStatChanges = new();
     [HarmonyPatch(typeof(UnitHelper), nameof(UnitHelper.CreatePreview)), HarmonyPostfix]
     private static void UnitHelper_CreatePreview_Patch(BaseUnitEntity _this, ref BaseUnitEntity __result) {
         if (InSaveSettings?.AppliedUnitStatChanges.TryGetValue(_this.UniqueId, out var changes) ?? false) {
-            foreach (var change in changes) {
-                try {
-                    var mV = __result.Stats.GetStatOptional(change.Key) ?? AddStat(change.Key, __result);
-                    mV.m_BaseValue += change.Value;
-                    mV.UpdateValue();
-                } catch (Exception ex) {
-                    Error(ex);
-                }
+            m_PreviewUnitStatChanges.Add(__result, changes);
+
+            __result.Actor.InvalidateStatBaseValueCache();
+            foreach (var stat in changes.Keys) {
+                __result.Actor.NotifyStatChanged(stat);
             }
         }
-    }
-    private static ModifiableValue AddStat(StatType stat, BaseUnitEntity unit) {
-        ModifiableValue? ret;
-        if (StatTypeHelper.IsSkill(stat)) {
-            ret = unit.Stats.Container.RegisterSkill(stat);
-        } else if (StatTypeHelper.IsAttribute(stat)) {
-            ret = unit.Stats.Container.RegisterAttribute(stat);
-        } else {
-            ret = unit.Stats.Container.Register(stat);
-        }
-        return ret;
     }
 
     [LocalizedString("ToyBox_Features_PartyTab_Stats_UnitModifyStatsFeature_m_TryToKeepThisFeatureActivatedAftLocalizedText", "Try to keep this feature activated after using it (Click for Explanation)")]
