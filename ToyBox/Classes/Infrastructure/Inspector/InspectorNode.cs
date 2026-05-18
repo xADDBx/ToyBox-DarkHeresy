@@ -6,7 +6,7 @@ using UnityEngine.Jobs;
 
 namespace ToyBox.Infrastructure.Inspector;
 
-public class InspectorNode : IComparable {
+public class InspectorNode {
     private static readonly HashSet<string> m_ContainerMembers = [GameObjectChildPrefix, GameObjectComponentPrefix, EnumerableItemPrefix];
     public const string GameObjectChildPrefix = "ci";
     public const string GameObjectComponentPrefix = "co";
@@ -205,13 +205,5 @@ public class InspectorNode : IComparable {
         IsEnumerable = node.IsEnumerable;
         m_ContainerPrefix = node.m_ContainerPrefix;
         IsCompilerGenerated = node.IsCompilerGenerated;
-    }
-
-    public int CompareTo(object obj) {
-        if (obj is not InspectorNode other) {
-            return 1;
-        }
-        // return (m_ContainerPrefix + NameText).CompareTo(other.m_ContainerPrefix + other.NameText);
-        return NameText.CompareTo(other.NameText);
     }
 }
