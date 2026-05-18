@@ -2,10 +2,8 @@
 using Kingmaker.Blueprints.JsonSystem;
 using Kingmaker.Blueprints.JsonSystem.BinaryFormat;
 using Kingmaker.Blueprints.JsonSystem.Converters;
-using Kingmaker.Localization;
 using Kingmaker.Modding;
 using Kingmaker.Utility.DotNetExtensions;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Collections.Concurrent;
 using System.Diagnostics;
@@ -27,7 +25,6 @@ public class BlueprintLoader {
     public BlueprintLoader() {
         if (Settings.EnableThreadedBlueprintLoader) {
             IsThreaded = true;
-            _ = SharedStringAssetPool.Instance;
 
             var toPatch = AccessTools.Method(typeof(StartGameLoader), nameof(StartGameLoader.LoadPackTOC));
             var patch = AccessTools.Method(typeof(BlueprintLoader), nameof(InitPatch));
@@ -52,10 +49,6 @@ public class BlueprintLoader {
 
             toPatch = AccessTools.Method(typeof(OwlcatModificationBlueprintPatcher), nameof(OwlcatModificationBlueprintPatcher.GetJObject));
             patch = AccessTools.Method(typeof(BlueprintLoader), nameof(OwlcatModificationBlueprintPatcher_GetJObject));
-            _ = Main.HarmonyInstance.Patch(toPatch, prefix: new(patch));
-
-            toPatch = AccessTools.Method(typeof(SharedStringConverter), nameof(SharedStringConverter.ReadJson));
-            patch = AccessTools.Method(typeof(BlueprintLoader), nameof(SharedStringConverter_ReadJson_Patch));
             _ = Main.HarmonyInstance.Patch(toPatch, prefix: new(patch));
         }
     }
@@ -422,19 +415,6 @@ public class BlueprintLoader {
         m_JsonBlueprintsCache[blueprint] = jobject;
         __result = jobject;
         _ = m_Builder.Clear();
-        return false;
-    }
-    private static bool SharedStringConverter_ReadJson_Patch(ref object? __result, JsonReader reader) {
-        if (reader.TokenType == JsonToken.Null) {
-            __result = null;
-            return false;
-        }
-        var text = (string)JObject.Load(reader)["stringkey"]!;
-        var sharedStringAsset = SharedStringAssetPool.Instance.Request();
-        sharedStringAsset.String = new LocalizedString {
-            Key = text
-        };
-        __result = sharedStringAsset;
         return false;
     }
 }

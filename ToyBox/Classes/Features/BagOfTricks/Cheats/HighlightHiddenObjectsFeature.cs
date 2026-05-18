@@ -1,5 +1,6 @@
 ﻿using Kingmaker;
 using Kingmaker.EntitySystem.Entities;
+using Kingmaker.EntitySystem.Interfaces;
 using Kingmaker.View;
 using Kingmaker.View.MapObjects;
 using Kingmaker.View.MapObjects.InteractionComponentBase;
@@ -147,7 +148,7 @@ public partial class HighlightHiddenObjectsFeature : FeatureWithPatch {
             }
         }
     }
-    private static void HighlightDestroy(MapObjectView view) {
+    private static void HighlightDestroy(IMapObjectView view) {
         var obj = view.transform.Find(m_ObjName)?.gameObject;
         if (obj != null) {
             UnityEngine.Object.Destroy(obj);

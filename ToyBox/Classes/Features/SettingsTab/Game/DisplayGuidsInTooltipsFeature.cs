@@ -41,8 +41,8 @@ public partial class DisplayGuidsInTooltipsFeature : FeatureWithPatch, IToggleWi
     public void LogExecution(ActionParameter parameter) {
         throw new NotImplementedException("By Design");
     }
-    private static TooltipBrickText GetTooltip(string text) {
-        return new TooltipBrickText(text.Grey().SizePercent(105), TooltipTextType.Simple | TooltipTextType.Italic);
+    private static BrickTextVM GetTooltip(string text) {
+        return new BrickTextVM(text.Grey().SizePercent(105), TooltipTextType.Simple | TooltipTextType.Italic);
     }
     private static void CopyToClipboard(string guid) {
         GUIUtility.systemCopyBuffer = guid;

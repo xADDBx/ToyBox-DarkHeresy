@@ -11,6 +11,8 @@ using Kingmaker.Blueprints.Root;
 using Kingmaker.Code.Framework.CutsceneSystem;
 using Kingmaker.DialogSystem.Blueprints;
 using Kingmaker.ElementsSystem;
+using Kingmaker.Enums;
+using Kingmaker.Items;
 using Kingmaker.UnitLogic.Abilities.Blueprints;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
 using Kingmaker.UnitLogic.Progression.Features;
@@ -91,11 +93,7 @@ public static partial class BlueprintFilters {
             return [..BlueprintFilter<BlueprintItemWeapon>.DefaultCollator(bp), bp.Family.ToString(), bp.Category.ToString(), GetCostString(bp)];
         }),
         new BlueprintFilter<BlueprintItemArmor>(m_ArmorsLocalizedText, bp => {
-            if (bp.ProficiencyGroup != ArmorProficiencyGroup.None) {
-                return [..BlueprintFilter<BlueprintItemArmor>.DefaultCollator(bp), ConfigRoot.Instance.LocalizedTexts.Stats.GetText(bp.ProficiencyGroup), GetCostString(bp)];
-            } else {
-                return [..BlueprintFilter<BlueprintItemArmor>.DefaultCollator(bp), GetCostString(bp)];
-            }
+            return [..BlueprintFilter<BlueprintItemArmor>.DefaultCollator(bp), GetCostString(bp)];
         }),
         new BlueprintFilter<BlueprintItemEquipmentUsable>(m_UsableLocalizedText, bp => {
             return [..BlueprintFilter<BlueprintItemEquipmentUsable>.DefaultCollator(bp), bp.SubtypeName, GetCostString(bp)];
