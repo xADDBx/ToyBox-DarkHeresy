@@ -89,6 +89,7 @@ public static partial class BlueprintFilters {
         new BlueprintFilter<BlueprintItemEquipment>(m_EquipmentLocalizedText, bp => {
             return [..BlueprintFilter<BlueprintItemEquipment>.DefaultCollator(bp), bp.ItemType.ToString(), GetCostString(bp)];
         }),
+#warning TODO: Maybe look into Tags, e.g. WeaponTagData
         new BlueprintFilter<BlueprintItemWeapon>(m_WeaponsLocalizedText, bp => {
             return [..BlueprintFilter<BlueprintItemWeapon>.DefaultCollator(bp), bp.Family.ToString(), bp.Category.ToString(), GetCostString(bp)];
         }),
