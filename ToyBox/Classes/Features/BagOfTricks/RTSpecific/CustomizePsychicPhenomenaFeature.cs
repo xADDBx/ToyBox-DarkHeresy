@@ -14,13 +14,13 @@ public partial class CustomizePsychicPhenomenaFeature : FeatureWithPatch, INeedE
     private IEnumerable<BlueprintPsykerRoot.PhenomenaData>? m_BackupPsychicPhenomena;
     private IEnumerable<BlueprintPsykerRoot.PhenomenaData>? m_BackupPerilsOfTheWarp;
     private static string GetPsychicKey(BlueprintPsykerRoot.PhenomenaData p) {
-        return p.Ability.guid ?? p.Bark?.Entries?[0]?.Text.GetName() ?? p.OptionalMinorFX?.AssetId ?? "<Null>";
+        return p.Ability.guid ?? p.Bark?.Entries?[0]?.Text.m_Key ?? p.OptionalMinorFX?.AssetId ?? "<Null>";
     }
     private static string GetPsychicDisplayText(BlueprintPsykerRoot.PhenomenaData p) {
         if (p.Ability.GetBlueprint() is SimpleBlueprint bp) {
             return BPHelper.GetTitle(bp);
         } else {
-            return p.Bark?.Entries?[0]?.Text.GetName() ?? p.OptionalMinorFX?.AssetId ?? "<Null>";
+            return p.Bark?.Entries?[0]?.Text.Text ?? p.OptionalMinorFX?.AssetId ?? "<Null>";
         }
     }
     private readonly Browser<BlueprintPsykerRoot.PhenomenaData> m_PsychicPhenomenaBrowser = new(GetPsychicKey, GetPsychicKey, overridePageWidth: (int)(0.8f * EffectiveWindowWidth()));
