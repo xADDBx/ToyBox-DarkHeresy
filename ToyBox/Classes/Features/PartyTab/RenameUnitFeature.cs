@@ -26,7 +26,7 @@ public partial class RenameUnitFeature : Feature, INeedContextFeature<BaseUnitEn
 
     public void OnGui(BaseUnitEntity unit) {
         UI.EditableLabel(unit.CharacterName, unit.UniqueId, newName => {
-            unit.Description.SetName(newName);
+            unit.Description.SetCustomName(newName);
             EventBus.RaiseEvent<IUnitNameHandler>(unit, handler => handler.OnUnitNameChanged());
             Main.ScheduleForMainThread(FeatureTab.GetInstance<PartyFeatureTab>().NameSectionWidth.ForceRefresh);
         });
