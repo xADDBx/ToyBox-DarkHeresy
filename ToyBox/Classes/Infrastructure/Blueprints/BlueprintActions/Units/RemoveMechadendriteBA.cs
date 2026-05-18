@@ -1,6 +1,7 @@
 ﻿using Kingmaker.Blueprints.Items.Equipment;
 using Kingmaker.EntitySystem.Entities;
 using Kingmaker.Utility.DotNetExtensions;
+using Kingmaker.View;
 using ToyBox.Classes.Infrastructure.Features;
 using ToyBox.Infrastructure.Utilities;
 
@@ -13,7 +14,7 @@ public partial class RemoveMechadendriteBA : BlueprintActionFeature, IBlueprintA
     public override partial string Description { get; }
 
     public bool CanExecute(BlueprintItemMechadendrite blueprint, ActionParameter parameter) {
-        if (parameter.UnitParam is BaseUnitEntity unit) {
+        if (parameter.UnitParam is BaseUnitEntity unit && unit.View is UnitEntityView) {
             return unit.Body.Mechadendrites.Any(slot => slot?.Item?.Blueprint == blueprint);
         } else {
             return false;
@@ -26,7 +27,7 @@ public partial class RemoveMechadendriteBA : BlueprintActionFeature, IBlueprintA
         var item = slot.Item;
         _ = slot.RemoveItem(true, true);
         _ = ch.Body.Mechadendrites.Remove(slot);
-        _ = ch.View.Mechadendrites.Remove(item);
+        _ = ((UnitEntityView)ch.View).Mechadendrites.Remove(item);
         try {
             _ = GetMainInventory()!.Remove(item);
         } catch (Exception ex) {

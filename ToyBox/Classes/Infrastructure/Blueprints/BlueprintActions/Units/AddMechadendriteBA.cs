@@ -1,5 +1,6 @@
 ﻿using Kingmaker.Blueprints.Items.Equipment;
 using Kingmaker.EntitySystem.Entities;
+using Kingmaker.View;
 using ToyBox.Classes.Infrastructure.Features;
 using ToyBox.Infrastructure.Utilities;
 
@@ -12,7 +13,7 @@ public partial class AddMechadendriteBA : BlueprintActionFeature, IBlueprintActi
     public override partial string Description { get; }
 
     public bool CanExecute(BlueprintItemMechadendrite blueprint, ActionParameter parameter) {
-        if (parameter.UnitParam is BaseUnitEntity unit) {
+        if (parameter.UnitParam is BaseUnitEntity unit && unit.View is UnitEntityView) {
             return !unit.Body.Mechadendrites.Any(slot => slot?.Item?.Blueprint == blueprint);
         } else {
             return false;
@@ -24,7 +25,7 @@ public partial class AddMechadendriteBA : BlueprintActionFeature, IBlueprintActi
         var slot = new Kingmaker.Items.Slots.EquipmentSlot<BlueprintItemMechadendrite>(ch);
         ch.Body.Mechadendrites.Add(slot);
         ch.Body.TryInsertItem(blueprint, slot);
-        ch.View.Mechadendrites.Add(slot.Item);
+        ((UnitEntityView)ch.View).Mechadendrites.Add(slot.Item);
         return true;
     }
     public bool? OnGui(BlueprintItemMechadendrite blueprint, bool isFeatureSearch, ActionParameter parameter) {
