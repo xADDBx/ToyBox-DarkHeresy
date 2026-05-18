@@ -1,5 +1,5 @@
 ﻿using Kingmaker;
-using Kingmaker.UnitLogic.Parts;
+using Kingmaker.UnitLogic;
 using ToyBox.Classes.Infrastructure.Features;
 
 namespace ToyBox.Features.BagOfTricks.Combat;
@@ -17,7 +17,7 @@ public partial class RestSelectedFeature : FeatureWithBindableAction {
             var units = Game.Instance.Controllers.SelectionCharacter?.SelectedUnits ?? [];
             LogExecution(units);
             foreach (var unit in units) {
-                PartHealth.RestUnit(unit);
+                unit.Restore();
             }
         }
     }
