@@ -156,7 +156,7 @@ public static partial class InspectorUI {
         if (m_DoShowSearch) {
             using (HorizontalScope()) {
                 UI.Label(m_SearchByNameText + ":", Width(200));
-                _ = UI.ActionTextField(ref m_NameSearch, "InspectorNameSearch", null, (string prompt) => {
+                _ = UI.ActionTextField(ref m_NameSearch, "InspectorNameSearch", null, prompt => {
                     searcher.StartSearch(InspectorSearcher.SearchMode.NameSearch, root, m_SearchDepth, prompt);
                 }, Width(200), GUILayout.MaxWidth(EffectiveWindowWidth() * 0.3f));
                 Space(10);
@@ -166,7 +166,7 @@ public static partial class InspectorUI {
             }
             using (HorizontalScope()) {
                 UI.Label(m_SearchByTypeText + ":", Width(200));
-                _ = UI.ActionTextField(ref m_TypeSearch, "InspectorTypeSearch", null, (string prompt) => {
+                _ = UI.ActionTextField(ref m_TypeSearch, "InspectorTypeSearch", null, prompt => {
                     searcher.StartSearch(InspectorSearcher.SearchMode.TypeSearch, root, m_SearchDepth, prompt);
                 }, Width(200), GUILayout.MaxWidth(EffectiveWindowWidth() * 0.3f));
                 Space(10);
@@ -176,7 +176,7 @@ public static partial class InspectorUI {
             }
             using (HorizontalScope()) {
                 UI.Label(m_SearchByValueText + ":", Width(200));
-                _ = UI.ActionTextField(ref m_ValueSearch, "InspectorValueSearch", null, (string prompt) => {
+                _ = UI.ActionTextField(ref m_ValueSearch, "InspectorValueSearch", null, prompt => {
                     searcher.StartSearch(InspectorSearcher.SearchMode.ValueSearch, root, m_SearchDepth, prompt);
                 }, Width(200), GUILayout.MaxWidth(EffectiveWindowWidth() * 0.3f));
                 Space(10);

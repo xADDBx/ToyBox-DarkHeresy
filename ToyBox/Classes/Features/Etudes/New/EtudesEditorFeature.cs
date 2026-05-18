@@ -89,7 +89,7 @@ public partial class EtudesEditorFeature : Feature {
             UI.Label((m_RootText + ": ").Cyan() + Constants.RootEtudeId.Orange(), Width(310 * Main.UIScale));
 
             UI.Label(m_SearchTextLabel + ":", Width(200));
-            _ = UI.ActionTextField(ref m_SearchText, "EtudesTreeSearch", null, (string prompt) => {
+            _ = UI.ActionTextField(ref m_SearchText, "EtudesTreeSearch", null, prompt => {
                 snapshot.Search(prompt);
             }, Width(200), Width(300 * Main.UIScale));
             Space(10);
