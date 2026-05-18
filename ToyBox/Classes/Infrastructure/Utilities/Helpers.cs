@@ -1,5 +1,6 @@
 ﻿using Kingmaker;
 using Kingmaker.Code.Framework.GameLog;
+using Kingmaker.GameModes;
 using Kingmaker.UI.Models.Log.GameLogCntxt;
 using Kingmaker.UnitLogic.Parts;
 using System.Runtime.CompilerServices;
@@ -31,7 +32,8 @@ public static class Helpers {
         return Regex.Replace(s, "<.*?>", string.Empty);
     }
     public static bool IsInGame() {
-        return Game.Instance.Player?.Party?.Count > 0;
+        // TODO: Handle Chargen
+        return Game.Instance.CurrentModeType != GameModeType.None;
     }
     public static float CalculateLargestLabelWidth(IEnumerable<string> items, GUIStyle? style = null) {
         var max = 0f;

@@ -4,28 +4,125 @@ using Kingmaker.ElementsSystem;
 namespace ToyBox.Features.Etudes;
 public class EtudeRecord {
     public BlueprintEtude Blueprint { get; }
+    public string Name {
+        get {
+            return BPHelper.GetTitle(Blueprint);
+        }
+    }
 
-    public string Name => BPHelper.GetTitle(Blueprint);
+    public EtudeRecord? Parent;
+    public readonly List<EtudeRecord> Children = [];
 
-    public string ParentId = "";
-    public readonly List<string> Children = [];
+    public readonly List<EtudeRecord> LinkedEtudes = [];
+    public readonly List<EtudeRecord> ChainedEtudes = [];
+    public EtudeRecord? LinkedTo;
+    public EtudeRecord? ChainedTo;
 
-    public readonly List<string> LinkedIds = [];
-    public readonly List<string> ChainedIds = [];
-    public string LinkedTo = "";
-    public string ChainedTo = "";
+    public readonly List<BlueprintEtudeConflictingGroup> ConflictingGroups = [];
 
-    public readonly List<string> ConflictingGroups = [];
+    public string? LinkedAreaId {
+        get {
+            return Blueprint.LinkedAreaPart?.AssetGuid ?? "";
+        }
+    }
 
-    public string LinkedAreaId = "";
-    public string Comment = "";
-    public int Priority;
+    public HashSet<string> DescendantAreaIds = [];
+    public HashSet<string> AncestorAreaIds = [];
+    public bool IsExpanded;
+    public bool IsElementsExpanded;
+    public bool IsConflictsExpanded;
+    public bool IsRoot;
+    public bool IsFlagLike;
+    public bool IsDescendantFlagLike;
+    public bool IsMatched;
+    public bool IsDescendantMatched;
+    public void ExpandChildren(bool expanded) {
+        var stack = new Stack<EtudeRecord>();
+        var visited = new HashSet<EtudeRecord>();
 
-    public bool CompletesParent;
-    public bool AllowActionStart;
+        while (stack.Count > 0) {
+            var current = stack.Pop();
+            current.IsExpanded = expanded;
+
+            if (!visited.Add(current)) {
+                continue;
+            }
+
+            foreach (var child in Children) {
+                stack.Push(child);
+            }
+        }
+    }
+
+    public string? ValidationProblem {
+        get {
+            if (ChainedTo == null && LinkedTo == null) {
+                // return "Chained/Linked to Nothing";
+                return null;
+            }
+
+            foreach (var chained in ChainedEtudes) {
+                if (chained.Parent != Parent) {
+                    return $"Chained etude {chained.Name} ({chained.Blueprint.AssetGuid}) has different parent: {chained.Parent?.Blueprint.AssetGuid ?? "None"} than {Name} parent: {Parent?.Blueprint.AssetGuid ?? "None"}";
+                }
+            }
+
+            foreach (var linked in LinkedEtudes) {
+                if (linked.Parent != Parent && linked.Parent != this) {
+                    return $"Linked to child {linked.Name} ({linked.Blueprint.AssetGuid}) with different parent: {linked.Parent?.Blueprint.AssetGuid ?? "None"} than {Name} parent {Parent?.Blueprint.AssetGuid ?? "None"}";
+                }
+            }
+
+            return null;
+        }
+    }
+
+    public List<EtudeRecord> GetConflictingEtudes(EtudeSnapshot snapshot) {
+        var result = new HashSet<EtudeRecord>();
+        foreach (var groupId in ConflictingGroups) {
+            if (snapshot.ConflictingGroups.TryGetValue(groupId, out var g)) {
+                foreach (var etude in g) {
+                    _ = result.Add(etude);
+                }
+            }
+        }
+
+        return [.. result.OrderBy(rec => {
+            var activeBoost = rec.State == EtudeState.Active ? 100500 : 0;
+            return -(rec.Priority + activeBoost);
+        })];
+    }
+    public bool IsIndirectlyLinkedToArea(string id) {
+        return LinkedAreaId == id || DescendantAreaIds.Contains(id) || AncestorAreaIds.Contains(id);
+    }
+    public bool IsIndirectlyFlagLike() {
+        return IsFlagLike || IsDescendantFlagLike;
+    }
+    public string Comment {
+        get {
+            return Blueprint.Comment;
+        }
+    }
+
+    public int Priority {
+        get {
+            return Blueprint.Priority;
+        }
+    }
+
+    public bool CompletesParent {
+        get {
+            return Blueprint.m_CompletesParent;
+        }
+    }
+
     public EtudeState State;
 
-    public readonly List<Element> Elements = [];
+    public List<Element> Elements {
+        get {
+            return Blueprint.m_AllElements;
+        }
+    }
 
     public EtudeRecord(BlueprintEtude blueprint) {
         Blueprint = blueprint;

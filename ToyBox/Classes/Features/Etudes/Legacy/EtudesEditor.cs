@@ -67,7 +67,7 @@ public static class EtudesEditor {
             return;
         }
         if (m_AreaBrowser == null) {
-            BPLoader.GetBlueprintsOfType<BlueprintArea>(bps => {
+            _ = BPLoader.GetBlueprintsOfType<BlueprintArea>(bps => {
                 Main.ScheduleForMainThread(() => {
                     foreach (var bp in bps) {
                         m_NameToAreaDict[BPHelper.GetTitle(bp)] = bp;
@@ -225,7 +225,7 @@ public static class EtudesEditor {
                 using (HorizontalScope(GUILayout.ExpandWidth(true))) {
                     using (HorizontalScope(Width(310))) {
                         foreach (var action in BlueprintActionFeature.GetActionsForBlueprintType<BlueprintEtude>()) {
-                            if (action.OnGui(etude.Blueprint, false) ?? false) {
+                            if (action.OnGui(etude.Blueprint, false, default) ?? false) {
                                 UpdateEtudeStates();
                             }
                         }

@@ -6,17 +6,18 @@ namespace ToyBox.Features.Etudes;
 public class EtudesTreeModel2 {
     private bool m_IsBuildingSnapshot = false;
     public Exception? ErrorDuringBuild;
-    private EtudesSnapshot? m_Snapshot;
+    private EtudeSnapshot? m_Snapshot;
 
     public void Invalidate() {
         lock (this) {
             m_IsBuildingSnapshot = false;
+            m_Snapshot?.Dispose();
             m_Snapshot = null;
             ErrorDuringBuild = null;
         }
     }
 
-    public bool TryEnsureSnapshot(out EtudesSnapshot? snapshot) {
+    public bool TryEnsureSnapshot(out EtudeSnapshot? snapshot, string? initialSearchText = null) {
         snapshot = null;
         if (m_Snapshot != null) {
             snapshot = m_Snapshot;
@@ -24,102 +25,69 @@ public class EtudesTreeModel2 {
         }
 
         if (ErrorDuringBuild == null) {
-            var bps = BPLoader.GetBlueprintsOfType<BlueprintEtude>();
-            if (bps != null) {
+            if (BPLoader.GetBlueprintsOfType<BlueprintEtude>() is { } bps) {
                 lock (this) {
                     if (!m_IsBuildingSnapshot) {
                         m_IsBuildingSnapshot = true;
-                        _ = Task.Run(() => BuildSnapshotThreaded(bps));
+                        _ = Task.Run(() => BuildSnapshotThreaded(bps, initialSearchText));
                     }
                 }
             }
         }
         return false;
     }
-    private void BuildSnapshotThreaded(IEnumerable<BlueprintEtude> bps) {
+    private void BuildSnapshotThreaded(IEnumerable<BlueprintEtude> bps, string? initialSearchText) {
         try {
-            var records = new Dictionary<string, EtudeRecord>();
-            var childrenByParent = new Dictionary<string, List<string>>();
-            var conflictingGroups = new Dictionary<string, ConflictingGroupInfo>();
+            var conflictingGroups = new Dictionary<BlueprintEtudeConflictingGroup, HashSet<EtudeRecord>>();
+            var records = new Dictionary<string, EtudeRecord>(((System.Collections.ICollection)bps).Count, StringComparer.Ordinal);
 
             foreach (var bp in bps) {
-                var id = bp.AssetGuid;
-                var rec = new EtudeRecord(bp);
-                records[id] = rec;
-
-                var parentId = bp.Parent?.Get()?.AssetGuid ?? string.Empty;
-                rec.ParentId = parentId;
-
-                if (!string.IsNullOrEmpty(parentId)) {
-                    if (!childrenByParent.TryGetValue(parentId, out var list)) {
-                        list = [];
-                        childrenByParent[parentId] = list;
-                    }
-                    list.Add(id);
-                }
-
-                rec.CompletesParent = bp.CompletesParent;
-                rec.Comment = bp.Comment ?? "";
-                rec.Priority = bp.Priority;
-
-                if (bp.LinkedAreaPart != null) {
-                    rec.LinkedAreaId = bp.LinkedAreaPart.AssetGuid;
+                records.Add(bp.AssetGuid, new EtudeRecord(bp));
+            }
+            foreach (var pair in records) {
+                var rec = pair.Value;
+                var parentId = rec.Blueprint.Parent?.Get()?.AssetGuid ?? string.Empty;
+                if (records.TryGetValue(parentId, out var parent)) {
+                    rec.Parent = parent;
+                    parent.Children.Add(rec);
                 }
 
                 // Chained / Linked edges
-                foreach (var chained in bp.StartsOnComplete) {
-                    var c = chained.Get();
-                    if (c != null) {
-                        rec.ChainedIds.Add(c.AssetGuid);
+                foreach (var chained in rec.Blueprint.StartsOnComplete) {
+                    if (records.TryGetValue(chained.guid, out var c)) {
+                        rec.ChainedEtudes.Add(c);
                     }
                 }
 
-                foreach (var linked in bp.StartsWith) {
-                    var l = linked.Get();
-                    if (l != null) {
-                        rec.LinkedIds.Add(l.AssetGuid);
+                foreach (var linked in rec.Blueprint.StartsWith) {
+                    if (records.TryGetValue(linked.guid, out var l)) {
+                        rec.LinkedEtudes.Add(l);
                     }
-                }
-
-                // Elements list (cheap reference; no heavy processing)
-                if (bp.m_AllElements != null) {
-                    rec.Elements.AddRange(bp.m_AllElements);
                 }
 
                 // Conflicting groups
-                foreach (var g in bp.ConflictingGroups) {
-                    var gBp = g.GetBlueprint();
-                    if (gBp == null) {
-                        continue;
+                foreach (var g in rec.Blueprint.ConflictingGroups) {
+                    if (g.Get() is { } gBp) {
+                        rec.ConflictingGroups.Add(gBp);
+                        if (!conflictingGroups.TryGetValue(gBp, out var set)) {
+                            conflictingGroups[gBp] = [];
+                        }
+                        _ = set.Add(rec);
                     }
-                    rec.ConflictingGroups.Add(gBp.AssetGuid);
-                    if (!conflictingGroups.TryGetValue(gBp.AssetGuid, out var info)) {
-                        info = new ConflictingGroupInfo(gBp.AssetGuid, gBp.name);
-                        conflictingGroups[gBp.AssetGuid] = info;
-                    }
-                    _ = info.Etudes.Add(id);
                 }
             }
-
             // wire children + reverse edges (linkedTo/chainedTo)
             foreach (var (id, rec) in records) {
-                if (childrenByParent.TryGetValue(id, out var children)) {
-                    rec.Children.AddRange(children);
+                foreach (var child in rec.LinkedEtudes) {
+                    child.LinkedTo = rec;
                 }
-                foreach (var child in rec.LinkedIds) {
-                    if (records.TryGetValue(child, out var childRec)) {
-                        childRec.LinkedTo = id;
-                    }
-                }
-                foreach (var child in rec.ChainedIds) {
-                    if (records.TryGetValue(child, out var childRec)) {
-                        childRec.ChainedTo = id;
-                    }
+                foreach (var child in rec.ChainedEtudes) {
+                    child.ChainedTo = rec;
                 }
             }
 
-            var snapshot = new EtudesSnapshot(records, conflictingGroups);
-            snapshot.BuildDerivedSets();
+            var snapshot = new EtudeSnapshot(records, conflictingGroups);
+            snapshot.BuildDerivedSets(initialSearchText);
 
             Main.ScheduleForMainThread(() => {
                 lock (this) {

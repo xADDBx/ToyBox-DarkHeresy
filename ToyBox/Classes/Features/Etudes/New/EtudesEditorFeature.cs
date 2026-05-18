@@ -5,6 +5,7 @@ using Kingmaker.Designers.EventConditionActionSystem.Conditions;
 using Kingmaker.ElementsSystem;
 using ToyBox.Infrastructure.Blueprints.BlueprintActions;
 using ToyBox.Infrastructure.Inspector;
+using ToyBox.Infrastructure.Utilities;
 using UnityEngine;
 
 namespace ToyBox.Features.Etudes;
@@ -15,21 +16,19 @@ public partial class EtudesEditorFeature : Feature {
 
     [LocalizedString("ToyBox_Features_Etudes_EtudesFeature_Description", "Browse the game's Etudes in a tree view, with state and relationship details.")]
     public override partial string Description { get; }
-
     private readonly EtudesTreeModel2 m_Model = new();
 
     private Browser<string>? m_AreaBrowser;
-    private Dictionary<string, BlueprintArea?> m_AreaByName = [];
+    private readonly Dictionary<string, BlueprintArea?> m_AreaByName = [];
     private BlueprintArea? m_SelectedArea;
+    private static readonly Lazy<float> m_AssetIdWidth = new(() => {
+        return CalculateLargestLabelWidth(BPLoader.GetBlueprintsOfType<BlueprintEtude>().Select(bp => bp.AssetGuid.ToString()), GUI.skin.textField);
+    });
+    private const int m_IndentWidth = 25;
 
     private string m_SearchText = "";
     private bool m_ShowOnlyFlagLike = false;
-
-    private readonly HashSet<string> m_ExpandedEtudes = [];
-    private readonly HashSet<string> m_ExpandedElements = [];
-    private readonly HashSet<string> m_ExpandedConflicts = [];
-
-    private readonly HashSet<string> m_Enclosing = [];
+    private readonly HashSet<EtudeRecord> m_Enclosing = [];
 
     public override void Enable() {
         Main.OnLocaleChanged += ClearCaches;
@@ -46,13 +45,7 @@ public partial class EtudesEditorFeature : Feature {
         m_AreaBrowser = null;
         m_AreaByName.Clear();
         m_SelectedArea = null;
-        m_ExpandedEtudes.Clear();
-        m_ExpandedElements.Clear();
-        m_ExpandedConflicts.Clear();
-        m_Enclosing.Clear();
     }
-
-    private string m_LastSearchText = "";
 
     public override void OnGui() {
         if (!IsInGame()) {
@@ -70,15 +63,12 @@ public partial class EtudesEditorFeature : Feature {
             return;
         }
 
-        EnsureAreaBrowser();
+        if (!EnsureAreaBrowser()) {
+            return;
+        }
 
         using (VerticalScope()) {
             DrawHeader(snapshot);
-
-            if (!string.Equals(m_LastSearchText, m_SearchText, StringComparison.Ordinal)) {
-                m_LastSearchText = m_SearchText;
-                snapshot.UpdateSearchClosure(m_SearchText);
-            }
 
             using (HorizontalScope()) {
                 DrawLeftPane();
@@ -88,65 +78,68 @@ public partial class EtudesEditorFeature : Feature {
         }
     }
 
-    private void DrawHeader(EtudesSnapshot snapshot) {
-        using (HorizontalScope()) {
-            UI.Label((m_RootText + ": ").Cyan() + EtudesEditor.rootEtudeId.Orange(), AutoWidth());
-            Space(20);
-
-            UI.Label(m_SearchTextLabel.Cyan(), AutoWidth());
-            _ = UI.ActionTextField(ref m_SearchText, "EtudesTreeSearch", null, _ => { }, Width(350));
-
-            Space(20);
-            if (UI.Toggle(m_FlagsOnlyText.Cyan(), null, ref m_ShowOnlyFlagLike)) {
-                // no-op; evaluated during filtering
+    private void DrawHeader(EtudeSnapshot snapshot) {
+        if (snapshot.IsSearching) {
+            UI.Label(SharedStrings.SearchInProgresText.Orange());
+            if (UI.Button(SharedStrings.CancelText.Cyan())) {
+                snapshot.CancelSearch();
             }
+        }
+        using (HorizontalScope()) {
+            UI.Label((m_RootText + ": ").Cyan() + Constants.RootEtudeId.Orange(), Width(310 * Main.UIScale));
+
+            UI.Label(m_SearchTextLabel + ":", Width(200));
+            _ = UI.ActionTextField(ref m_SearchText, "EtudesTreeSearch", null, (string prompt) => {
+                snapshot.Search(prompt);
+            }, Width(200), Width(300 * Main.UIScale));
+            Space(10);
+            _ = UI.Button(SharedStrings.SearchText, () => {
+                snapshot.Search(m_SearchText);
+            });
 
             Space(20);
-            UI.Toggle(m_ShowGuidsText.Cyan(), null, ref Settings.showAssetIDs);
+            _ = UI.Toggle(m_FlagsOnlyText.Cyan(), null, ref m_ShowOnlyFlagLike);
 
             Space(20);
-            UI.Toggle(m_ShowCommentsText.Cyan(), null, ref Settings.showEtudeComments);
+            _ = UI.Toggle(m_ShowGuidsText.Cyan(), null, ref Settings.showAssetIDs);
+
+            Space(20);
+            _ = UI.Toggle(m_ShowCommentsText.Cyan(), null, ref Settings.showEtudeComments);
 
             Space(20);
             if (UI.Button(m_RefreshText.Cyan(), () => {
                 m_Model.Invalidate();
-                m_Model.TryEnsureSnapshot(out _);
+                _ = m_Model.TryEnsureSnapshot(out _);
             })) { }
         }
 
-        if (!snapshot.EtudesById.ContainsKey(EtudesEditor.rootEtudeId)) {
-            UI.Label((m_RootNotFoundText + " ").Red().Bold() + EtudesEditor.rootEtudeId.Orange());
+        if (snapshot.RootEtude == null) {
+            UI.Label((m_RootNotFoundText + " ").Red().Bold() + Constants.RootEtudeId.Orange());
         }
     }
-
-    private void EnsureAreaBrowser() {
-        if (m_AreaBrowser != null) {
-            return;
-        }
-
-        // Create minimal list synchronously; update once areas arrive.
-        m_AreaByName["All"] = null;
-        m_AreaBrowser = new(
-            sortKey: s => s == "All" ? "" : s,
-            searchKey: s => s,
-            initialItems: m_AreaByName.Keys,
-            showDivBetweenItems: false,
-            overridePageWidth: (int)(300 * Main.UIScale),
-            orderInitialCollection: true);
-
-        // Populate areas async via BPLoader
-        BPLoader.GetBlueprintsOfType<BlueprintArea>(bps => {
-            Main.ScheduleForMainThread(() => {
-                foreach (var bp in bps) {
-                    var title = BPHelper.GetTitle(bp);
-                    if (!string.IsNullOrWhiteSpace(title)) {
-                        m_AreaByName[title] = bp;
+    private readonly TimedCache<float> m_AreaWidth = new(() => CalculateLargestLabelWidth(BPLoader.GetBlueprintsOfType<BlueprintArea>().Select(f => f.Name), GUI.skin.button));
+    private bool? m_NeedInitAreaBrowserWidth = null;
+    private bool EnsureAreaBrowser() {
+        if (!m_NeedInitAreaBrowserWidth.HasValue) {
+            m_NeedInitAreaBrowserWidth = false;
+            _ = BPLoader.GetBlueprintsOfType<BlueprintArea>(bps => {
+                Main.ScheduleForMainThread(() => {
+                    foreach (var bp in bps) {
+                        var title = BPHelper.GetTitle(bp);
+                        if (!string.IsNullOrWhiteSpace(title)) {
+                            m_AreaByName[title] = bp;
+                        }
                     }
-                }
-                m_AreaByName["All"] = null;
-                m_AreaBrowser.UpdateItems(m_AreaByName.Keys);
+                    m_AreaByName["All"] = null;
+                    m_AreaBrowser = new(sortKey: s => s == "All" ? "" : s, searchKey: s => s, initialItems: m_AreaByName.Keys, showDivBetweenItems: false, orderInitialCollection: true);
+                    m_NeedInitAreaBrowserWidth = true;
+                });
             });
-        });
+        } else if (m_NeedInitAreaBrowserWidth.Value) {
+            m_AreaBrowser!.PageWidth = (int)(m_AreaWidth + (10 * Main.UIScale));
+            m_NeedInitAreaBrowserWidth = false;
+        }
+        return m_AreaBrowser != null;
     }
 
     private void DrawLeftPane() {
@@ -158,7 +151,7 @@ public partial class EtudesEditorFeature : Feature {
                 var selected = m_SelectedArea == area;
 
                 if (selected) {
-                    GUILayout.Toggle(true, areaName.Orange(), UI.LeftAlignedButtonStyle);
+                    _ = GUILayout.Toggle(true, areaName.Orange(), UI.LeftAlignedButtonStyle);
                 } else {
                     if (GUILayout.Toggle(false, areaName.Cyan(), UI.LeftAlignedButtonStyle)) {
                         m_SelectedArea = area;
@@ -168,192 +161,165 @@ public partial class EtudesEditorFeature : Feature {
         }
     }
 
-    private void DrawTreePane(EtudesSnapshot snapshot) {
-        using (VerticalScope(GUI.skin.box, Width((EffectiveWindowWidth() - 320 * Main.UIScale)))) {
-            if (!snapshot.EtudesById.TryGetValue(EtudesEditor.rootEtudeId, out var root)) {
+    private void DrawTreePane(EtudeSnapshot snapshot) {
+        using (VerticalScope(GUI.skin.box, Width(EffectiveWindowWidth() - (320 * Main.UIScale)))) {
+            if (snapshot.RootEtude == null) {
                 UI.Label(m_NoEtudesText.Red().Bold());
                 return;
             }
 
-            // Refresh runtime state cheaply when playing
-            if (Application.isPlaying) {
-                snapshot.UpdateRuntimeStates();
-            }
+            snapshot.UpdateRuntimeStates();
+            // Optimally clearing here should not be necessary
+            m_Enclosing.Clear();
 
-            DrawEtudeRecursive(snapshot, EtudesEditor.rootEtudeId, indent: 0, ignoreFilter: false);
+            DrawEtudeRecursive(snapshot, snapshot.RootEtude, 0, false);
         }
     }
 
-    private bool PassesFilter(EtudesSnapshot snapshot, string etudeId) {
-        if (!snapshot.EtudesById.TryGetValue(etudeId, out var e)) {
+    private bool PassesFilter(EtudeSnapshot snapshot, EtudeRecord etude) {
+        if (m_SelectedArea != null && !etude.IsIndirectlyLinkedToArea(m_SelectedArea.AssetGuid)) {
             return false;
         }
 
-        if (m_SelectedArea != null) {
-            // show only etudes linked to that area OR ancestors/descendants as per legacy logic:
-            // easiest equivalent: precomputed "area closure" set
-            if (!snapshot.AreaClosureByAreaId.TryGetValue(m_SelectedArea.AssetGuid, out var allowed) || !allowed.Contains(etudeId)) {
-                return false;
-            }
+        if (m_ShowOnlyFlagLike && !etude.IsIndirectlyFlagLike()) {
+            return false;
         }
-
-        if (m_ShowOnlyFlagLike) {
-            if (!snapshot.FlagLikeClosure.Contains(etudeId)) {
-                return false;
-            }
-        }
-
-        if (!string.IsNullOrWhiteSpace(m_SearchText)) {
-            var q = m_SearchText;
-            if (!MatchString(e.Name ?? "", q) && !MatchString(etudeId, q)) {
-                return false;
-            }
+        if (snapshot.DidSearch && !etude.IsMatched) {
+            return false;
         }
 
         return true;
     }
-
-    private void DrawEtudeRecursive(EtudesSnapshot snapshot, string etudeId, int indent, bool ignoreFilter) {
-        if (!snapshot.EtudesById.TryGetValue(etudeId, out var e)) {
+    private void DrawEtudeRecursive(EtudeSnapshot snapshot, EtudeRecord etude, int indent, bool ignoreFilter) {
+        if (m_Enclosing.Contains(etude)) {
             return;
         }
-
-        if (m_Enclosing.Contains(etudeId)) {
+        // We want to skip this IF searched AND descendent matched
+        // Searched && Descendent => false;
+        if (!ignoreFilter && !PassesFilter(snapshot, etude) && !(snapshot.DidSearch && etude.IsDescendantMatched)) {
             return;
         }
-
-        if (!ignoreFilter && !PassesFilter(snapshot, etudeId)) {
-            // If not matched, still recurse into children only if search is active and a descendant matches.
-            // Snapshot precomputes this.
-            if (!snapshot.SearchClosure.Contains(etudeId)) {
-                return;
-            }
-        }
-
-        m_Enclosing.Add(etudeId);
 
         try {
+            _ = m_Enclosing.Add(etude);
             using (HorizontalScope(GUILayout.ExpandWidth(true))) {
-                // Actions (same as legacy)
-                using (HorizontalScope(Width(310 * Main.UIScale))) {
+                using (HorizontalScope(Width(140 * Main.UIScale))) {
                     foreach (var action in BlueprintActionFeature.GetActionsForBlueprintType<BlueprintEtude>()) {
-                        _ = action.OnGui(e.Blueprint, false);
+                        _ = action.OnGui(etude.Blueprint, false, default);
                     }
                 }
 
-                Space(indent * (int)(35 * Main.UIScale));
+                Space(indent * m_IndentWidth);
 
-                var expanded = m_ExpandedEtudes.Contains(etudeId);
-                var name = (e.Name ?? "<null>").Orange().Bold();
-                if (UI.DisclosureToggle(ref expanded, name)) {
-                    SetExpanded(m_ExpandedEtudes, etudeId, expanded);
-                }
+                var name = (etude.Name ?? "<null>").Orange().Bold();
+                var dcWidth = UI.DisclosureGlyphWidth.Value + (5 * Main.UIScale);
 
-                Space(15);
-
-                UI.Label(e.State.ToString().Yellow(), Width(120 * Main.UIScale));
-
-                Space(10);
-
-                var validation = snapshot.GetValidationProblem(etudeId);
-                if (!string.IsNullOrEmpty(validation)) {
-                    UI.Label(validation.Cyan().Yellow(), Width(420 * Main.UIScale));
+                if (etude.Children.Count > 0) {
+                    if (UI.DisclosureToggle(ref etude.IsExpanded, name)) {
+                        // Legacy behaviour is to uncollapse every children
+                        etude.ExpandChildren(etude.IsExpanded);
+                    }
                 } else {
-                    UI.Label("", Width(420 * Main.UIScale));
+                    UnscaledSpace(dcWidth);
+                    UI.Label(name);
                 }
 
                 Space(10);
 
-                if (e.CompletesParent) {
+                UI.Label(etude.State.ToString().Yellow(), AutoWidth());
+
+                Space(10);
+
+                if (etude.CompletesParent) {
                     UI.Label(m_CompletesParentText.Cyan(), AutoWidth());
                     Space(10);
                 }
-                if (e.AllowActionStart) {
-                    UI.Label(m_CanStartText.Cyan(), AutoWidth());
-                    Space(10);
+
+                if (etude.Elements.Count > 0) {
+                    _ = UI.DisclosureToggle(ref etude.IsElementsExpanded, (m_ElementsText + $" ({etude.Elements.Count})").Cyan());
                 }
 
-                InspectorUI.InspectToggle(e.Blueprint, m_InspectText, options: Width(100 * Main.UIScale));
+                Space(10);
+                var conflicts = etude.GetConflictingEtudes(snapshot);
+                if (conflicts.Count > 1) {
+                    _ = UI.DisclosureToggle(ref etude.IsConflictsExpanded, (m_ConflictsText + $" ({conflicts.Count - 1})").Cyan());
+                }
+
+                Space(10);
+
+                InspectorUI.InspectToggle(etude.Blueprint, m_InspectText, options: AutoWidth());
 
                 if (Settings.showAssetIDs) {
-                    var id = etudeId;
-                    UI.TextField(ref id, null, Width(260 * Main.UIScale));
+                    var tmp = etude.Blueprint.AssetGuid.ToString();
+                    Space(5);
+                    _ = UI.TextField(ref tmp, null, Width(m_AssetIdWidth.Value));
                 }
 
-                if (Settings.showEtudeComments && !Settings.showAssetIDs && !string.IsNullOrWhiteSpace(e.Comment)) {
-                    UI.Label(e.Comment.Green(), GUILayout.ExpandWidth(true));
+                Space(10);
+
+                var validation = etude.ValidationProblem;
+                if (!string.IsNullOrEmpty(validation)) {
+                    UI.Label(validation!.Cyan().Yellow(), Width(200 * Main.UIScale));
+                }
+
+                Space(10);
+
+                if (Settings.showEtudeComments && !string.IsNullOrWhiteSpace(etude.Comment)) {
+                    UI.Label(etude.Comment.Green(), GUILayout.ExpandWidth(true));
                 }
             }
 
+            InspectorUI.InspectIfExpanded(etude.Blueprint);
+
             // Expanded details
-            if (m_ExpandedEtudes.Contains(etudeId)) {
-                DrawEtudeDetails(snapshot, etudeId, indent + 1);
+            if (etude.IsElementsExpanded || etude.IsConflictsExpanded) {
+                DrawEtudeDetails(snapshot, etude, indent + 1);
             }
 
             // Children
-            if (m_ExpandedEtudes.Contains(etudeId) || snapshot.SearchClosure.Contains(etudeId)) {
-                foreach (var child in e.Children) {
+            if (etude.IsExpanded || etude.IsDescendantMatched) {
+                foreach (var child in etude.Children) {
                     DrawEtudeRecursive(snapshot, child, indent + 1, ignoreFilter);
                 }
             }
         } finally {
-            m_Enclosing.Remove(etudeId);
+            _ = m_Enclosing.Remove(etude);
         }
     }
 
-    private void DrawEtudeDetails(EtudesSnapshot snapshot, string etudeId, int indent) {
-        var e = snapshot.EtudesById[etudeId];
-
+    private void DrawEtudeDetails(EtudeSnapshot snapshot, EtudeRecord etude, int indent) {
         using (HorizontalScope()) {
-            Space(indent * (int)(35 * Main.UIScale));
-            using (VerticalScope(GUI.skin.box)) {
-                // Elements toggle
-                var elementsExpanded = m_ExpandedElements.Contains(etudeId);
-                var eltCount = e.Elements.Count;
-                if (eltCount > 0) {
-                    if (UI.DisclosureToggle(ref elementsExpanded, (m_ElementsText + $" ({eltCount})").Cyan())) {
-                        SetExpanded(m_ExpandedElements, etudeId, elementsExpanded);
-                    }
-                }
-
-                // Conflicts toggle
-                var conflicts = snapshot.GetConflictingEtudes(etudeId);
-                var conflictsExpanded = m_ExpandedConflicts.Contains(etudeId);
-                if (conflicts.Count > 1) {
-                    if (UI.DisclosureToggle(ref conflictsExpanded, (m_ConflictsText + $" ({conflicts.Count - 1})").Cyan())) {
-                        SetExpanded(m_ExpandedConflicts, etudeId, conflictsExpanded);
-                    }
-                }
-
-                if (elementsExpanded) {
+            Space(indent * m_IndentWidth);
+            using (VerticalScope()) {
+                if (etude.IsElementsExpanded) {
                     Div.DrawDiv();
-                    DrawElements(snapshot, e, indent);
+                    DrawElements(snapshot, etude, indent);
                 }
 
-                if (conflictsExpanded) {
+                if (etude.IsConflictsExpanded) {
                     Div.DrawDiv();
-                    foreach (var c in conflicts) {
-                        DrawEtudeRecursive(snapshot, c, indent + 1, ignoreFilter: true);
+                    foreach (var c in etude.GetConflictingEtudes(snapshot)) {
+                        DrawEtudeRecursive(snapshot, c, indent + 1, true);
                     }
                 }
             }
         }
     }
 
-    private void DrawElements(EtudesSnapshot snapshot, EtudeRecord e, int indent) {
+    private void DrawElements(EtudeSnapshot snapshot, EtudeRecord e, int indent) {
         foreach (var element in e.Elements) {
             using (HorizontalScope(GUILayout.ExpandWidth(true))) {
-                Space((indent + 1) * (int)(35 * Main.UIScale));
+                Space((indent + 1) * (int)(m_IndentWidth * Main.UIScale));
 
                 using (HorizontalScope(420 * Main.UIScale)) {
                     if (element is GameAction ga) {
-                        UI.Button((ga.GetCaption() ?? "?").Yellow(), () => {
+                        if (UI.Button((ga.GetCaption() ?? "?").Yellow())) {
                             try {
                                 ga.RunAction();
                             } catch (Exception ex) {
                                 Warn($"Failed to run action {ga.GetCaption()}:\n{ex}");
                             }
-                        });
+                        }
                     } else {
                         UI.Label((element.GetCaption() ?? "?").Yellow());
                     }
@@ -377,22 +343,22 @@ public partial class EtudesEditorFeature : Feature {
                 }
             }
 
-            // Cross-links (same behavior as legacy)
-            if (element is StartEtude started) {
-                DrawEtudeRecursive(snapshot, started.Etude.Guid, indent + 2, ignoreFilter: true);
-            } else if (element is EtudeStatus status) {
-                DrawEtudeRecursive(snapshot, status.m_Etude.Guid, indent + 2, ignoreFilter: true);
-            } else if (element is CompleteEtude completed) {
-                DrawEtudeRecursive(snapshot, completed.Etude.Guid, indent + 2, ignoreFilter: true);
-            }
-        }
-    }
+            InspectorUI.InspectIfExpanded(element);
 
-    private static void SetExpanded(HashSet<string> set, string key, bool expanded) {
-        if (expanded) {
-            _ = set.Add(key);
-        } else {
-            _ = set.Remove(key);
+            // Cross-links
+            if (element is StartEtude started) {
+                if (snapshot.EtudesById.TryGetValue(started.Etude.Guid, out var s)) {
+                    DrawEtudeRecursive(snapshot, s, indent + 2, true);
+                }
+            } else if (element is EtudeStatus status) {
+                if (snapshot.EtudesById.TryGetValue(status.m_Etude.Guid, out var s)) {
+                    DrawEtudeRecursive(snapshot, s, indent + 2, true);
+                }
+            } else if (element is CompleteEtude completed) {
+                if (snapshot.EtudesById.TryGetValue(completed.Etude.Guid, out var c)) {
+                    DrawEtudeRecursive(snapshot, c, indent + 2, true);
+                }
+            }
         }
     }
 
@@ -428,9 +394,6 @@ public partial class EtudesEditorFeature : Feature {
 
     [LocalizedString("ToyBox_Features_Etudes_EtudesFeature_CompletesParentText", "Completes Parent")]
     private static partial string m_CompletesParentText { get; }
-
-    [LocalizedString("ToyBox_Features_Etudes_EtudesFeature_CanStartText", "Can Start")]
-    private static partial string m_CanStartText { get; }
 
     [LocalizedString("ToyBox_Features_Etudes_EtudesFeature_InspectText", "Inspect")]
     private static partial string m_InspectText { get; }
