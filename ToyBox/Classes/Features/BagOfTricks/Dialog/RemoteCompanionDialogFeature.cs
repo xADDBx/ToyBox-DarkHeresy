@@ -44,21 +44,21 @@ public partial class RemoteCompanionDialogFeature : FeatureWithPatch {
             return;
         }
         try {
-            var maybeCompanion = Game.Instance.Player.AllCrossSceneUnits.FirstOrDefault(u => u.Blueprint == __instance.companion && !u.IsDisposed && !u.IsDisposingNow)?.GetOptional<UnitPartCompanion>();
+            var maybeCompanion = Game.Instance.Player.AllCrossSceneUnits.FirstOrDefault(u => u.Blueprint == __instance.Companion && !u.IsDisposed && !u.IsDisposingNow)?.GetOptional<UnitPartCompanion>();
             if (maybeCompanion != null) {
                 if (maybeCompanion.State != CompanionState.None) {
                     if (maybeCompanion.State != CompanionState.ExCompanion || GetInstance<ExCompanionDialogFeature>().IsEnabled) {
                         if (__instance.Owner is BlueprintCue cueBp) {
-                            Debug($"Overiding {cueBp.name} Companion {__instance.companion.name} ({__instance.companion.AssetGuid}) In Party to true");
+                            Debug($"Overiding {cueBp.name} Companion {__instance.Companion.name} ({__instance.Companion.AssetGuid}) In Party to true");
                             __result = true;
                         } else if (__instance.Owner is BlueprintAnswer answeBp) {
-                            Debug($"Overiding {answeBp.name} Companion {__instance.companion.name} ({__instance.companion.AssetGuid}) In Party to true");
+                            Debug($"Overiding {answeBp.name} Companion {__instance.Companion.name} ({__instance.Companion.AssetGuid}) In Party to true");
                             __result = true;
                         }
                     }
                 }
             } else {
-                Log($"Could not override check {__instance.name} on {__instance.Owner?.AssetGuid ?? "Null BP Owner?"} because no unit with blueprint {__instance.companion?.AssetGuid ?? "Null Companion BP?"} was found.");
+                Log($"Could not override check {__instance.name} on {__instance.Owner?.AssetGuid ?? "Null BP Owner?"} because no unit with blueprint {__instance.Companion?.AssetGuid ?? "Null Companion BP?"} was found.");
             }
         } catch (Exception ex) {
             Error(ex);
@@ -68,7 +68,7 @@ public partial class RemoteCompanionDialogFeature : FeatureWithPatch {
     private static bool m_OriginallyIncludedRemote;
     [HarmonyPatch(typeof(Kingmaker.Designers.EventConditionActionSystem.Evaluators.CompanionInParty), nameof(Kingmaker.Designers.EventConditionActionSystem.Evaluators.CompanionInParty.GetAbstractUnitEntityInternal)), HarmonyPrefix]
     private static void CompanionInParty_GetAbstractUnitEntityInternal_Pre_Patch(Kingmaker.Designers.EventConditionActionSystem.Evaluators.CompanionInParty __instance) {
-        if (__instance.Owner is BlueprintCue || __instance.Owner is BlueprintAnswer) {
+        if (__instance.Owner is BlueprintCue or BlueprintAnswer) {
             m_OriginallyIncludedEx = __instance.IncludeExCompanions;
             m_OriginallyIncludedRemote = __instance.IncludeRemote;
             __instance.IncludeExCompanions = GetInstance<ExCompanionDialogFeature>().IsEnabled;
@@ -78,7 +78,7 @@ public partial class RemoteCompanionDialogFeature : FeatureWithPatch {
     }
     [HarmonyPatch(typeof(Kingmaker.Designers.EventConditionActionSystem.Evaluators.CompanionInParty), nameof(Kingmaker.Designers.EventConditionActionSystem.Evaluators.CompanionInParty.GetAbstractUnitEntityInternal)), HarmonyPostfix]
     private static void CompanionInParty_GetAbstractUnitEntityInternal_Post_Patch(Kingmaker.Designers.EventConditionActionSystem.Evaluators.CompanionInParty __instance) {
-        if (__instance.Owner is BlueprintCue || __instance.Owner is BlueprintAnswer) {
+        if (__instance.Owner is BlueprintCue or BlueprintAnswer) {
             __instance.IncludeExCompanions = m_OriginallyIncludedEx;
             __instance.IncludeRemote = m_OriginallyIncludedRemote;
         }
