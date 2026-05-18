@@ -39,9 +39,10 @@ public class EtudesTreeModel2 {
     private void BuildSnapshotThreaded(IEnumerable<BlueprintEtude> bps, string? initialSearchText) {
         try {
             var conflictingGroups = new Dictionary<BlueprintEtudeConflictingGroup, HashSet<EtudeRecord>>();
-            var records = new Dictionary<string, EtudeRecord>(((System.Collections.ICollection)bps).Count, StringComparer.Ordinal);
+            var bpList = bps.ToList();
+            var records = new Dictionary<string, EtudeRecord>(bpList.Count, StringComparer.Ordinal);
 
-            foreach (var bp in bps) {
+            foreach (var bp in bpList) {
                 records.Add(bp.AssetGuid, new EtudeRecord(bp));
             }
             foreach (var pair in records) {
