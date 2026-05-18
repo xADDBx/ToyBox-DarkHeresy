@@ -1,4 +1,4 @@
-﻿using Kingmaker.Code.View.UI.UIUtilities;
+﻿using Code.View.UI.UIUtils;
 using Kingmaker.Designers.EventConditionActionSystem.Actions;
 using Kingmaker.Designers.EventConditionActionSystem.Conditions;
 using Kingmaker.DialogSystem.Blueprints;
@@ -111,9 +111,9 @@ public static partial class DialogPreviewUtilities {
             }
             s ??= "";
             if (shift.Description?.Text is string { Length: > 0 } description) {
-                s += string.Format(format, $"{UIUtilityText.GetSoulMarkDirectionText(shift.Axis)}, {shift.Value}, {description}");
+                s += string.Format(format, $"{UIUtilityAlignment.GetAlignmentDirectionText(shift.Axis)}, {shift.Value}, {description}");
             }
-            s += string.Format(format, $"{UIUtilityText.GetSoulMarkDirectionText(shift.Axis)}, {shift.Value}");
+            s += string.Format(format, $"{UIUtilityAlignment.GetAlignmentDirectionText(shift.Axis)}, {shift.Value}");
         }
         return s;
     }
@@ -158,7 +158,7 @@ public static partial class DialogPreviewUtilities {
             text += $" \n<size=65%>[{result}]</size>";
         }
         foreach (var shift in alignment) {
-            text += " \n<size=65%>[" + string.Format(m_SoulMarkShift_0_By_1__DescriptioLocalizedText, UIUtilityText.GetSoulMarkDirectionText(shift.Axis).Text, shift.Value, shift.Description.Text) + "]</size>";
+            text += " \n<size=65%>[" + string.Format(m_SoulMarkShift_0_By_1__DescriptioLocalizedText, UIUtilityAlignment.GetAlignmentDirectionText(shift.Axis).Text, shift.Value, shift.Description.Text) + "]</size>";
         }
         return text;
     }
