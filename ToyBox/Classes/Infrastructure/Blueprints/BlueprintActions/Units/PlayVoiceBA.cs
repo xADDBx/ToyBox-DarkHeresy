@@ -19,11 +19,11 @@ public partial class PlayVoiceBA : BlueprintActionFeature, IBlueprintAction<Blue
         LogExecution(blueprint, parameter);
         var unit = parameter.UnitParam!;
         if (unit.Asks.List == blueprint) {
-            return new AskWrapper(blueprint.PartyMemberUnconscious, unit.View.Asks).Schedule();
+            return new AskWrapper(blueprint.PartyMemberUnconsciousGeneral, unit.View.Asks).Schedule();
         } else {
             var manager = new UnitAsksManager(unit, blueprint);
             manager.LoadBanks();
-            return new AskWrapper(blueprint.PartyMemberUnconscious, manager).Schedule(callback: _ => {
+            return new AskWrapper(blueprint.PartyMemberUnconsciousGeneral, manager).Schedule(callback: _ => {
                 manager.UnloadBanks();
             });
         }
