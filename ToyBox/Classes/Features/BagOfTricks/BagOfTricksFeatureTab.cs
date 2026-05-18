@@ -76,7 +76,8 @@ public partial class BagOfTricksFeatureTab : FeatureTab {
 
         AddFeature(new EnableAchievementsFeature(), m_QualityOfLifeText);
         AddFeature(new SkipSplashScreenFeature(), m_QualityOfLifeText);
-        AddFeature(new ObjectHighlightToggleFeature(), m_QualityOfLifeText);
+        // Shipped by Owlcat?
+        // AddFeature(new ObjectHighlightToggleFeature(), m_QualityOfLifeText);
         AddFeature(new AutoLoadLastSaveOnLaunchFeature(), m_QualityOfLifeText);
         AddFeature(new RefillBeltConsumablesFeature(), m_QualityOfLifeText);
         AddFeature(new ClickToTransferEntireStackFeature(), m_QualityOfLifeText);

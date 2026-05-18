@@ -53,12 +53,12 @@ public partial class ObjectHighlightToggleFeature : FeatureWithPatch, IGameModeH
             if (InteractionHighlightController.Instance?.m_IsGlobalHighlighting ?? false) {
                 m_WasTurnedOffBefore = true;
                 m_WasTurnedOff = true;
-                InteractionHighlightController.Instance?.HighlightOff();
+                _ = InteractionHighlightController.Instance?.HighlightOff();
                 m_WasTurnedOff = false;
             }
         } else {
             if (m_WasTurnedOffBefore && (!InteractionHighlightController.Instance?.m_IsGlobalHighlighting ?? false)) {
-                InteractionHighlightController.Instance?.HighlightOn();
+                _ = InteractionHighlightController.Instance?.HighlightOn();
                 m_WasTurnedOffBefore = false;
             }
         }
@@ -102,7 +102,7 @@ public partial class ObjectHighlightToggleFeature : FeatureWithPatch, IGameModeH
             m_WasOnBeforeFightIntern = true;
             m_WasOnBeforeFight = true;
             try {
-                InteractionHighlightController.Instance.HighlightOff();
+                _ = InteractionHighlightController.Instance.HighlightOff();
             } catch { }
             m_WasOnBeforeFight = false;
         }
@@ -116,7 +116,7 @@ public partial class ObjectHighlightToggleFeature : FeatureWithPatch, IGameModeH
         if (m_WasOnBeforeFightIntern && !value) {
             m_WasOnBeforeFightIntern = false;
             try {
-                InteractionHighlightController.Instance?.HighlightOn();
+                _ = InteractionHighlightController.Instance?.HighlightOn();
             } catch { }
         }
         m_InterestingTick = false;
