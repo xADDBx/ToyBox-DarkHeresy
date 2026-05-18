@@ -1,4 +1,4 @@
-﻿using Kingmaker.Code.View.UI.UIUtilities;
+﻿using Code.View.UI.UIUtils;
 using Kingmaker.EntitySystem.Entities;
 using Kingmaker.UnitLogic.Alignments;
 using ToyBox.Infrastructure.Utilities;
@@ -36,7 +36,7 @@ public partial class UnitModifyAlignmentFeature : Feature, INeedContextFeature<B
                             var rank = AlignmentShiftExtension.GetMainCharacterAlignmentRank(direction) + 1;
                             using (HorizontalScope()) {
                                 Space(10);
-                                UI.Label(UIUtilityText.GetSoulMarkDirectionText(direction), Width(80 * Main.UIScale));
+                                UI.Label(UIUtilityAlignment.GetAlignmentDirectionText(direction), Width(80 * Main.UIScale));
                                 if (rank > 0) {
                                     _ = UI.Button("<", () => {
                                         ModifyAlignment(direction, rank, rank - 1);
@@ -48,7 +48,7 @@ public partial class UnitModifyAlignmentFeature : Feature, INeedContextFeature<B
                                 });
                                 Space(10);
                                 var val = rank - 1;
-                                UI.TextField(ref val, pair => {
+                                _ = UI.TextField(ref val, pair => {
                                     if (pair.newContent >= 0) {
                                         ModifyAlignment(direction, rank, pair.newContent + 1);
                                     }
