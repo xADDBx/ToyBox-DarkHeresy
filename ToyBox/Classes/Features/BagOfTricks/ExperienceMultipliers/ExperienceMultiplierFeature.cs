@@ -1,6 +1,7 @@
 ﻿using Kingmaker.Blueprints.Quests;
 using Kingmaker.EntitySystem.Entities;
 using Kingmaker.Gameplay.Features.Experience;
+using Kingmaker.View.MapObjects;
 using UnityEngine;
 
 namespace ToyBox.Features.BagOfTricks.ExperienceMultipliers;
@@ -82,6 +83,14 @@ public partial class ExperienceMultiplierFeature : FeatureWithPatch {
     private static partial string m_OverrideForInvestigationsLocalizedText { get; }
     #region Patches
     private static ExperienceType? m_Context;
+    [HarmonyPatch(typeof(Experience), nameof(Experience.GainForSkillCheck), [typeof(SkillCheckDifficulty), typeof(MechanicEntity)]), HarmonyPrefix]
+    private static void Experience_GainForSkillCheck_Patch1() {
+        m_Context = ExperienceType.SkillCheck;
+    }
+    [HarmonyPatch(typeof(Experience), nameof(Experience.GainForSkillCheck), [typeof(SkillCheckDifficulty), typeof(int), typeof(MechanicEntity), typeof(int?)]), HarmonyPrefix]
+    private static void Experience_GainForSkillCheck_Patch2() {
+        m_Context = ExperienceType.SkillCheck;
+    }
     [HarmonyPatch(typeof(Experience), nameof(Experience.Gain), [typeof(int), typeof(MechanicEntity), typeof(bool)]), HarmonyPrefix]
     private static void Experience_Gain_Patch1(ref int experience) {
         if (m_Context.HasValue) {
@@ -108,8 +117,7 @@ public partial class ExperienceMultiplierFeature : FeatureWithPatch {
     private static void Experience_Calculate_Patch(ExperienceType type, ref int __result) {
         var mult = Settings.AllExperienceMultiplier;
         switch (type) {
-            case ExperienceType.Quest:
-            case ExperienceType.MainQuest: {
+            case ExperienceType.Quest: {
                     if (Settings.UseQuestExperienceMultiplier) {
                         mult = Settings.QuestExperienceMultiplier;
                     }
