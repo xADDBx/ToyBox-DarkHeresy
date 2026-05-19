@@ -195,9 +195,8 @@ public partial class EtudesEditorFeature : Feature {
         if (m_Enclosing.Contains(etude)) {
             return;
         }
-        // We want to skip this IF searched AND descendent matched
-        // Searched && Descendent => false;
-        if (!ignoreFilter && !PassesFilter(snapshot, etude) && !(snapshot.DidSearch && etude.IsDescendantMatched)) {
+        // Should search ignore filters like area and flags only?
+        if (!ignoreFilter && !PassesFilter(snapshot, etude)/* && !(snapshot.DidSearch && etude.IsDescendantMatched)*/) {
             return;
         }
 
