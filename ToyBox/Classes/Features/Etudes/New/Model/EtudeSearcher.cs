@@ -31,6 +31,7 @@ public class EtudeSearcher : IDisposable {
             }
             var upperQuery = query.ToUpper();
             if (upperQuery != LastPrompt && !IsRunning) {
+                Debug($"Started Etude Search for {etudes.Count} etudes with query {query} and mode {mode}");
                 IsRunning = true;
                 ShouldCancel = false;
                 LastPrompt = upperQuery;
@@ -47,7 +48,7 @@ public class EtudeSearcher : IDisposable {
         foreach (var rec in etudes.Values) {
             rec.IsDescendantMatched = false;
             rec.IsMatched = MatchNode(mode, rec, query);
-            if (++processed % Settings.InspectorSearchBatchSize == 0) {
+            if (++processed % 100 == 0) {
                 if (ShouldCancel) {
                     lock (m_SyncRoot) {
                         LastPrompt = "";
@@ -56,6 +57,8 @@ public class EtudeSearcher : IDisposable {
                     }
                     Debug($"Etude Search aborted after  {m_Stopwatch?.ElapsedMilliseconds.ToString() ?? "??????? Something is seriously wrong "}ms");
                     yield break;
+                } else {
+                    Trace($"Etude Search: Processed {processed}");
                 }
                 yield return null;
             }
@@ -63,23 +66,14 @@ public class EtudeSearcher : IDisposable {
                 work.Enqueue(rec.Parent);
             }
         }
-        HashSet<EtudeRecord> visited = [];
-        EtudeRecord? p = null;
-        if (work.Count > 0) {
-            p = work.Dequeue();
-        }
-        while (p != null) {
-            if (!visited.Add(p)) {
-                p = work.Dequeue();
-                continue;
-            }
+        while (work.Count > 0) {
+            var p = work.Dequeue();
             foreach (var child in p.Children) {
                 p.IsDescendantMatched |= child.IsMatched || child.IsDescendantMatched;
             }
             if (p.Parent != null) {
                 work.Enqueue(p.Parent);
             }
-            p = work.Dequeue();
         }
 
         lock (m_SyncRoot) {
