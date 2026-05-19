@@ -1,4 +1,8 @@
-### ToyBox DarkHeresy - Ver 0.1.7 (built for 0.0.3.488)
+### ToyBox DarkHeresy - Ver 0.1.7 (built for 0.4.0.711)
+- (***ADDB***) Disabled ToggleHighlight features as Owlcat apparently ships that now?
+- (***ADDB***) Fix Party => Stats (how many rewrites of the stat system does that make now ._.)
+- (***ADDB***) Inspector does now sort numbers naturally
+- (***ADDB***) Fixed various issues preventing compilation (methods moved; fields renamed; ...); details in https://github.com/xADDBx/ToyBox-DarkHeresy/compare/71b4c79bd01bb3c64f24288c5fba4be0cfa50689..f028937616d99f34d8fea5755676c060867694ca
 
 ### ToyBox DarkHeresy - Ver 0.1.6 (built for 0.0.3.480)
 - (***ADDB***) Fix activating Highlight Hidden Objects in Fog of War erroring the feature.
