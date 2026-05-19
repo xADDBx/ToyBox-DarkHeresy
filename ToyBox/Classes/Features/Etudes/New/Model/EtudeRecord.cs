@@ -37,7 +37,8 @@ public class EtudeRecord {
     public bool IsMatched;
     public bool IsDescendantMatched;
     public void ExpandChildren(bool expanded) {
-        var stack = new Stack<EtudeRecord>();
+        Stack<EtudeRecord> stack = [];
+        stack.Push(this);
         var visited = new HashSet<EtudeRecord>();
 
         while (stack.Count > 0) {
@@ -48,7 +49,7 @@ public class EtudeRecord {
                 continue;
             }
 
-            foreach (var child in Children) {
+            foreach (var child in current.Children) {
                 stack.Push(child);
             }
         }
