@@ -1,4 +1,5 @@
-﻿namespace ToyBox.Features.Etudes;
+﻿#pragma warning disable
+namespace ToyBox.Features.Etudes;
 
 public partial class LegacyEtudesEditorFeature : Feature {
     [LocalizedString("ToyBox_Features_Etudes_LegacyEtudesEditorFeature_Name", "Etudes Editor")]
