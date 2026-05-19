@@ -71,7 +71,8 @@ public class EtudesTreeModel2 {
                     if (g.Get() is { } gBp) {
                         rec.ConflictingGroups.Add(gBp);
                         if (!conflictingGroups.TryGetValue(gBp, out var set)) {
-                            conflictingGroups[gBp] = [];
+                            set = [];
+                            conflictingGroups[gBp] = set;
                         }
                         _ = set.Add(rec);
                     }
