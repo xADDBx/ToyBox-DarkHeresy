@@ -80,9 +80,11 @@ public partial class EtudesEditorFeature : Feature {
 
     private void DrawHeader(EtudeSnapshot snapshot) {
         if (snapshot.IsSearching) {
-            UI.Label(SharedStrings.SearchInProgresText.Orange());
-            if (UI.Button(SharedStrings.CancelText.Cyan())) {
-                snapshot.CancelSearch();
+            using (HorizontalScope()) {
+                UI.Label(SharedStrings.SearchInProgresText.Orange());
+                if (UI.Button(SharedStrings.CancelText.Cyan())) {
+                    snapshot.CancelSearch();
+                }
             }
         }
         using (HorizontalScope()) {
@@ -108,8 +110,7 @@ public partial class EtudesEditorFeature : Feature {
 
             Space(20);
             if (UI.Button(m_RefreshText.Cyan(), () => {
-                m_Model.Invalidate();
-                _ = m_Model.TryEnsureSnapshot(out _);
+                snapshot.UpdateRuntimeStates();
             })) { }
         }
 
@@ -277,7 +278,7 @@ public partial class EtudesEditorFeature : Feature {
             }
 
             // Children
-            if (etude.IsExpanded || etude.IsDescendantMatched) {
+            if (etude.IsRoot || etude.IsExpanded || etude.IsDescendantMatched) {
                 foreach (var child in etude.Children) {
                     DrawEtudeRecursive(snapshot, child, indent + 1, ignoreFilter);
                 }
