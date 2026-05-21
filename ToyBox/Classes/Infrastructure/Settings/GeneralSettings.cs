@@ -1,5 +1,4 @@
-﻿using Kingmaker.Blueprints;
-using Kingmaker.EntitySystem.Stats.Base;
+﻿using Kingmaker.EntitySystem.Stats.Base;
 
 namespace ToyBox.Infrastructure;
 
