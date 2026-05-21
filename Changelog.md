@@ -1,3 +1,5 @@
+- (***ADDB***) Have first bpcache check not throw an error.
+
 ### ToyBox DarkHeresy - Ver 0.1.7 (built for 0.4.0.711)
 - (***ADDB***) Disabled the toggle highlight features as Owlcat apparently ships that now?
 - (***ADDB***) Fix Party => Stats (how many rewrites of the stat system does that make now ._.)
