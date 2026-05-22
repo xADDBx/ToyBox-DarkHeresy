@@ -38,6 +38,10 @@ public class GeneralSettings : AbstractJsonSettings {
     public bool EnableGameDevelopmentMode = false;
     public bool EnableDisplayGuidsInTooltips = false;
 
+#warning BETA
+    // - Beta
+    public bool EnableFixCustomPortraitsInBeta = true;
+
     // - Other
     public LogLevel LogLevel = LogLevel.Info;
     public string UILanguage = "en";

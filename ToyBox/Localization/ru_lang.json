@@ -947,6 +947,22 @@
     "Original": "Encountered error while building Etudes Tree!",
     "Translated": null
   },
+  "ToyBox_Features_Etudes_EtudesEditorFeature_m_AllLocalizedText": {
+    "Original": "All",
+    "Translated": null
+  },
+  "ToyBox_Features_Etudes_EtudeRecord_m_ChainedEtude_0___1__HasDifferentLocalizedText": {
+    "Original": "Chained etude {0} ({1}) has different parent: {2} than {3} parent: {4}",
+    "Translated": null
+  },
+  "ToyBox_Features_Etudes_EtudeRecord_m_LinkedToChild_0___1__WithDiffereLocalizedText": {
+    "Original": "Linked to child {0} ({1}) with different parent: {2} than {3} parent {4}",
+    "Translated": null
+  },
+  "ToyBox_Features_Etudes_EtudeRecord_m_NoneLocalizedText": {
+    "Original": "None",
+    "Translated": null
+  },
   "ToyBox_Features_FeatureSearch_FeatureSearchFeature_FeatureSearchNotImplementedForTh": {
     "Original": "Feature search not implemented for this feature!",
     "Translated": null
@@ -1689,6 +1705,14 @@
   },
   "ToyBox_Features_SettingsTab_Game_EnableGameDevelopmentModeSetting_Description": {
     "Original": "This turns on the developer console which lets you access cheat commands, access a console and more.",
+    "Translated": null
+  },
+  "ToyBox_Features_SettingsTab_Game_FixCustomPortraitsInBeta_Name": {
+    "Original": "Fix Custom Portraits",
+    "Translated": null
+  },
+  "ToyBox_Features_SettingsTab_Game_FixCustomPortraitsInBeta_Description": {
+    "Original": "Owlcat changed their save format (no more json) which breaks saving with custom portraits. This fixes that. You still need to use Party => Stats to set a custom portrait. Disabling this feature requires a restart.",
     "Translated": null
   },
   "ToyBox_Features_SettingsTab_Inspector_InspectorDrawLimitSetting_Name": {

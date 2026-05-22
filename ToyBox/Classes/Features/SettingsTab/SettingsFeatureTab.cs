@@ -30,6 +30,7 @@ public partial class SettingsFeaturesTab : FeatureTab {
     public SettingsFeaturesTab() {
         AddFeature(new UpdaterFeature(), m_UpdateText);
 
+        AddFeature(new FixCustomPortraitsInBeta(), m_GameLocalizedText);
         AddFeature(new EnableGameDevelopmentModeSetting(), m_GameLocalizedText);
         AddFeature(new DisplayGuidsInTooltipsFeature(), m_GameLocalizedText);
         AddFeature(new CopyLocationHotkeySetting(), m_GameLocalizedText);

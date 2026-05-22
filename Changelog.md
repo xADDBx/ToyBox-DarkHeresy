@@ -1,4 +1,7 @@
+### ToyBox DarkHeresy - Ver 0.1.8 (built for 0.4.0.749)
+- (***ADDB***) Changing portraits via Party => Stats will no longer prevent the game from saving. ***IMPORTANT*** The game currently does not support saving custom portraits. If you change them anyway via ToyBox you will make ToyBox a requirement to load that save.
 - (***ADDB***) Have first bpcache check not throw an error.
+- (***ADDB***) Disclaimer no longer says that game is in Alpha.
 
 ### ToyBox DarkHeresy - Ver 0.1.7 (built for 0.4.0.711)
 - (***ADDB***) Disabled the toggle highlight features as Owlcat apparently ships that now?
