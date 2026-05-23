@@ -1,5 +1,7 @@
+- (***ADDB***) Fix Visual Size Override Slider defaulting to 0
+
 ### ToyBox DarkHeresy - Ver 0.1.8 (built for 0.4.0.749)
-- (***ADDB***) Changing portraits via Party => Stats will no longer prevent the game from saving. ***IMPORTANT*** The game currently does not support saving custom portraits. If you change them anyway via ToyBox you will make ToyBox a requirement to load that save.
+- (***ADDB***) Using custom portraits via Party => Stats will no longer prevent the game from saving. ***IMPORTANT:*** The game currently does not support saving custom portraits. If you still change them via ToyBox you will make ToyBox a requirement to load that save.
 - (***ADDB***) Have first bpcache check not throw an error.
 - (***ADDB***) Disclaimer no longer says that game is in Alpha.
 
