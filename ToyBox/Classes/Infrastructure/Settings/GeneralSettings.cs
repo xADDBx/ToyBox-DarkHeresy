@@ -41,6 +41,7 @@ public class GeneralSettings : AbstractJsonSettings {
 #warning BETA
     // - Beta
     public bool EnableFixCustomPortraitsInBeta = true;
+    public bool EnableFixFlagEnumSavingInBeta = true;
 
     // - Other
     public LogLevel LogLevel = LogLevel.Info;
