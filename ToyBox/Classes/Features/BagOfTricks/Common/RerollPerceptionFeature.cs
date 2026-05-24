@@ -18,8 +18,10 @@ public partial class RerollPerceptionFeature : FeatureWithBindableAction {
         if (CanExecute(parameter)) {
             LogExecution(parameter);
             var objects = Game.Instance.EntityPools.MapObjects;
-            foreach (var mo in objects) {
-                mo.AwarenessCheck.LastAwarenessValue.Clear();
+            if (objects != null) {
+                foreach (var mo in objects) {
+                    mo?.AwarenessCheck?.LastAwarenessValue?.Clear();
+                }
             }
             var ac = GameModesFactory.AllControllers.Select(c => c.Controller).OfType<PartyAwarenessController>().FirstOrDefault();
             ac?.m_ForceUpdateCharacters.AddRange(Game.Instance.Player.PartyAndPets);
