@@ -1,5 +1,5 @@
 - (***ADDB***) Fix reroll perception causing a NullReferenceException
-- 
+- (***ADDB***) Fix remote companion dialog not working correctly
 
 ### ToyBox DarkHeresy - Ver 0.1.9 (built for 0.4.0.749)
 - (***ADDB***) Fix saving sometimes not working (I'm not sure if this is caused by ToyBox or just a base game issue)

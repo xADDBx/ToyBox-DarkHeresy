@@ -64,7 +64,9 @@ public partial class RemoteCompanionDialogFeature : FeatureWithPatch {
             Error(ex);
         }
     }
+    [ThreadStatic]
     private static bool m_OriginallyIncludedEx;
+    [ThreadStatic]
     private static bool m_OriginallyIncludedRemote;
     [HarmonyPatch(typeof(Kingmaker.Designers.EventConditionActionSystem.Evaluators.CompanionInParty), nameof(Kingmaker.Designers.EventConditionActionSystem.Evaluators.CompanionInParty.GetAbstractUnitEntityInternal)), HarmonyPrefix]
     private static void CompanionInParty_GetAbstractUnitEntityInternal_Pre_Patch(Kingmaker.Designers.EventConditionActionSystem.Evaluators.CompanionInParty __instance) {
@@ -84,17 +86,17 @@ public partial class RemoteCompanionDialogFeature : FeatureWithPatch {
         }
     }
     [HarmonyPatch(typeof(DialogSpeaker), nameof(DialogSpeaker.TryGetSpeakerEntity)), HarmonyPostfix]
-    public static void DialogSpeaker_GetEntity_Patch(DialogSpeaker __instance, ref BaseUnitEntity speaker) {
-        if (speaker == null && __instance.Blueprint != null) {
+    public static void DialogSpeaker_GetEntity_Patch(DialogSpeaker __instance, ref BaseUnitEntity speaker, ref bool __result) {
+        if (!__result && __instance.Blueprint != null) {
             var units = Game.Instance.Controllers.EntitySpawner.CreationQueue.Select((EntitySpawnController.SpawnEntry ce) => ce.Entity).OfType<BaseUnitEntity>();
             var maybeUnit = Game.Instance.Player.AllCrossSceneUnits.Where(u => GetInstance<ExCompanionDialogFeature>().IsEnabled || u.GetCompanionOptional()?.State != CompanionState.ExCompanion)
                 .Concat(units).Select(__instance.SelectMatchingUnit).NotNull().Distinct().Nearest(Game.Instance.Controllers.DialogController.DialogPosition);
             if (maybeUnit != null) {
                 __instance.ReplacedSpeakerWithErrorSpeaker = false;
                 speaker = maybeUnit;
+                __result = true;
                 return;
             }
-
         }
     }
 }
