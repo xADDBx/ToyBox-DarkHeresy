@@ -31,8 +31,11 @@ public static class Helpers {
     public static string StripHTML(string s) {
         return Regex.Replace(s, "<.*?>", string.Empty);
     }
+    public static bool IsInGameNoDialog() {
+        return Game.Instance.CurrentModeType == GameModeType.Default;
+    }
+#warning TODO: Handle Chargen
     public static bool IsInGame() {
-        // TODO: Handle Chargen
         return Game.Instance.CurrentModeType != GameModeType.None;
     }
     public static float CalculateLargestLabelWidth(IEnumerable<string> items, GUIStyle? style = null) {

@@ -36,7 +36,7 @@ public partial class UnitModifyAlignmentFeature : Feature, INeedContextFeature<B
                             var rank = AlignmentShiftExtension.GetMainCharacterAlignmentRank(direction) + 1;
                             using (HorizontalScope()) {
                                 Space(10);
-                                UI.Label(UIUtilityAlignment.GetAlignmentDirectionText(direction), Width(80 * Main.UIScale));
+                                UI.Label(UIUtilityAlignment.GetAlignmentDirectionText(direction), Width(100 * Main.UIScale));
                                 if (rank > 0) {
                                     _ = UI.Button("<", () => {
                                         ModifyAlignment(direction, rank, rank - 1);

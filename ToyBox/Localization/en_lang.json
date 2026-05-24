@@ -1067,6 +1067,22 @@
     "Original": "Apply Custom Level",
     "Translated": null
   },
+  "ToyBox_Features_Loot_LootAoEFeature_Name": {
+    "Original": "AoE Loot",
+    "Translated": null
+  },
+  "ToyBox_Features_Loot_LootAoEFeature_Description": {
+    "Original": "Opens a loot window containing all the loot within a configurable range (default 15m).",
+    "Translated": null
+  },
+  "ToyBox_Features_Loot_LootAoERangeFeature_Name": {
+    "Original": "AoE Loot Range",
+    "Translated": null
+  },
+  "ToyBox_Features_Loot_LootAoERangeFeature_Description": {
+    "Original": "Modifies the range (in m) in which the AoE Loot collects the loot.",
+    "Translated": null
+  },
   "ToyBox_Features_Loot_LootChecklistFeature_Name": {
     "Original": "Loot Checklist",
     "Translated": null

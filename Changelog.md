@@ -1,3 +1,4 @@
+- (***ADDB***) Implement Loot => AoE Loot Feature. This allows you to bind a key that opens a loot window containing everything lootable within a configurable range (from 0m to 100m).
 - (***ADDB***) Fix reroll perception causing a NullReferenceException
 - (***ADDB***) Fix remote companion dialog not working correctly
 
