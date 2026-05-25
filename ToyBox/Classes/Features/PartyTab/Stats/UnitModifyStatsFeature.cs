@@ -86,13 +86,10 @@ public partial class UnitModifyStatsFeature : FeatureWithPatch, INeedContextFeat
                             _ = UI.Button("<", () => {
                                 change -= 1;
                             });
-                            GUILayout.FlexibleSpace();
-                            UI.Label($" {modifiedValue} ({baseValue}) ".Bold().Orange(), GUILayout.MinWidth(60 * Main.UIScale));
+                            UI.Label($" {modifiedValue} ({baseValue}) ".Bold().Orange());
                             _ = UI.Button(">", () => {
                                 change += 1;
                             });
-                            GUILayout.FlexibleSpace();
-                            Space(10);
                             var val = modifiedValue;
                             _ = UI.TextField(ref val, pair => {
                                 change += pair.newContent - statResult.ModifiedValue;
