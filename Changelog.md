@@ -1,3 +1,4 @@
+- (***ADDB***) Add support for BlueprintClueStudy to Remote Companion Dialog (probably mostly noticeable when investigating clues).
 - (***ADDB***) Fix my save fix hotfix applying outside of saving routine too (should make no difference).
 
 ### ToyBox DarkHeresy - Ver 0.1.10 (built for 0.4.0.749)

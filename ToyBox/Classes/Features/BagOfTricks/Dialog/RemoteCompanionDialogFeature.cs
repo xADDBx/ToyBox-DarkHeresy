@@ -5,8 +5,10 @@ using Kingmaker.Designers.EventConditionActionSystem.Conditions;
 using Kingmaker.DialogSystem;
 using Kingmaker.DialogSystem.Blueprints;
 using Kingmaker.EntitySystem.Entities;
+using Kingmaker.Framework.DetectiveSystem;
 using Kingmaker.UnitLogic.Parts;
 using Kingmaker.Utility.DotNetExtensions;
+using static Owlcat.Runtime.Visual.GPUDrivenBRG.Batching.GPUDrivenNativeDataUpdate;
 
 namespace ToyBox.Features.BagOfTricks.Dialog;
 
@@ -38,6 +40,12 @@ public partial class RemoteCompanionDialogFeature : FeatureWithPatch {
         if (__instance.Not) {
             return;
         }
+
+        // Condition has no Owner. Currently only possibly if manually triggered in DetectiveSystem_IsCompanionAvailableForStudy_Patch
+        if (__instance.Owner == null) {
+            return;
+        }
+
         // We don't want to match when the game only checks for Ex companions since this is basically a check for companions which left the party then
         // Example is 6aeb6812dcc1464a9b087786556c9b18 which checks whether Pascal left as a companion. Really weird design from Owlcat right there.
         if (__instance.MatchWhenEx && !__instance.MatchWhenActive && !__instance.MatchWhenDetached && !__instance.MatchWhenRemote) {
@@ -54,6 +62,11 @@ public partial class RemoteCompanionDialogFeature : FeatureWithPatch {
                         } else if (__instance.Owner is BlueprintAnswer answeBp) {
                             Debug($"Overiding {answeBp.name} Companion {__instance.Companion.name} ({__instance.Companion.AssetGuid}) In Party to true");
                             __result = true;
+                        } else if (__instance.Owner is BlueprintClueStudy clueBp) {
+                            Debug($"Overiding {clueBp.name} Companion {__instance.Companion.name} ({__instance.Companion.AssetGuid}) In Party to true");
+                            __result = true;
+                        } else {
+                            Log($"Encountered IsCompanionInParty with unhandled owner type: {__instance.Owner.AssetGuid}");
                         }
                     }
                 }
@@ -86,7 +99,7 @@ public partial class RemoteCompanionDialogFeature : FeatureWithPatch {
         }
     }
     [HarmonyPatch(typeof(DialogSpeaker), nameof(DialogSpeaker.TryGetSpeakerEntity)), HarmonyPostfix]
-    public static void DialogSpeaker_GetEntity_Patch(DialogSpeaker __instance, ref BaseUnitEntity speaker, ref bool __result) {
+    private static void DialogSpeaker_GetEntity_Patch(DialogSpeaker __instance, ref BaseUnitEntity speaker, ref bool __result) {
         if (!__result && __instance.Blueprint != null) {
             var units = Game.Instance.Controllers.EntitySpawner.CreationQueue.Select((EntitySpawnController.SpawnEntry ce) => ce.Entity).OfType<BaseUnitEntity>();
             var maybeUnit = Game.Instance.Player.AllCrossSceneUnits.Where(u => GetInstance<ExCompanionDialogFeature>().IsEnabled || u.GetCompanionOptional()?.State != CompanionState.ExCompanion)
@@ -96,6 +109,22 @@ public partial class RemoteCompanionDialogFeature : FeatureWithPatch {
                 speaker = maybeUnit;
                 __result = true;
                 return;
+            }
+        }
+    }
+    [HarmonyPatch(typeof(DetectiveSystem), nameof(DetectiveSystem.IsCompanionAvailableForStudy)), HarmonyPostfix]
+    private static void DetectiveSystem_IsCompanionAvailableForStudy_Patch(ref bool __result, BlueprintUnit? blueprint) {
+        // if blueprint == null => result == true; but I'll check anyways for future proofing
+        if (!__result && blueprint != null) {
+            var n = new IsCompanionInParty() {
+                Companion = blueprint,
+                MatchWhenActive = true,
+                MatchWhenRemote = true,
+                MatchWhenEx = GetInstance<ExCompanionDialogFeature>().IsEnabled
+            }.CheckCondition();
+            if (n) {
+                Debug($"Overiding DetectiveSystem.IsCompanionAvailableForStudy call for {blueprint.name} ({blueprint.AssetGuid}) In Party to true");
+                __result = true;
             }
         }
     }
