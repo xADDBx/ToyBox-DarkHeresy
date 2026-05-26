@@ -100,7 +100,6 @@ public partial class PartyFeatureTab : FeatureTab {
             UI.Label(SharedStrings.ThisCannotBeUsedFromTheMainMenu.Red().Bold());
             return;
         }
-        Trace("Starting Party Tab OnGui");
         if (CharacterPicker.OnFilterPickerGUI(6, GUILayout.ExpandWidth(true))) {
             NameSectionWidth.ForceRefresh();
         }
@@ -117,7 +116,7 @@ public partial class PartyFeatureTab : FeatureTab {
                 return;
             }
             var mainChar = GameHelper.GetPlayerCharacter();
-            Dictionary<BaseUnitEntity, float> distanceCache = m_DistanceToCache.Value;
+            var distanceCache = m_DistanceToCache.Value;
             float distanceLabelWidth;
             if (distanceCache.Count == 0) {
                 foreach (var unit in units) {
