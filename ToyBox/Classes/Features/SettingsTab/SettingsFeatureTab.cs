@@ -4,6 +4,7 @@ using ToyBox.Features.SettingsFeatures.UpdateAndIntegrity;
 using ToyBox.Features.SettingsTab.Game;
 using ToyBox.Features.SettingsTab.Inspector;
 using ToyBox.Features.SettingsTab.Other;
+using ToyBox.SettingsTab.Game;
 
 namespace ToyBox.Features.SettingsFeatures;
 
@@ -32,6 +33,7 @@ public partial class SettingsFeaturesTab : FeatureTab {
 
         AddFeature(new FixFlagEnumSavingInBeta(), m_GameLocalizedText);
         AddFeature(new FixCustomPortraitsInBeta(), m_GameLocalizedText);
+        AddFeature(new FixAlignmentBrokenSave(), m_GameLocalizedText);
         AddFeature(new EnableGameDevelopmentModeSetting(), m_GameLocalizedText);
         AddFeature(new DisplayGuidsInTooltipsFeature(), m_GameLocalizedText);
         AddFeature(new CopyLocationHotkeySetting(), m_GameLocalizedText);

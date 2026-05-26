@@ -744,7 +744,7 @@
     "Translated": null
   },
   "ToyBox_Features_BagOfTricks_QualityOfLife_LoadingWithBlueprintErrorsFeature_Description": {
-    "Original": "This dangerous allows loading saves even with missing blueprint mods. This can potentially allow you to recover a save, though you'll have to respec at minimum.",
+    "Original": "This feature allows loading saves even with missing blueprint mods, which can be dangerous. This can potentially allow you to recover a save, though you'll have to respec at minimum.",
     "Translated": null
   },
   "ToyBox_Features_BagOfTricks_QualityOfLife_ObjectHighlightToggleFeature_Name": {
@@ -1721,6 +1721,14 @@
   },
   "ToyBox_Features_SettingsTab_Game_EnableGameDevelopmentModeSetting_Description": {
     "Original": "This turns on the developer console which lets you access cheat commands, access a console and more.",
+    "Translated": null
+  },
+  "ToyBox_SettingsTab_Game_FixAlignmentBrokenSave_Name": {
+    "Original": "Fix save that broke because of alignment",
+    "Translated": null
+  },
+  "ToyBox_SettingsTab_Game_FixAlignmentBrokenSave_Description": {
+    "Original": "Changing alignment via ToyBox in a save with a version < 0.1.11 made that save unable to be loaded. This feature allows loading that save. This feature automatically disables itself once save loading finished.",
     "Translated": null
   },
   "ToyBox_Features_SettingsTab_Game_FixCustomPortraitsInBeta_Name": {
