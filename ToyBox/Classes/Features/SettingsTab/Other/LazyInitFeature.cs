@@ -42,16 +42,18 @@ public partial class LazyInitFeature : FeatureWithPatch, INeedEarlyInitFeature {
         }
     }
     public static void EnsureFinished() {
-        Log($"Lazy init had {Stopwatch.ElapsedMilliseconds}ms before waiting");
-        var sw = Stopwatch.StartNew();
-        if (Main.LateInitTasks.Count > 0) {
-            Task.WaitAll([.. Main.LateInitTasks]);
+        if (!Main.SuccessfullyInitialized) {
+            Log($"Lazy init had {Stopwatch.ElapsedMilliseconds}ms before waiting");
+            var sw = Stopwatch.StartNew();
+            if (Main.LateInitTasks.Count > 0) {
+                Task.WaitAll([.. Main.LateInitTasks]);
+            }
+            Main.LateInitTasks.Where(t => t.IsFaulted).ForEach(t => {
+                Critical($"Late init task IsFaulted: {t}\n{t.Exception?.ToString() ?? "Null Exception?"}");
+            });
+            Main.SuccessfullyInitialized = true;
+            Log($"Waited {sw.ElapsedMilliseconds}ms for lazy init finish");
         }
-        Main.LateInitTasks.Where(t => t.IsFaulted).ForEach(t => {
-            Critical($"Late init task IsFaulted: {t}\n{t.Exception?.ToString() ?? "Null Exception?"}");
-        });
-        Main.SuccessfullyInitialized = true;
-        Log($"Waited {sw.ElapsedMilliseconds}ms for lazy init finish");
     }
     [HarmonyPatch(typeof(UnityModManager.UI), nameof(UnityModManager.UI.Awake)), HarmonyPostfix]
     private static void UnityModManager_UI_Awake_Patch() {
