@@ -57,13 +57,13 @@ public partial class RemoteCompanionDialogFeature : FeatureWithPatch {
                 if (maybeCompanion.State != CompanionState.None) {
                     if (maybeCompanion.State != CompanionState.ExCompanion || GetInstance<ExCompanionDialogFeature>().IsEnabled) {
                         if (__instance.Owner is BlueprintCue cueBp) {
-                            Debug($"Overiding {cueBp.name} Companion {__instance.Companion.name} ({__instance.Companion.AssetGuid}) In Party to true");
+                            Trace($"Overiding {cueBp.name} Companion {__instance.Companion.name} ({__instance.Companion.AssetGuid}) In Party to true");
                             __result = true;
                         } else if (__instance.Owner is BlueprintAnswer answeBp) {
-                            Debug($"Overiding {answeBp.name} Companion {__instance.Companion.name} ({__instance.Companion.AssetGuid}) In Party to true");
+                            Trace($"Overiding {answeBp.name} Companion {__instance.Companion.name} ({__instance.Companion.AssetGuid}) In Party to true");
                             __result = true;
                         } else if (__instance.Owner is BlueprintClueStudy clueBp) {
-                            Debug($"Overiding {clueBp.name} Companion {__instance.Companion.name} ({__instance.Companion.AssetGuid}) In Party to true");
+                            Trace($"Overiding {clueBp.name} Companion {__instance.Companion.name} ({__instance.Companion.AssetGuid}) In Party to true");
                             __result = true;
                         } else {
                             Log($"Encountered IsCompanionInParty with unhandled owner type: {__instance.Owner.AssetGuid}");
@@ -71,7 +71,7 @@ public partial class RemoteCompanionDialogFeature : FeatureWithPatch {
                     }
                 }
             } else {
-                Log($"Could not override check {__instance.name} on {__instance.Owner?.AssetGuid ?? "Null BP Owner?"} because no unit with blueprint {__instance.Companion?.AssetGuid ?? "Null Companion BP?"} was found.");
+                Debug($"Could not override check {__instance.name} on {__instance.Owner?.AssetGuid ?? "Null BP Owner?"} because no unit with blueprint {__instance.Companion?.AssetGuid ?? "Null Companion BP?"} was found.");
             }
         } catch (Exception ex) {
             Error(ex);
@@ -88,7 +88,7 @@ public partial class RemoteCompanionDialogFeature : FeatureWithPatch {
             m_OriginallyIncludedRemote = __instance.IncludeRemote;
             __instance.IncludeExCompanions = GetInstance<ExCompanionDialogFeature>().IsEnabled;
             __instance.IncludeRemote = true;
-            Debug($"Evalutors checking {__instance} Guid:{__instance.AssetGuid} Owner:{__instance.Owner.name} OwnerGuid: {__instance.Owner.AssetGuid}); Allowed ex: {m_OriginallyIncludedEx}, now: {__instance.IncludeExCompanions}; Allowed remote: {m_OriginallyIncludedRemote}, now: true");
+            Trace($"Evalutors checking {__instance} Guid:{__instance.AssetGuid} Owner:{__instance.Owner.name} OwnerGuid: {__instance.Owner.AssetGuid}); Allowed ex: {m_OriginallyIncludedEx}, now: {__instance.IncludeExCompanions}; Allowed remote: {m_OriginallyIncludedRemote}, now: true");
         }
     }
     [HarmonyPatch(typeof(Kingmaker.Designers.EventConditionActionSystem.Evaluators.CompanionInParty), nameof(Kingmaker.Designers.EventConditionActionSystem.Evaluators.CompanionInParty.GetAbstractUnitEntityInternal)), HarmonyPostfix]
@@ -123,7 +123,7 @@ public partial class RemoteCompanionDialogFeature : FeatureWithPatch {
                 MatchWhenEx = GetInstance<ExCompanionDialogFeature>().IsEnabled
             }.CheckCondition();
             if (n) {
-                Debug($"Overiding DetectiveSystem.IsCompanionAvailableForStudy call for {blueprint.name} ({blueprint.AssetGuid}) In Party to true");
+                Trace($"Overiding DetectiveSystem.IsCompanionAvailableForStudy call for {blueprint.name} ({blueprint.AssetGuid}) In Party to true");
                 __result = true;
             }
         }
