@@ -1,3 +1,4 @@
+- (***ADDB***) Fix Modify Alignment features causing saves to become unloadable.
 - (***ADDB***) Add support for BlueprintClueStudy to Remote Companion Dialog (probably mostly noticeable when investigating clues).
 - (***ADDB***) Fix my save fix hotfix applying outside of saving routine too (should make no difference).
 

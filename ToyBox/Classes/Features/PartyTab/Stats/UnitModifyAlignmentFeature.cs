@@ -67,7 +67,9 @@ public partial class UnitModifyAlignmentFeature : Feature, INeedContextFeature<B
     private static void ModifyAlignment(AlignmentAxis dir, int oldRank, int newRank) {
         var change = newRank - oldRank;
         var shift = new AlignmentShift() { Axis = dir, Value = change };
-        AlignmentShiftExtension.ApplyShiftToMainCharacter(shift, new());
+        // Passing a fact source was mandatory in previous versions
+        // Starting with DarkHeresy beta, save loading requires BlueprintScriptableObjects to have a valid guid though
+        AlignmentShiftExtension.ApplyShiftToMainCharacter(shift/*, new()*/);
     }
 
     [LocalizedString("ToyBox_Features_PartyTab_Stats_UnitModifyAlignmentsFeature_m_UnitsOtherThanTheMainCharacterDoLocalizedText", "Units other than the main character don't really have an alignment. Assign the milestone features like AlignmentCorruption2_Feature, though they might not work on other units.")]
