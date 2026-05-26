@@ -21,20 +21,20 @@ public partial class FixFlagEnumSavingInBeta : FeatureWithPatch {
             return "ToyBox.Features.SettingsTab.Game.FixFlagEnumSavingInBeta";
         }
     }
-    private bool m_IsSaving = false;
+    private static bool m_IsSaving = false;
     [HarmonyPatch(typeof(SaveManager), nameof(SaveManager.SerializeSceneState)), HarmonyPrefix]
     private static void StartSaving() {
-        GetInstance<FixFlagEnumSavingInBeta>().m_IsSaving = true;
+        m_IsSaving = true;
     }
     [HarmonyPatch(typeof(SaveManager), nameof(SaveManager.SerializeSceneState)), HarmonyPostfix]
     private static void StopSaving(ref Task __result) {
         __result = __result.ContinueWith(t => {
-            GetInstance<FixFlagEnumSavingInBeta>().m_IsSaving = false;
+            m_IsSaving = false;
         });
     }
     [HarmonyPatch(typeof(Enum), nameof(Enum.GetName)), HarmonyPostfix]
     private static void Override(ref string __result, Type enumType, object value) {
-        if (__result == null && PerformanceEnhancementFeatures.HasAttribute(enumType, typeof(FlagsAttribute))) {
+        if (__result == null && m_IsSaving && PerformanceEnhancementFeatures.HasAttribute(enumType, typeof(FlagsAttribute))) {
             __result = value.ToString();
         }
     }

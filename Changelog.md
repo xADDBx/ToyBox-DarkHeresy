@@ -1,3 +1,5 @@
+- (***ADDB***) Fix my save fix hotfix applying outside of saving routine too (should make no difference).
+
 ### ToyBox DarkHeresy - Ver 0.1.10 (built for 0.4.0.749)
 - (***ADDB***) Implement Loot => AoE Loot Feature. This allows you to bind a key that opens a loot window containing everything lootable within a configurable range (from 0m to 100m).
 - (***ADDB***) Fix reroll perception causing a NullReferenceException
