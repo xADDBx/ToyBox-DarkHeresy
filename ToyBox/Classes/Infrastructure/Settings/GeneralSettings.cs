@@ -41,7 +41,6 @@ public class GeneralSettings : AbstractJsonSettings {
 #warning BETA
     // - Beta
     public bool EnableFixCustomPortraitsInBeta = true;
-    public bool EnableFixFlagEnumSavingInBeta = true;
     public bool EnableFixAlignmentBrokenSave = false;
 
     // - Other

@@ -1,4 +1,6 @@
+### ToyBox DarkHeresy - Ver 0.1.11 (built for 0.4.0.763)
 - (***ADDB***) Implement Bag of Tricks => "Modify Faction Reputation"; Note: The game doesn't really do much with faction reputation in the beta.
+- (***ADDB***) Remove Settings => "Fix saving of Flag Enums" as Owlcat fixed that bug in their saving system.
 
 ### ToyBox DarkHeresy - Ver 0.1.11 (built for 0.4.0.749)
 - (***ADDB***) Fix Modify Alignment features causing saves to become unloadable.
