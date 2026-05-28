@@ -31,7 +31,6 @@ public partial class SettingsFeaturesTab : FeatureTab {
     public SettingsFeaturesTab() {
         AddFeature(new UpdaterFeature(), m_UpdateText);
 
-        AddFeature(new FixFlagEnumSavingInBeta(), m_GameLocalizedText);
         AddFeature(new FixCustomPortraitsInBeta(), m_GameLocalizedText);
         AddFeature(new FixAlignmentBrokenSave(), m_GameLocalizedText);
         AddFeature(new EnableGameDevelopmentModeSetting(), m_GameLocalizedText);

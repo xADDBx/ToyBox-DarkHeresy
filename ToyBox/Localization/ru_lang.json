@@ -1763,14 +1763,6 @@
     "Original": "Owlcat changed their save format (no more json) which breaks saving with custom portraits. This fixes that. You still need to use Party => Stats to set a custom portrait. Disabling this feature requires a restart.",
     "Translated": null
   },
-  "ToyBox_Features_SettingsTab_Game_FixFlagEnumSavingInBeta_Name": {
-    "Original": "Fix saving of Flag Enums",
-    "Translated": null
-  },
-  "ToyBox_Features_SettingsTab_Game_FixFlagEnumSavingInBeta_Description": {
-    "Original": "The Beta switched the save system. The new system can't properly handle flag enums which can cause saving to fail. This feature is a hotfix for that.",
-    "Translated": null
-  },
   "ToyBox_Features_SettingsTab_Inspector_InspectorDrawLimitSetting_Name": {
     "Original": "Inspector Draw Limit",
     "Translated": null
