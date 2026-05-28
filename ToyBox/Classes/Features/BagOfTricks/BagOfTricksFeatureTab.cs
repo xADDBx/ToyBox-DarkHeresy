@@ -90,6 +90,7 @@ public partial class BagOfTricksFeatureTab : FeatureTab {
         AddFeature(new PreventPsychicPhenomenaFeature(), m_RTTweaksLocalizedText);
         AddFeature(new PreventVeilThicknessFromChangingFeature(), m_RTTweaksLocalizedText);
         AddFeature(new CustomizePsychicPhenomenaFeature(), m_RTTweaksLocalizedText);
+        AddFeature(new ModifyFactionReputationFeature(), m_RTTweaksLocalizedText);
 
         AddFeature(new AllowZoomOnAllMapsAndCutscenesFeature(), m_CameraLocalizedText);
         AddFeature(new AllowRotateOnAllMapsAndCutscenesFeature(), m_CameraLocalizedText);

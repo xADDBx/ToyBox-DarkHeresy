@@ -803,6 +803,30 @@
     "Original": "Exclude",
     "Translated": null
   },
+  "ToyBox_Features_BagOfTricks_RTSpecific_ModifyFactionReputationFeature_Name": {
+    "Original": "Modify Faction Reputation",
+    "Translated": null
+  },
+  "ToyBox_Features_BagOfTricks_RTSpecific_ModifyFactionReputationFeature_Description": {
+    "Original": "Allows you to modify the reputation at the various in-game factions.",
+    "Translated": null
+  },
+  "ToyBox_Features_BagOfTricks_RTSpecific_ModifyFactionReputationFeature_m_CurrentReputationLocalizedText": {
+    "Original": "Current Reputation",
+    "Translated": null
+  },
+  "ToyBox_Features_BagOfTricks_RTSpecific_ModifyFactionReputationFeature_m_AdjustReputationByTheFollowingAmLocalizedText": {
+    "Original": "Adjust Reputation by the following amount",
+    "Translated": null
+  },
+  "ToyBox_Features_BagOfTricks_RTSpecific_ModifyFactionReputationFeature_m_AddLocalizedText": {
+    "Original": "Add",
+    "Translated": null
+  },
+  "ToyBox_Features_BagOfTricks_RTSpecific_ModifyFactionReputationFeature_m_RemoveLocalizedText": {
+    "Original": "Remove",
+    "Translated": null
+  },
   "ToyBox_Features_BagOfTricks_RTSpecific_PreventPsychicPhenomenaFeature_Name": {
     "Original": "Prevent Psychic Phenomena",
     "Translated": null

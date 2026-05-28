@@ -1,3 +1,5 @@
+- (***ADDB***) Implement Bag of Tricks => "Modify Faction Reputation"; Note: The game doesn't really do much with faction reputation in the beta.
+
 ### ToyBox DarkHeresy - Ver 0.1.11 (built for 0.4.0.749)
 - (***ADDB***) Fix Modify Alignment features causing saves to become unloadable.
 - (***ADDB***) Add Settings => "Fix save that broke because of alignment" for saves which got affected by the above bug. Just activate this and you should be able to load the save that was broken by that issue.
