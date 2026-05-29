@@ -28,7 +28,12 @@ public partial class ModifyFactionReputationFeature : Feature {
             m_ValidFactions = [FactionType.None];
             foreach (var e in Enum.GetValues(typeof(FactionType))) {
                 var e2 = (FactionType)e;
+                /*
                 if (Game.Instance.Reputation._reputation.ContainsKey(e2)) {
+                    m_ValidFactions.Add(e2);
+                }
+                */
+                if (!string.IsNullOrWhiteSpace(UIStrings.Instance.CharacterSheet.GetFactionLabel(e2)) && !IsEnumObsolete(e2)) {
                     m_ValidFactions.Add(e2);
                 }
             }
@@ -69,6 +74,11 @@ public partial class ModifyFactionReputationFeature : Feature {
                 }
             }
         }
+    }
+    private static bool IsEnumObsolete(Enum value) {
+        var fi = value.GetType().GetField(value.ToString());
+        var attributes = (ObsoleteAttribute[])fi.GetCustomAttributes(typeof(ObsoleteAttribute), false);
+        return attributes != null && attributes.Length > 0;
     }
     [LocalizedString("ToyBox_Features_BagOfTricks_RTSpecific_ModifyFactionReputationFeature_m_CurrentReputationLocalizedText", "Current Reputation")]
     private static partial string m_CurrentReputationLocalizedText { get; }

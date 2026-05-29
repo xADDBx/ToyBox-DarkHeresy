@@ -1,3 +1,5 @@
+- (***ADDB***) All 4 factions should now by shown in "Modify Faction Reputation" from the start.
+
 ### ToyBox DarkHeresy - Ver 0.1.12 (built for 0.4.0.763)
 - (***ADDB***) Implement Bag of Tricks => "Modify Faction Reputation"; Note: The game doesn't really do much with faction reputation in the beta.
 - (***ADDB***) Remove Settings => "Fix saving of Flag Enums" as Owlcat fixed that bug in their saving system.
