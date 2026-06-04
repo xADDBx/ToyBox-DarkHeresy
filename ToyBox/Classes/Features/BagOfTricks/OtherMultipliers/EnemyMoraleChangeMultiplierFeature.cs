@@ -45,7 +45,7 @@ public partial class EnemyMoraleChangeMultiplierFeature : FeatureWithPatch {
     private static void RuleCalculateMoraleChange_OnTrigger_Patch(RuleCalculateMoraleChange __instance) {
         try {
             if (ToyBoxUnitHelper.IsOfSelectedType(__instance.TargetUnit, UnitSelectType.Enemies) && Settings.EnemyMoraleChangeMultiplier.HasValue) {
-                __instance.ValueModifier.Add(Kingmaker.RuleSystem.Rules.Modifiers.ModifierType.PctMul_Extra, 200, __instance, Kingmaker.Enums.ModifierDescriptor.Cheat);
+                __instance.ValueModifier.Add(Kingmaker.RuleSystem.Rules.Modifiers.ModifierType.PctMul_Extra, (int)(100 * Settings.EnemyMoraleChangeMultiplier.Value), __instance, Kingmaker.Enums.ModifierDescriptor.Cheat);
             }
         } catch (Exception ex) {
             Error(ex);

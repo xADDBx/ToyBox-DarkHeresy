@@ -1,6 +1,9 @@
+### ToyBox DarkHeresy - Ver 0.1.14 (built for 0.4.0.763)
+- (***ADDB***) Enemy and Ally morale multipliers now actually respect the set value instead of just doubling.
+
 ### ToyBox DarkHeresy - Ver 0.1.13 (built for 0.4.0.763)
-- (***ADDB***) Add Bag of Tricks => Other Multipliers => "Enemy Morale Multiplier"
-- (***ADDB***) Add Bag of Tricks => Other Multipliers => "Ally Morale Multiplier"
+- (***ADDB***) Add Bag of Tricks => Other Multipliers => "Enemy Morale Multiplier".
+- (***ADDB***) Add Bag of Tricks => Other Multipliers => "Ally Morale Multiplier".
 - (***ADDB***) All 4 factions should now by shown in "Modify Faction Reputation" from the start.
 
 ### ToyBox DarkHeresy - Ver 0.1.12 (built for 0.4.0.763)
