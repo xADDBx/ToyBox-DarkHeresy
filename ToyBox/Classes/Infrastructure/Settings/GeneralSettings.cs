@@ -174,6 +174,8 @@ public class GeneralSettings : AbstractJsonSettings {
     public int? MinSprintDistanceSetting = null;
     public float? MovementSpeedMultiplier = null;
     public float? BuffDurationMultiplier = null;
+    public float? EnemyMoraleChangeMultiplier = null;
+    public float? AllyMoraleChangeMultiplier = null;
     public HashSet<string> BuffDurationMultiplierExclusions = [
             "6179bbe7a7b4b674c813dedbca121799", //Summoned Unit Appear Buff (causes inaction for summoned units)
             "12f2f2cf326dfd743b2cce5b14e99b3c", //Resurrection Buff

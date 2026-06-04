@@ -123,6 +123,8 @@ public partial class BagOfTricksFeatureTab : FeatureTab {
         AddFeature(new MinSprintDistanceFeature(), m_OtherMultipliersLocalizedText);
         AddFeature(new MovementSpeedMultiplierFeature(), m_OtherMultipliersLocalizedText);
         AddFeature(new BuffDurationMultiplierFeature(), m_OtherMultipliersLocalizedText);
+        AddFeature(new AllyMoraleChangeMultiplierFeature(), m_OtherMultipliersLocalizedText);
+        AddFeature(new EnemyMoraleChangeMultiplierFeature(), m_OtherMultipliersLocalizedText);
 
         AddFeature(new DiceRollsOverridesFeature(), m_DiceRollsLocalizedText);
 
