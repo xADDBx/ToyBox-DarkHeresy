@@ -64,7 +64,7 @@ public partial class UnitModifyStatsFeature : FeatureWithPatch, INeedContextFeat
             using (HorizontalScope()) {
                 Space(25);
                 using (VerticalScope()) {
-                    UI.Label("When this is turned off, the changed stats will be \"forgotten\" after reloading the save because base stats are recalculated on save load.".Orange(), Width(0.5f * EffectiveWindowWidth()));
+                    UI.Label(m_WhenThisIsTurnedOff_TheChangedStLocalizedText.Orange(), Width(0.5f * EffectiveWindowWidth()));
                     foreach (StatType stat in Enum.GetValues(typeof(StatType))) {
                         if (Constants.WeirdStats.Contains(stat)) {
                             continue;
@@ -154,4 +154,6 @@ public partial class UnitModifyStatsFeature : FeatureWithPatch, INeedContextFeat
     private static partial string m_TryToKeepThisFeatureActivatedAftLocalizedText { get; }
     [LocalizedString("ToyBox_Features_PartyTab_Stats_UnitModifyStatsFeature_m_OverridenByLocalizedText", "Overriden by")]
     private static partial string m_OverridenByLocalizedText { get; }
+    [LocalizedString("ToyBox_Features_PartyTab_Stats_UnitModifyStatsFeature_m_WhenThisIsTurnedOff_TheChangedStLocalizedText", "When this is turned off, the changed stats will be \"forgotten\" after reloading the save because base stats are recalculated on save load.")]
+    private static partial string m_WhenThisIsTurnedOff_TheChangedStLocalizedText { get; }
 }

@@ -3,6 +3,7 @@ using Kingmaker.Blueprints.Area;
 using Kingmaker.Designers.EventConditionActionSystem.Actions;
 using Kingmaker.Designers.EventConditionActionSystem.Conditions;
 using Kingmaker.ElementsSystem;
+using System.Diagnostics;
 using ToyBox.Infrastructure.Blueprints.BlueprintActions;
 using ToyBox.Infrastructure.Inspector;
 using ToyBox.Infrastructure.Utilities;
@@ -62,7 +63,6 @@ public partial class EtudesEditorFeature : Feature {
             UI.Label(m_LoadingText.Orange().Bold());
             return;
         }
-
         if (!EnsureAreaBrowser()) {
             return;
         }
@@ -131,8 +131,8 @@ public partial class EtudesEditorFeature : Feature {
                             m_AreaByName[title] = bp;
                         }
                     }
-                    m_AreaByName["All"] = null;
-                    m_AreaBrowser = new(sortKey: s => s == "All" ? "" : s, searchKey: s => s, initialItems: m_AreaByName.Keys, showDivBetweenItems: false, orderInitialCollection: true);
+                    m_AreaByName[m_AllLocalizedText] = null;
+                    m_AreaBrowser = new(sortKey: s => s == m_AllLocalizedText ? "" : s, searchKey: s => s, initialItems: m_AreaByName.Keys, showDivBetweenItems: false, orderInitialCollection: true);
                     m_NeedInitAreaBrowserWidth = true;
                 });
             });
@@ -169,7 +169,6 @@ public partial class EtudesEditorFeature : Feature {
                 return;
             }
 
-            snapshot.UpdateRuntimeStates();
             // Optimally clearing here should not be necessary
             m_Enclosing.Clear();
 
@@ -185,7 +184,7 @@ public partial class EtudesEditorFeature : Feature {
         if (m_ShowOnlyFlagLike && !etude.IsIndirectlyFlagLike()) {
             return false;
         }
-        if (snapshot.DidSearch && !etude.IsMatched) {
+        if (snapshot.DidSearch && !etude.IsMatched && !etude.IsDescendantMatched) {
             return false;
         }
 
@@ -205,7 +204,9 @@ public partial class EtudesEditorFeature : Feature {
             using (HorizontalScope(GUILayout.ExpandWidth(true))) {
                 using (HorizontalScope(Width(140 * Main.UIScale))) {
                     foreach (var action in BlueprintActionFeature.GetActionsForBlueprintType<BlueprintEtude>()) {
-                        _ = action.OnGui(etude.Blueprint, false, default);
+                        if (action.OnGui(etude.Blueprint, false, default) ?? false) {
+                            Main.ScheduleForMainThread(snapshot.UpdateRuntimeStates);
+                        }
                     }
                 }
 
@@ -316,6 +317,7 @@ public partial class EtudesEditorFeature : Feature {
                         if (UI.Button((ga.GetCaption() ?? "?").Yellow())) {
                             try {
                                 ga.RunAction();
+                                Main.ScheduleForMainThread(snapshot.UpdateRuntimeStates);
                             } catch (Exception ex) {
                                 Warn($"Failed to run action {ga.GetCaption()}:\n{ex}");
                             }
@@ -405,4 +407,6 @@ public partial class EtudesEditorFeature : Feature {
     private static partial string m_ConflictsText { get; }
     [LocalizedString("ToyBox_Features_Etudes_EtudesFeature_m_EncounteredErrorWhileBuildingEtuLocalizedText", "Encountered error while building Etudes Tree!")]
     private static partial string m_EncounteredErrorWhileBuildingEtuLocalizedText { get; }
+    [LocalizedString("ToyBox_Features_Etudes_EtudesEditorFeature_m_AllLocalizedText", "All")]
+    private static partial string m_AllLocalizedText { get; }
 }

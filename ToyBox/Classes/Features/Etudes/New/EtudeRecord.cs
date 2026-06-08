@@ -2,7 +2,7 @@
 using Kingmaker.ElementsSystem;
 
 namespace ToyBox.Features.Etudes;
-public class EtudeRecord {
+public partial class EtudeRecord {
     public BlueprintEtude Blueprint { get; }
     public string Name {
         get {
@@ -64,13 +64,15 @@ public class EtudeRecord {
 
             foreach (var chained in ChainedEtudes) {
                 if (chained.Parent != Parent) {
-                    return $"Chained etude {chained.Name} ({chained.Blueprint.AssetGuid}) has different parent: {chained.Parent?.Blueprint.AssetGuid ?? "None"} than {Name} parent: {Parent?.Blueprint.AssetGuid ?? "None"}";
+                    return string.Format(m_ChainedEtude_0___1__HasDifferentLocalizedText, chained.Name, chained.Name, chained.Parent?.Blueprint.AssetGuid ?? m_NoneLocalizedText, Name, Parent?.Blueprint.AssetGuid ?? m_NoneLocalizedText);
+                    // return $"Chained etude {chained.Name} ({chained.Blueprint.AssetGuid}) has different parent: {chained.Parent?.Blueprint.AssetGuid ?? "None"} than {Name} parent: {Parent?.Blueprint.AssetGuid ?? "None"}";
                 }
             }
 
             foreach (var linked in LinkedEtudes) {
                 if (linked.Parent != Parent && linked.Parent != this) {
-                    return $"Linked to child {linked.Name} ({linked.Blueprint.AssetGuid}) with different parent: {linked.Parent?.Blueprint.AssetGuid ?? "None"} than {Name} parent {Parent?.Blueprint.AssetGuid ?? "None"}";
+                    return string.Format(m_LinkedToChild_0___1__WithDiffereLocalizedText, linked.Name, linked.Blueprint.AssetGuid, linked.Parent?.Blueprint.AssetGuid ?? m_NoneLocalizedText, Name, Parent?.Blueprint.AssetGuid ?? m_NoneLocalizedText);
+                    // return $"Linked to child {linked.Name} ({linked.Blueprint.AssetGuid}) with different parent: {linked.Parent?.Blueprint.AssetGuid ?? "None"} than {Name} parent {Parent?.Blueprint.AssetGuid ?? "None"}";
                 }
             }
 
@@ -128,4 +130,11 @@ public class EtudeRecord {
     public EtudeRecord(BlueprintEtude blueprint) {
         Blueprint = blueprint;
     }
+
+    [LocalizedString("ToyBox_Features_Etudes_EtudeRecord_m_ChainedEtude_0___1__HasDifferentLocalizedText", "Chained etude {0} ({1}) has different parent: {2} than {3} parent: {4}")]
+    private static partial string m_ChainedEtude_0___1__HasDifferentLocalizedText { get; }
+    [LocalizedString("ToyBox_Features_Etudes_EtudeRecord_m_LinkedToChild_0___1__WithDiffereLocalizedText", "Linked to child {0} ({1}) with different parent: {2} than {3} parent {4}")]
+    private static partial string m_LinkedToChild_0___1__WithDiffereLocalizedText { get; }
+    [LocalizedString("ToyBox_Features_Etudes_EtudeRecord_m_NoneLocalizedText", "None")]
+    private static partial string m_NoneLocalizedText { get; }
 }
