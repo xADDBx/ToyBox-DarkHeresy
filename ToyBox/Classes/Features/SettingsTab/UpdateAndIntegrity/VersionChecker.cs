@@ -2,7 +2,6 @@
 using Newtonsoft.Json;
 using System.Net;
 using System.Numerics;
-using ToyBox.Infrastructure.Utilities;
 
 namespace ToyBox.Features.SettingsFeatures.UpdateAndIntegrity;
 
