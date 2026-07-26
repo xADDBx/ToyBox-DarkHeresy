@@ -33,7 +33,7 @@ public static class EtudesEditor {
     public static string searchText = "";
     public static string searchTextInput = "";
     private static bool _showOnlyFlagLikes;
-    private static bool showComments => Settings.showEtudeComments;
+    private static bool showComments => Settings.ShowEtudeComments;
 
     private static BlueprintArea? _selectedArea;
     private static Dictionary<string, BlueprintArea?> m_NameToAreaDict = [];
@@ -104,9 +104,9 @@ public static class EtudesEditor {
             Space(25);
             if (UI.Toggle("Flags Only", null, ref _showOnlyFlagLikes)) ApplyFilter();
             Space(25);
-            UI.Toggle("Show GUIDs", null, ref Settings.showAssetIDs);
+            UI.Toggle("Show GUIDs", null, ref Settings.ShowAssetIDs);
             Space(25);
-            UI.Toggle("Show Comments (some in Russian)", null, ref Settings.showEtudeComments);
+            UI.Toggle("Show Comments (some in Russian)", null, ref Settings.ShowEtudeComments);
             //UI.Label($"Etude Hierarchy : {(loadedEtudes.Count == 0 ? "" : loadedEtudes[parent].Name)}", UI.AutoWidth());
             //UI.Label($"H : {(loadedEtudes.Count == 0 ? "" : loadedEtudes[selected].Name)}");
 
@@ -286,18 +286,18 @@ public static class EtudesEditor {
                         Space(25);
                         UI.Label("Can Start", Width(100));
                     }
-                    InspectorUI.InspectToggle(etude, "Inspect", options:Width(100));
-                    if (Settings.showAssetIDs) {
+                    InspectorUI.InspectToggle(etude, "Inspect", options: Width(100));
+                    if (Settings.ShowAssetIDs) {
                         var guid = etudeID.ToString();
                         UI.TextField(ref guid);
                     }
-                    if (showComments && !Settings.showAssetIDs && !string.IsNullOrEmpty(etude.Comment)) {
+                    if (showComments && !Settings.ShowAssetIDs && !string.IsNullOrEmpty(etude.Comment)) {
                         UI.Label(etude.Comment.Green(), GUILayout.ExpandWidth(true));
                     }
                     UI.Label("");
                 }
                 InspectorUI.InspectIfExpanded(etude);
-                if (showComments && Settings.showAssetIDs && !string.IsNullOrEmpty(etude.Comment)) {
+                if (showComments && Settings.ShowAssetIDs && !string.IsNullOrEmpty(etude.Comment)) {
                     Space(-15);
                     using (HorizontalScope(Width(200))) {
                         Space(310);
@@ -346,13 +346,32 @@ public static class EtudesEditor {
 
                                 }
                                 if (element is StartEtude started) {
-                                    DrawEtudeTree(started.Etude.Guid, 2, true);
+                                    string? guid;
+                                    if (started.Evaluate) {
+                                        guid = started.EtudeEvaluator?.GetValue()?.AssetGuid;
+                                    } else {
+                                        guid = started.Etude?.Guid;
+                                    }
+                                    if (!string.IsNullOrEmpty(guid)) {
+                                        DrawEtudeTree(guid, 2, true);
+                                    }
                                 }
                                 if (element is EtudeStatus status) {
-                                    DrawEtudeTree(status.m_Etude.Guid, 2, true);
+                                    var guid = status.m_Etude?.guid;
+                                    if (!string.IsNullOrEmpty(guid)) {
+                                        DrawEtudeTree(status.m_Etude.Guid, 2, true);
+                                    }
                                 }
                                 if (element is CompleteEtude completed) {
-                                    DrawEtudeTree(completed.Etude.Guid, 2, true);
+                                    string? guid;
+                                    if (completed.Evaluate) {
+                                        guid = completed.EtudeEvaluator?.GetValue()?.AssetGuid;
+                                    } else {
+                                        guid = completed.Etude?.Guid;
+                                    }
+                                    if (!string.IsNullOrEmpty(guid)) {
+                                        DrawEtudeTree(completed.Etude.Guid, 2, true);
+                                    }
                                 }
                                 Div.DrawDiv();
                             }

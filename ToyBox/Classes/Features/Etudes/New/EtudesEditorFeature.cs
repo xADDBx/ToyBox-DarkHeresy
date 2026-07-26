@@ -46,6 +46,7 @@ public partial class EtudesEditorFeature : Feature {
         m_AreaBrowser = null;
         m_AreaByName.Clear();
         m_SelectedArea = null;
+        m_NeedInitAreaBrowserWidth = null;
     }
 
     public override void OnGui() {
@@ -103,10 +104,10 @@ public partial class EtudesEditorFeature : Feature {
             _ = UI.Toggle(m_FlagsOnlyText.Cyan(), null, ref m_ShowOnlyFlagLike);
 
             Space(20);
-            _ = UI.Toggle(m_ShowGuidsText.Cyan(), null, ref Settings.showAssetIDs);
+            _ = UI.Toggle(m_ShowGuidsText.Cyan(), null, ref Settings.ShowAssetIDs);
 
             Space(20);
-            _ = UI.Toggle(m_ShowCommentsText.Cyan(), null, ref Settings.showEtudeComments);
+            _ = UI.Toggle(m_ShowCommentsText.Cyan(), null, ref Settings.ShowEtudeComments);
 
             Space(20);
             if (UI.Button(m_RefreshText.Cyan(), () => {
@@ -250,7 +251,7 @@ public partial class EtudesEditorFeature : Feature {
 
                 InspectorUI.InspectToggle(etude.Blueprint, m_InspectText, options: AutoWidth());
 
-                if (Settings.showAssetIDs) {
+                if (Settings.ShowAssetIDs) {
                     var tmp = etude.Blueprint.AssetGuid.ToString();
                     Space(5);
                     _ = UI.TextField(ref tmp, null, Width(m_AssetIdWidth.Value));
@@ -265,7 +266,7 @@ public partial class EtudesEditorFeature : Feature {
 
                 Space(10);
 
-                if (Settings.showEtudeComments && !string.IsNullOrWhiteSpace(etude.Comment)) {
+                if (Settings.ShowEtudeComments && !string.IsNullOrWhiteSpace(etude.Comment)) {
                     UI.Label(etude.Comment.Green(), GUILayout.ExpandWidth(true));
                 }
             }
@@ -332,15 +333,15 @@ public partial class EtudesEditorFeature : Feature {
 
                 Space(10);
                 if (element is Condition cond) {
-                    UI.Label($"{element.GetType().Name.Cyan()} : {cond.CheckCondition().ToString().Orange()}", Width(420 * Main.UIScale));
+                    UI.Label($"{element.GetType().Name.Cyan()} : {SafeEvaluate(cond.CheckCondition)}", Width(420 * Main.UIScale));
                 } else if (element is Conditional conditional) {
                     var caption = string.Join(", ", conditional.ConditionsChecker.Conditions.Select(c => c.GetCaption()));
-                    UI.Label($"{element.GetType().Name.Cyan()} : {conditional.ConditionsChecker.Check().ToString().Orange()} - {caption.Yellow()}", Width(420 * Main.UIScale));
+                    UI.Label($"{element.GetType().Name.Cyan()} : {SafeEvaluate(() => conditional.ConditionsChecker.Check())} - {caption.Yellow()}", Width(420 * Main.UIScale));
                 } else {
                     UI.Label(element.GetType().Name.Cyan(), Width(420 * Main.UIScale));
                 }
 
-                if (Settings.showEtudeComments) {
+                if (Settings.ShowEtudeComments) {
                     UI.Label(element.GetDescription().Green(), GUILayout.ExpandWidth(true));
                 }
             }
@@ -363,6 +364,17 @@ public partial class EtudesEditorFeature : Feature {
             }
         }
     }
+
+    private static string SafeEvaluate(Func<bool> check) {
+        try {
+            return check().ToString().Orange();
+        } catch (Exception ex) {
+            return $"{m_EvaluationFailedText} ({ex.GetType().Name})".Red();
+        }
+    }
+
+    [LocalizedString("ToyBox_Features_Etudes_EtudesFeature_EvaluationFailedText", "Evaluation failed")]
+    private static partial string m_EvaluationFailedText { get; }
 
     [LocalizedString("ToyBox_Features_Etudes_EtudesFeature_LoadingText", "Loading Etudes...")]
     private static partial string m_LoadingText { get; }

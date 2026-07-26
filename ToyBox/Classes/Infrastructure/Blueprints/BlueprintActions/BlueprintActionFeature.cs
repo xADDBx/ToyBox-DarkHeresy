@@ -128,7 +128,6 @@ public class BlueprintActions : FeatureTab {
     }
 
     public BlueprintActions() {
-#warning TODO: BlueprintSelection; BlueprintSelectionFeature
         AddFeature(new LoadAreaPresetBA());
         AddFeature(new TeleportBlueprintAreaBA());
         AddFeature(new TeleportBlueprintAreaEnterPointBA());

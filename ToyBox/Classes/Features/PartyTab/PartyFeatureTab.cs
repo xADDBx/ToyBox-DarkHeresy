@@ -24,7 +24,7 @@ public partial class PartyFeatureTab : FeatureTab {
     private PartyTabSectionType m_UncollapsedSection = PartyTabSectionType.None;
     private BaseUnitEntity? m_UncollapsedUnit = null;
     private static readonly PartyTabSectionType[] m_Sections = [PartyTabSectionType.Careers, PartyTabSectionType.Stats, PartyTabSectionType.Features,
-        PartyTabSectionType.Buffs, PartyTabSectionType.Abilities, PartyTabSectionType.Mechadendrites, PartyTabSectionType.FeatureLists, PartyTabSectionType.Inspect];
+        PartyTabSectionType.Buffs, PartyTabSectionType.Abilities, PartyTabSectionType.Mechadendrites, PartyTabSectionType.Inspect];
     private readonly TimedCache<float> m_InspectLabelWidth = new(() => UI.WidthInDisclosureStyle(m_InspectPartyText));
     private void RefreshNameCache() {
         NameSectionWidth.ForceRefresh();
@@ -53,6 +53,7 @@ public partial class PartyFeatureTab : FeatureTab {
         AddFeature(new UnitBrowseVoicesFeature());
         AddFeature(new UnitOverrideAiControlBehaviourFeature());
         AddFeature(new UnitOverrideVisualSizeFeature());
+        AddFeature(new UnitOverrideSkeletonFeature());
         AddFeature(new UnitModifyAlignmentFeature());
         AddFeature(new UnitModifyStatsFeature());
 
@@ -178,7 +179,6 @@ public partial class PartyFeatureTab : FeatureTab {
                                 case PartyTabSectionType.Abilities: Feature.GetInstance<PartyBrowseAbilitiesFeature>().OnGui(unit); break;
                                 case PartyTabSectionType.Careers: OnCareersGui(unit); break;
                                 case PartyTabSectionType.Stats: OnStatsGui(unit); break;
-                                case PartyTabSectionType.FeatureLists: OnFeatureListsGui(unit); break;
                                 case PartyTabSectionType.Mechadendrites: Feature.GetInstance<PartyBrowseMechadendritesFeature>().OnGui(unit); break;
                                 case PartyTabSectionType.None:
                                     break;
@@ -189,16 +189,10 @@ public partial class PartyFeatureTab : FeatureTab {
                     }
                 } catch (Exception ex) {
                     Warn($"Exception in Party GUI:\n{ex}");
-                    UI.Label("Party GUI errored for this unit!".Red());
                     CharacterPicker.InvalidateAllCaches();
                 }
             }
         }
-    }
-    private static void OnFeatureListsGui(BaseUnitEntity unit) {
-        Space(10);
-#warning TODO
-        UI.Label("Uncollapsed Feature Lists");
     }
     private static void OnStatsGui(BaseUnitEntity unit) {
         Space(10);
@@ -213,6 +207,8 @@ public partial class PartyFeatureTab : FeatureTab {
             Feature.GetInstance<UnitOverrideAiControlBehaviourFeature>().OnGui(unit);
             Div.DrawDiv();
             Feature.GetInstance<UnitOverrideVisualSizeFeature>().OnGui(unit);
+            Div.DrawDiv();
+            Feature.GetInstance<UnitOverrideSkeletonFeature>().OnGui(unit);
             Div.DrawDiv();
             Feature.GetInstance<UnitModifyAlignmentFeature>().OnGui(unit);
             Div.DrawDiv();

@@ -51,6 +51,9 @@ public class GeneralSettings : AbstractJsonSettings {
     public bool EnableLogHotkeysToCombatLog = false;
     public bool EnableShowRiskyToggles = false;
     public bool EnableImguiColorFix = true;
+    public bool EnableFontFix = true;
+    public bool CheckForGlyphSupport = true;
+    public bool UseDefaultGlyphs = true;
 
     // - Browser
     public int PageLimit = 25;
@@ -225,7 +228,17 @@ public class GeneralSettings : AbstractJsonSettings {
     public Dictionary<string, bool> OverrideEnableAiForCompanions = [];
     public bool EnableUnitOverrideMechanicalSize = false;
     public bool EnableUnitOverrideVisualSize = false;
+    public bool EnableUnitOverrideSkeleton = false;
     public bool EnableUnitModifyStats = false;
+
+    // Dialog & NPCs
+    public bool ShowInactiveInterestingNpcConditions = false;
+    public bool InterestingNpcsShowHidden = false;
+
+    // Quests
+    public bool QuestsHideCompleted = false;
+    public bool QuestsShowUnrevealedObjectives = false;
+    public bool QuestsShowInspector = false;
 
     // Loot
     public bool MassLootShowHiddenItems = false;
@@ -238,6 +251,20 @@ public class GeneralSettings : AbstractJsonSettings {
     public bool SortCollationCategoriesByCount = false;
 
     // Etudes
-    public bool showEtudeComments = false;
-    public bool showAssetIDs = false;
+    public bool ShowEtudeComments = false;
+    public bool ShowAssetIDs = false;
+
+    // PatchTools
+    public HashSet<string> DisabledPatches = [];
+    public bool EnableDangerousPatchToolPatches = false;
+    public bool ApplyBlueprintPatchesOnLoad = true;
+    public bool ShowPatchToolPrimitiveTypes = true;
+    public bool ShowPatchToolEnums = true;
+    public bool ShowPatchToolBlueprintReferences = true;
+    public bool ShowPatchToolCollections = true;
+    public bool ShowPatchToolComplexTypes = true;
+    public bool ShowPatchToolUnityObjects = false;
+    public bool ShowPatchToolDeleteButtons = false;
+    public bool ShowPatchToolCreateButtons = false;
+    public bool CollapseAllPatchToolPathsOnPatch = false;
 }

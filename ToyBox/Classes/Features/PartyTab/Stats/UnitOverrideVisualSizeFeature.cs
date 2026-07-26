@@ -42,7 +42,9 @@ public partial class UnitOverrideVisualSizeFeature : FeatureWithPatch, INeedCont
                     current = 1f;
                 }
                 Space(10);
-                if (UI.LogSlider(ref current, 0.01f, 40f, 1, 2, null, Width(300 * Main.UIScale))) {
+                var changed = UI.LogSlider(ref current, 0.01f, 40f, 1, 2, null, Width(300 * Main.UIScale));
+                changed |= UI.TextField(ref current, null, Width(75 * Main.UIScale));
+                if (changed) {
                     if (current == 1) {
                         _ = InSaveSettings?.VisualSizeOverrides.Remove(unit.UniqueId);
                     } else {
