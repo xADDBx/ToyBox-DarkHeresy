@@ -8,14 +8,11 @@ namespace ToyBox.Infrastructure.Blueprints.BlueprintActions;
 public partial class UnlockAchievementBA : BlueprintActionFeature, IBlueprintAction<AchievementData> {
 
     public bool CanExecute(AchievementData blueprint, ActionParameter parameter) {
-        return IsInGame() && (Game.Instance.Player.Achievements.m_Achievements?.Any(ach => !ach.IsUnlocked && ach.Data == blueprint) ?? false);
+        return IsInGame() && AchievementsHelper.CanUnlock(blueprint);
     }
     public bool Execute(AchievementData blueprint, ActionParameter parameter) {
         LogExecution(blueprint);
-        var ach = Game.Instance.Player.Achievements.m_Achievements.First(ach => !ach.IsUnlocked && ach.Data == blueprint);
-        ach.IsUnlocked = true;
-        ach.NeedCommit = true;
-        ach.Manager.OnAchievementUnlocked(ach);
+        Game.Instance.AchievementsManager.Unlock(blueprint);
         return true;
     }
     public bool? OnGui(AchievementData blueprint, bool isFeatureSearch, ActionParameter parameter) {

@@ -120,6 +120,7 @@ internal class SkeletonReplacer {
     }
 
     private void CreateBodyParts(Dictionary<string, PartDataStruct> bodyPartsTable) {
+        var boneData = m_OldSkeleton.GetBoneData();
         var bonesByName = new Dictionary<string, Skeleton.Bone>();
         foreach (var bone in m_OldSkeleton.Bones) {
             if (bone.Name != null) {
@@ -145,8 +146,7 @@ internal class SkeletonReplacer {
                 if (bonesByName.TryGetValue(boneName, out var bone)) {
                     part.IsEmpty = false;
                     var index = m_OldSkeleton.Bones.IndexOf(bone);
-                    m_OldSkeleton.Bones[index].ApplyOffset = isOffsetPart;
-                    var originalValue = isOffsetPart ? m_OldSkeleton.Bones[index].Offset : m_OldSkeleton.Bones[index].Scale;
+                    var originalValue = isOffsetPart ? boneData[index].Offset : boneData[index].Scale;
                     part.BonesData.Add(new() { BoneName = boneName, BoneIndex = index, ApplyOffset = isOffsetPart, OriginalValue = originalValue });
                 }
             }
@@ -155,9 +155,10 @@ internal class SkeletonReplacer {
 
     private static Skeleton DuplicateSkeleton(Skeleton skeleton) {
         var tempSkeleton = new Skeleton();
-        var newBoneJobArray = new NativeArray<Skeleton.BoneData>(skeleton.Bones.Count, Allocator.Persistent);
-        for (var i = 0; i < skeleton.Bones.Count; i++) {
-            newBoneJobArray[i] = new() { ApplyOffset = skeleton.Bones[i].ApplyOffset, Offset = skeleton.Bones[i].Offset, Scale = skeleton.Bones[i].Scale };
+        var boneData = skeleton.GetBoneData();
+        var newBoneJobArray = new NativeArray<Skeleton.BoneData>(boneData.Length, Allocator.Persistent);
+        for (var i = 0; i < boneData.Length; i++) {
+            newBoneJobArray[i] = boneData[i];
         }
         tempSkeleton.m_BoneDataForJob = newBoneJobArray;
         tempSkeleton.name = skeleton.name;
@@ -166,6 +167,7 @@ internal class SkeletonReplacer {
         tempSkeleton.AnimationSetOverride = skeleton.AnimationSetOverride;
         tempSkeleton.CharacterFxBonesMap = skeleton.CharacterFxBonesMap;
         tempSkeleton.RaceBoneHierarchyObject = skeleton.RaceBoneHierarchyObject;
+        tempSkeleton.FakeLightBones = skeleton.FakeLightBones;
         tempSkeleton.m_DollRoomZoomPreset = skeleton.m_DollRoomZoomPreset;
         tempSkeleton.m_IsDirty = skeleton.m_IsDirty;
         return tempSkeleton;

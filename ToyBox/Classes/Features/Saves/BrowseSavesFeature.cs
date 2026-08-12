@@ -1,8 +1,6 @@
 ﻿using Kingmaker;
 using Kingmaker.Blueprints;
 using Kingmaker.EntitySystem.Persistence;
-using Kingmaker.Utility.DotNetExtensions;
-using ToyBox.Infrastructure.Utilities;
 
 namespace ToyBox.Features.Saves;
 
@@ -12,22 +10,29 @@ public partial class BrowseSavesFeature : Feature {
     [LocalizedString("ToyBox_Features_Saves_BrowseSavesFeature_Description", "Allows looking through all available save games and viewing their char name, party level, area, save name and game id")]
     public override partial string Description { get; }
     public Browser<SaveInfo>? SaveBrowser;
-    private TimedCache<bool> m_NeedsUpdate = new(() => {
-        GetInstance<BrowseSavesFeature>().SaveBrowser = null;
-        return false;
-    }, 120, true);
+    private DateTime m_NextSaveListUpdate;
     public override void OnGui() {
         if (!IsInGame()) {
             UI.Label(SharedStrings.ThisCannotBeUsedFromTheMainMenu.Red().Bold());
             return;
         }
-        var saveManager = Game.Instance.SaveManager;
-        saveManager.UpdateSaveListIfNeeded(false);
-        if (m_NeedsUpdate || SaveBrowser == null) {
-            SaveBrowser = new(info => $"{info.Name}{info.Area.AreaName}{info.Description}{info.FileName}{info.GameId}",
+        var saveList = Game.Instance.SaveManager.SaveList;
+        if (DateTime.UtcNow >= m_NextSaveListUpdate) {
+            m_NextSaveListUpdate = DateTime.UtcNow.AddMinutes(2);
+            if (!saveList.UpdateInProgress) {
+                _ = saveList.UpdateAsync();
+            }
+            SaveBrowser = null;
+        }
+        if (saveList.UpdateInProgress) {
+            return;
+        }
+        if (SaveBrowser == null) {
+            var saves = saveList.GetList().OfType<SaveInfo>().ToList();
+            SaveBrowser = new(info => $"{info.Name}{info.Area?.AreaName?.Text}{info.Description}{info.ArchiveName}{info.GameId}",
                 info => $"{info.PlayerCharacterName}, {info.GameSaveTime}",
-                saveManager.m_SavedGames.Where(save => save?.GameId == Game.Instance.Player.GameId),
-                func => func(saveManager.m_SavedGames.NotNull()), overridePageWidth: (int)(EffectiveWindowWidth() * 0.9f));
+                saves.Where(save => save.GameId == Game.Instance.Player.GameId),
+                func => func(saves), overridePageWidth: (int)(EffectiveWindowWidth() * 0.9f));
             SaveBrowser.SetComparer(BlueprintFilter<SimpleBlueprint>.Sorter);
         }
         SaveBrowser.OnGUI(info => {
@@ -36,7 +41,7 @@ public partial class BrowseSavesFeature : Feature {
                 Space(25);
                 UI.Label($"{m_LevelLocalizedText}: {info.PlayerCharacterRank}", Width(75 * Main.UIScale));
                 Space(25);
-                UI.Label(info.Area.AreaName, Width(300 * Main.UIScale));
+                UI.Label(info.Area?.AreaName?.Text ?? info.AreaNameOverride ?? "", Width(300 * Main.UIScale));
                 Space(25);
                 var tmp = info.GameId;
                 UI.TextField(ref tmp, null, Width(250 * Main.UIScale));

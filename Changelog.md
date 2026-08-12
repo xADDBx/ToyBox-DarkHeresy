@@ -1,3 +1,9 @@
+### ToyBox DarkHeresy - Ver 0.1.15 (built for ???)
+- (***ADDB***) Fix achievements, per-save + save browser handling, Buff Duration Multiplier, Psychic Phenomena customization, and Skeleton Modifier for updated game
+- (***ADDB***) Remove "Allow Achievements While Using Mods", as the game no longer disables achievements when mods are active.
+- (***ADDB***) Remove obsolete mechadendrite browsing and add/remove actions; the deprecated item-slot system is no longer used by the game.
+- (***ADDB***) Re-Port some TB2 stuff i guess?
+
 ### ToyBox DarkHeresy - Ver 0.1.14 (built for 0.4.0.763)
 - (***ADDB***) Enemy and Ally morale multipliers now actually respect the set value instead of just doubling.
 

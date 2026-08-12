@@ -34,7 +34,10 @@ public partial class AutoLoadLastSaveOnLaunchFeature : FeatureWithPatch {
         }
         if (m_IsLaunch) {
             m_IsLaunch = false;
-            Game.Instance.SaveManager.UpdateSaveListIfNeeded();
+            var saveList = Game.Instance.SaveManager.SaveList;
+            if (!saveList.UpdateInProgress) {
+                _ = saveList.UpdateAsync();
+            }
             _ = ToyBoxBehaviour.Instance.StartCoroutine(UIUtilitySaves.WaitForSaveUpdated(__instance.ViewModel.LoadLastGame));
         }
     }

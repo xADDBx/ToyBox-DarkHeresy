@@ -110,7 +110,6 @@ public class GeneralSettings : AbstractJsonSettings {
     public bool EnableIgnoreDialogRestrictionsEverything = false;
 
     // - QoL
-    public bool EnableModdedAchievements = true;
     public bool EnableSkipSplashScreen = false;
     public bool EnableObjectHighlightToggle = false;
     public bool EnableAutoLoadLastSaveOnLaunch = false;

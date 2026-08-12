@@ -24,7 +24,7 @@ public partial class PartyFeatureTab : FeatureTab {
     private PartyTabSectionType m_UncollapsedSection = PartyTabSectionType.None;
     private BaseUnitEntity? m_UncollapsedUnit = null;
     private static readonly PartyTabSectionType[] m_Sections = [PartyTabSectionType.Careers, PartyTabSectionType.Stats, PartyTabSectionType.Features,
-        PartyTabSectionType.Buffs, PartyTabSectionType.Abilities, PartyTabSectionType.Mechadendrites, PartyTabSectionType.Inspect];
+        PartyTabSectionType.Buffs, PartyTabSectionType.Abilities, PartyTabSectionType.Inspect];
     private readonly TimedCache<float> m_InspectLabelWidth = new(() => UI.WidthInDisclosureStyle(m_InspectPartyText));
     private void RefreshNameCache() {
         NameSectionWidth.ForceRefresh();
@@ -63,8 +63,6 @@ public partial class PartyFeatureTab : FeatureTab {
 
         AddFeature(new PartyBrowseBuffsFeature());
 
-        AddFeature(new PartyBrowseMechadendritesFeature());
-
         AddFeature(new AddUnitToPartyAction());
         AddFeature(new RemoveUnitFromPartyAction());
         AddFeature(new RecruitUnitAction());
@@ -82,13 +80,11 @@ public partial class PartyFeatureTab : FeatureTab {
         Feature.GetInstance<PartyBrowseFeatsFeature>().ClearFeatureCache();
         Feature.GetInstance<PartyBrowseAbilitiesFeature>().ClearFeatureCache();
         Feature.GetInstance<PartyBrowseBuffsFeature>().ClearFeatureCache();
-        Feature.GetInstance<PartyBrowseMechadendritesFeature>().ClearFeatureCache();
     }
     public static void FeatureRefresh() {
         Feature.GetInstance<PartyBrowseFeatsFeature>().MarkInvalid();
         Feature.GetInstance<PartyBrowseAbilitiesFeature>().MarkInvalid();
         Feature.GetInstance<PartyBrowseBuffsFeature>().MarkInvalid();
-        Feature.GetInstance<PartyBrowseMechadendritesFeature>().MarkInvalid();
     }
     public readonly TimedCache<float> NameSectionWidth = new(() => {
         return CalculateLargestLabelWidth(CharacterPicker.CurrentUnits.Select(u => GetUnitName(u) + " "));
@@ -179,7 +175,6 @@ public partial class PartyFeatureTab : FeatureTab {
                                 case PartyTabSectionType.Abilities: Feature.GetInstance<PartyBrowseAbilitiesFeature>().OnGui(unit); break;
                                 case PartyTabSectionType.Careers: OnCareersGui(unit); break;
                                 case PartyTabSectionType.Stats: OnStatsGui(unit); break;
-                                case PartyTabSectionType.Mechadendrites: Feature.GetInstance<PartyBrowseMechadendritesFeature>().OnGui(unit); break;
                                 case PartyTabSectionType.None:
                                     break;
                                 default:

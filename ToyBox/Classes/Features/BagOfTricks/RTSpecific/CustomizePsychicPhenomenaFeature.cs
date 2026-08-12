@@ -1,6 +1,7 @@
 ﻿using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.JsonSystem;
 using Kingmaker.Blueprints.Root;
+using Kingmaker.Code.AreaLogic;
 using Kingmaker.Designers.WarhammerSurfaceCombatPrototype;
 using ToyBox.Infrastructure.Inspector;
 using ToyBox.Infrastructure.Utilities;
@@ -37,10 +38,28 @@ public partial class CustomizePsychicPhenomenaFeature : FeatureWithPatch, INeedE
     }
     private void BackupPhenomena() {
         var root = ConfigRoot.Instance.PsykerRoot;
-        m_BackupPsychicPhenomena = root.PsychicPhenomena.Select(p => p);
-        m_PsychicPhenomenaBrowser.UpdateItems(m_BackupPsychicPhenomena);
-        m_BackupPerilsOfTheWarp = root.PerilsOfTheWarp;
+        m_BackupPsychicPhenomena = root.PsychicPhenomena.ToArray();
+        var availablePhenomena = m_BackupPsychicPhenomena.ToList();
+        foreach (var godSettings in root.GodSettings) {
+            foreach (var phenomenon in GetOverrideEntries(godSettings.PhenomenaOverride)) {
+                if (availablePhenomena.All(item => GetPsychicKey(item) != GetPsychicKey(phenomenon))) {
+                    availablePhenomena.Add(phenomenon);
+                }
+            }
+        }
+        m_PsychicPhenomenaBrowser.UpdateItems(availablePhenomena);
+        m_BackupPerilsOfTheWarp = root.PerilsOfTheWarp.ToArray();
         m_PerilsOfTheWarpBrowser.UpdateItems(m_BackupPerilsOfTheWarp);
+    }
+    private static IEnumerable<BlueprintPsykerRoot.PhenomenaData> GetOverrideEntries(PhenomenaListOverride listOverride) {
+        foreach (var phenomenon in listOverride.ReplacementList) {
+            yield return phenomenon;
+        }
+        foreach (var modification in listOverride.Modifications) {
+            if (modification.Type == PhenomenaModificationType.Add && modification.AddData != null) {
+                yield return modification.AddData;
+            }
+        }
     }
     private void RestorePhenomena() {
         if (m_BackupPsychicPhenomena != null) {
@@ -49,6 +68,7 @@ public partial class CustomizePsychicPhenomenaFeature : FeatureWithPatch, INeedE
             root.PerilsOfTheWarp = [.. root.PerilsOfTheWarp.Union(m_BackupPerilsOfTheWarp)];
             m_BackupPsychicPhenomena = root.PsychicPhenomena;
             m_BackupPerilsOfTheWarp = root.PerilsOfTheWarp;
+            Kingmaker.Game.Instance.LoadedArea?.Veil?.InvalidatePhenomenaCache();
         }
     }
     private static T[] RemoveAll<T>(T[] collection, Func<T, bool> pred) {
@@ -61,6 +81,7 @@ public partial class CustomizePsychicPhenomenaFeature : FeatureWithPatch, INeedE
         var root = ConfigRoot.Instance.PsykerRoot;
         root.PsychicPhenomena = RemoveAll(root.PsychicPhenomena, phenomena => Settings.ExcludedRandomPhenomena.Contains(GetPsychicKey(phenomena)));
         root.PerilsOfTheWarp = RemoveAll(root.PerilsOfTheWarp, peril => Settings.ExcludedPerils.Contains(GetPsychicKey(peril)));
+        Kingmaker.Game.Instance.LoadedArea?.Veil?.InvalidatePhenomenaCache();
     }
     private void PhenomenaGui(BlueprintPsykerRoot.PhenomenaData item, ref HashSet<string> collection) {
         using (HorizontalScope()) {
@@ -70,7 +91,7 @@ public partial class CustomizePsychicPhenomenaFeature : FeatureWithPatch, INeedE
             InspectorUI.InspectToggle(item);
             if (isExcluded) {
                 if (UI.Button(m_StopExcludingLocalizedText.Cyan(), null, null, Width(m_ButtonWidth))) {
-                    collection.Remove(key);
+                    _ = collection.Remove(key);
                     RestorePhenomena();
                     RemovePhenomena();
                 }
@@ -78,7 +99,7 @@ public partial class CustomizePsychicPhenomenaFeature : FeatureWithPatch, INeedE
                 UI.Label(name.Cyan());
             } else {
                 if (UI.Button(m_ExcludeLocalizedText, null, null, Width(m_ButtonWidth))) {
-                    collection.Add(key);
+                    _ = collection.Add(key);
                     RemovePhenomena();
                 }
                 Space(10);
@@ -94,7 +115,7 @@ public partial class CustomizePsychicPhenomenaFeature : FeatureWithPatch, INeedE
             using (HorizontalScope()) {
                 Space(40);
                 using (VerticalScope()) {
-                    UI.Toggle(m_CustomizeLocalizedText, null, ref m_IsCustomizing);
+                    _ = UI.Toggle(m_CustomizeLocalizedText, null, ref m_IsCustomizing);
                     if (m_IsCustomizing) {
                         if (UI.Button(m_RefreshAvailablePhenomenas_PerilLocalizedText) || m_BackupPsychicPhenomena == null) {
                             RestorePhenomena();
@@ -138,6 +159,24 @@ public partial class CustomizePsychicPhenomenaFeature : FeatureWithPatch, INeedE
         if (feature.IsEnabled) {
             feature.BackupPhenomena();
             feature.RemovePhenomena();
+        }
+    }
+    [HarmonyPatch(typeof(PartVeil), nameof(PartVeil.GetResolvedPhenomena)), HarmonyPostfix]
+    private static void PartVeil_GetResolvedPhenomena_Patch(ref List<BlueprintPsykerRoot.PhenomenaData> __result) {
+        if (Settings.ExcludedRandomPhenomena.Count == 0) {
+            return;
+        }
+        if (__result.Any(phenomenon => Settings.ExcludedRandomPhenomena.Contains(GetPsychicKey(phenomenon)))) {
+            __result = [.. __result.Where(phenomenon => !Settings.ExcludedRandomPhenomena.Contains(GetPsychicKey(phenomenon)))];
+        }
+    }
+    [HarmonyPatch(typeof(PartVeil), nameof(PartVeil.GetResolvedPerils)), HarmonyPostfix]
+    private static void PartVeil_GetResolvedPerils_Patch(ref List<BlueprintPsykerRoot.PhenomenaData> __result) {
+        if (Settings.ExcludedPerils.Count == 0) {
+            return;
+        }
+        if (__result.Any(peril => Settings.ExcludedPerils.Contains(GetPsychicKey(peril)))) {
+            __result = [.. __result.Where(peril => !Settings.ExcludedPerils.Contains(GetPsychicKey(peril)))];
         }
     }
     protected override string HarmonyName {

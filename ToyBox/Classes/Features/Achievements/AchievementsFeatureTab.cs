@@ -1,5 +1,3 @@
-﻿using ToyBox.Features.BagOfTricks.QualityOfLife;
-
 namespace ToyBox.Features.Achievements;
 
 public partial class AchievementsFeatureTab : FeatureTab {
@@ -7,9 +5,5 @@ public partial class AchievementsFeatureTab : FeatureTab {
     public override partial string Name { get; }
     public AchievementsFeatureTab() {
         AddFeature(new BrowseAchievementsFeature());
-    }
-    public override void OnGui() {
-        Feature.GetInstance<EnableAchievementsFeature>().OnGui();
-        base.OnGui();
     }
 }

@@ -74,7 +74,6 @@ public partial class BagOfTricksFeatureTab : FeatureTab {
         AddFeature(new ExCompanionDialogFeature(), m_DialogLocalizedText);
         AddFeature(new OverrideStoryOccupationFeature(), m_DialogLocalizedText);
 
-        AddFeature(new EnableAchievementsFeature(), m_QualityOfLifeText);
         AddFeature(new SkipSplashScreenFeature(), m_QualityOfLifeText);
         // Shipped by Owlcat?
         // AddFeature(new ObjectHighlightToggleFeature(), m_QualityOfLifeText);

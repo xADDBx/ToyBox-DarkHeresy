@@ -148,13 +148,11 @@ public class BlueprintActions : FeatureTab {
         AddFeature(new UnlockFlagBA());
         AddFeature(new UnstartEtudeBA());
 
-        AddFeature(new AddMechadendriteBA());
         AddFeature(new AddMechanicEntityFactBA());
         AddFeature(new ChangeBuffRankBA());
         AddFeature(new ChangeFeatureRankBA());
         AddFeature(new ChangeVoiceBA());
         AddFeature(new PlayVoiceBA());
-        AddFeature(new RemoveMechadendriteBA());
         AddFeature(new RemoveMechanicEntityFactBA());
         AddFeature(new SpawnUnitBA());
     }

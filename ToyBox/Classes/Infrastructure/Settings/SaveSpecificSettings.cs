@@ -13,8 +13,8 @@ public class SaveSpecificSettings {
         if (m_IsInitialized) {
             return;
         }
-        _ = Main.HarmonyInstance.Patch(AccessTools.Method(typeof(SaveManager), nameof(SaveManager.SaveRoutine)), new(AccessTools.Method(typeof(SaveSpecificSettings), nameof(SaveManager_SaveRoutine_Patch))));
-        _ = Main.HarmonyInstance.Patch(AccessTools.Method(typeof(SaveManager), nameof(SaveManager.LoadFolderSave)), new(AccessTools.Method(typeof(SaveSpecificSettings), nameof(SaveManager_LoadRoutine_Patch))));
+        _ = Main.HarmonyInstance.Patch(AccessTools.Method(typeof(SaveManager), nameof(SaveManager.PreSave)), new(AccessTools.Method(typeof(SaveSpecificSettings), nameof(SaveManager_PreSave_Patch))));
+        _ = Main.HarmonyInstance.Patch(AccessTools.Method(typeof(SaveManager), nameof(SaveManager.Load), [typeof(SaveInfo), typeof(bool)]), new(AccessTools.Method(typeof(SaveSpecificSettings), nameof(SaveManager_Load_Patch))));
         _ = Main.HarmonyInstance.Patch(AccessTools.Method(typeof(ThreadedGameLoader), nameof(ThreadedGameLoader.DeserializeInGameSettings)), null, new(AccessTools.Method(typeof(SaveSpecificSettings), nameof(ThreadedGameLoader_DeserializeInGameSettings_Patch))));
         m_IsInitialized = true;
     }
@@ -58,10 +58,10 @@ public class SaveSpecificSettings {
         var json = JsonConvert.SerializeObject(this);
         list[Constants.SaveFileKey] = json;
     }
-    private static void SaveManager_SaveRoutine_Patch() {
+    private static void SaveManager_PreSave_Patch() {
         Instance?.Save();
     }
-    private static void SaveManager_LoadRoutine_Patch() {
+    private static void SaveManager_Load_Patch() {
         Instance = null;
     }
     private static void ThreadedGameLoader_DeserializeInGameSettings_Patch(ref Task<InGameSettings> __result) {
