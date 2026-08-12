@@ -194,6 +194,8 @@ public partial class DiceRollsOverridesFeature : FeatureWithPatch {
                 return;
             } else if (evt is RuleDealDamage) {
                 isDamageRule = true;
+            } else if (evt is RulePerformBodyPartHitRoll) {
+                return;
             }
         }
         var initiator = __instance.InitiatorUnit;
