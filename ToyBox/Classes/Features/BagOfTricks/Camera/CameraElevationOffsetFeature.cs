@@ -34,7 +34,7 @@ public partial class CameraElevationOffsetFeature : FeatureWithPatch {
     }
     [LocalizedString("ToyBox_Features_BagOfTricks_Camera_CameraElevationOffsetFeature_Name", "Modify Camera Elevation Offset")]
     public override partial string Name { get; }
-    [LocalizedString("ToyBox_Features_BagOfTricks_Camera_CameraElevationOffsetFeature_Description", "Adds a flat modifier to the height of the camera above the ground.")]
+    [LocalizedString("ToyBox_Features_BagOfTricks_Camera_CameraElevationOffsetFeature_Description", "Adds a flat modifier to the gameplay camera's height above the ground.")]
     public override partial string Description { get; }
 
     protected override string HarmonyName {

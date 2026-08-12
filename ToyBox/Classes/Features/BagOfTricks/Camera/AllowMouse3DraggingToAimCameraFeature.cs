@@ -2,14 +2,13 @@
 using ToyBox.Classes.Infrastructure.Features;
 using ToyBox.Infrastructure.Keybinds;
 using ToyBox.Infrastructure.Utilities;
+using UnityEngine;
 
 namespace ToyBox.Features.BagOfTricks.Camera;
 
 [HarmonyPatch, ToyBoxPatchCategory("ToyBox.Features.BagOfTricks.Camera.AllowMouse3DraggingToAimCameraFeature")]
 public partial class AllowMouse3DraggingToAimCameraFeature : FeatureWithPatch, IToggledWithBinding {
-    private static float m_OriginalMinSpaceCameraAngle;
-    private static float m_OriginalMaxSpaceCameraAngle;
-    private static bool m_OriginalEnableOrbitCamera;
+    private static float m_PitchDelta;
     public override ref bool IsEnabled {
         get {
             return ref Settings.EnableMouse3DraggingToAimCamera;
@@ -17,7 +16,7 @@ public partial class AllowMouse3DraggingToAimCameraFeature : FeatureWithPatch, I
     }
     [LocalizedString("ToyBox_Features_BagOfTricks_Camera_AllowMouse3DraggingToAimCameraFeature_Name", "Enable Mouse3 Dragging To Aim The Camera")]
     public override partial string Name { get; }
-    [LocalizedString("ToyBox_Features_BagOfTricks_Camera_AllowMouse3DraggingToAimCameraFeature_Description", "Allows orbiting the camera while holding down Mouse Wheel.")]
+    [LocalizedString("ToyBox_Features_BagOfTricks_Camera_AllowMouse3DraggingToAimCameraFeature_Description", "Allows vertical camera rotation with Mouse3 in gameplay and free-camera cutscenes.")]
     public override partial string Description { get; }
 
     protected override string HarmonyName {
@@ -46,18 +45,24 @@ public partial class AllowMouse3DraggingToAimCameraFeature : FeatureWithPatch, I
         Helpers.LogExecution(this, parameter);
     }
     [HarmonyPatch(typeof(CameraRig), nameof(CameraRig.TickRotate)), HarmonyPrefix]
-    private static void CameraRige_TickRotate_PrePatch(CameraRig __instance) {
-        m_OriginalMinSpaceCameraAngle = __instance.MinSpaceCameraAngle;
-        m_OriginalMaxSpaceCameraAngle = __instance.MaxSpaceCameraAngle;
-        m_OriginalEnableOrbitCamera = __instance.m_EnableOrbitCamera;
-        __instance.MinSpaceCameraAngle = -63;
-        __instance.MaxSpaceCameraAngle = 100;
-        __instance.m_EnableOrbitCamera = true;
+    private static void CameraRig_TickRotate_PrePatch() {
+        m_PitchDelta = 0;
+    }
+    [HarmonyPatch(typeof(CameraRig), nameof(CameraRig.CameraDragToRotate)), HarmonyPostfix]
+    private static void CameraRig_CameraDragToRotate_Patch(Vector2 __result) {
+        if (!Input.GetKey(KeyCode.LeftControl) || !Settings.EnableDragCameraElevation) {
+            m_PitchDelta = __result.y;
+        }
     }
     [HarmonyPatch(typeof(CameraRig), nameof(CameraRig.TickRotate)), HarmonyPostfix]
-    private static void CameraRige_TickRotate_PostPatch(CameraRig __instance) {
-        __instance.MinSpaceCameraAngle = m_OriginalMinSpaceCameraAngle;
-        __instance.MaxSpaceCameraAngle = m_OriginalMaxSpaceCameraAngle;
-        __instance.m_EnableOrbitCamera = m_OriginalEnableOrbitCamera;
+    private static void CameraRig_TickRotate_PostPatch(CameraRig __instance) {
+        if (m_PitchDelta == 0 || __instance.MainCameraCinemachineBrain.isActiveAndEnabled) {
+            return;
+        }
+        var target = __instance.m_TargetRotate;
+        target.x += m_PitchDelta * __instance.RotationSpeed;
+        target.x = Mathf.Clamp(target.x <= 180 ? target.x : -(360 - target.x), -63, 100);
+        target.z = 0;
+        __instance.m_TargetRotate = target;
     }
 }

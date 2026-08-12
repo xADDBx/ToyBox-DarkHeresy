@@ -19,7 +19,7 @@ public partial class FOVMultiplierFeature : FeatureWithPatch {
     }
     [LocalizedString("ToyBox_Features_BagOfTricks_Camera_FOVMultiplierFeature_Name", "Field Of View")]
     public override partial string Name { get; }
-    [LocalizedString("ToyBox_Features_BagOfTricks_Camera_FOVMultiplierFeature_Description", "Changes the min/max FoV (you can scroll further in and out)")]
+    [LocalizedString("ToyBox_Features_BagOfTricks_Camera_FOVMultiplierFeature_Description", "Changes the gameplay camera's min/max FoV (you can scroll further in and out)")]
     public override partial string Description { get; }
     public override void OnGui() {
         using (HorizontalScope()) {

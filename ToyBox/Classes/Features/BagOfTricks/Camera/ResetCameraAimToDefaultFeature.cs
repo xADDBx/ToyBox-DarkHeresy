@@ -6,7 +6,7 @@ namespace ToyBox.Features.BagOfTricks.Camera;
 public partial class ResetCameraAimToDefaultFeature : FeatureWithBindableAction {
     [LocalizedString("ToyBox_Features_BagOfTricks_Camera_ResetCameraAimToDefaultFeature_Name", "Fix Camera")]
     public override partial string Name { get; }
-    [LocalizedString("ToyBox_Features_BagOfTricks_Camera_ResetCameraAimToDefaultFeature_Description", "Resets the camera perspective to what it was before orbiting it.")]
+    [LocalizedString("ToyBox_Features_BagOfTricks_Camera_ResetCameraAimToDefaultFeature_Description", "Resets the gameplay camera perspective to what it was before orbiting it.")]
     public override partial string Description { get; }
     public override void Enable() {
         base.Enable();

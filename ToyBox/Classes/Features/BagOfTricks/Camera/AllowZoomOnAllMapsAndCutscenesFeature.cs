@@ -1,5 +1,4 @@
-﻿using Kingmaker.Controllers.Rest;
-using Kingmaker.View;
+﻿using Kingmaker.View;
 
 namespace ToyBox.Features.BagOfTricks.Camera;
 
@@ -10,29 +9,15 @@ public partial class AllowZoomOnAllMapsAndCutscenesFeature : FeatureWithPatch {
             return ref Settings.EnableAllowZoomOnAllMapsAndCutscenes;
         }
     }
-    [LocalizedString("ToyBox_Features_BagOfTricks_Camera_AllowZoomOnAllMapsAndCutscenesFeature_Name", "Enable Zoom on all maps and cutscenes")]
+    [LocalizedString("ToyBox_Features_BagOfTricks_Camera_AllowZoomOnAllMapsAndCutscenesFeature_Name", "Ignore camera zoom lock")]
     public override partial string Name { get; }
-    [LocalizedString("ToyBox_Features_BagOfTricks_Camera_AllowZoomOnAllMapsAndCutscenesFeature_Description", "Makes CameraController always allow zoom and ignore ZoomLock.")]
+    [LocalizedString("ToyBox_Features_BagOfTricks_Camera_AllowZoomOnAllMapsAndCutscenesFeature_Description", "Allows zoom in gameplay and free-camera cutscenes. Scripted camera shots are unaffected.")]
     public override partial string Description { get; }
 
     protected override string HarmonyName {
         get {
             return "ToyBox.Features.BagOfTricks.Camera.AllowZoomOnAllMapsAndCutscenesFeature";
         }
-    }
-    [HarmonyPatch(typeof(CameraController), nameof(CameraController.Tick)), HarmonyTranspiler]
-    private static IEnumerable<CodeInstruction> CameraController_Tick_Patch(IEnumerable<CodeInstruction> instructions) {
-        var field = AccessTools.Field(typeof(CameraController), nameof(CameraController.m_AllowZoom));
-        var foundField = false;
-        foreach (var instruction in instructions) {
-            if (instruction.LoadsField(field)) {
-                yield return CodeInstruction.Call((object obj) => ReplacementTrue(obj)).WithLabels(instruction.labels);
-                foundField = true;
-            } else {
-                yield return instruction;
-            }
-        }
-        ThrowIfTrue(!foundField);
     }
     [HarmonyPatch(typeof(CameraZoom), nameof(CameraZoom.TickZoom)), HarmonyTranspiler]
     private static IEnumerable<CodeInstruction> CameraZoom_TickZoom_Patch(IEnumerable<CodeInstruction> instructions) {
@@ -47,9 +32,6 @@ public partial class AllowZoomOnAllMapsAndCutscenesFeature : FeatureWithPatch {
             }
         }
         ThrowIfTrue(!foundField);
-    }
-    private static bool ReplacementTrue(object _) {
-        return true;
     }
     private static bool ReplacementFalse(object _) {
         return false;
