@@ -1,8 +1,9 @@
-### ToyBox DarkHeresy - Ver 0.1.15 (built for ???)
+### ToyBox DarkHeresy - Ver 0.1.15 (built for private beta 0.5.0.397)
 - (***ADDB***) Fix achievements, per-save + save browser handling, Buff Duration Multiplier, Psychic Phenomena customization, and Skeleton Modifier for updated game
 - (***ADDB***) Remove "Allow Achievements While Using Mods", as the game no longer disables achievements when mods are active.
 - (***ADDB***) Remove obsolete mechadendrite browsing and add/remove actions; the deprecated item-slot system is no longer used by the game.
-- (***ADDB***) Re-Port some TB2 stuff i guess?
+- (***ADDB***) Backport Vision Range Multiplier, Search 'n Pick quantities, weapon-bone axis controls, remote companion voiceovers, and cover controls and other stuff from RT
+- (***ADDB***) Fix movement and dice overrides, enemy +1 modifiers, psychic customization re-enabling, quest visibility, dialog previews, skeleton rebuilds, updater retries, and concurrent blueprint loading; add serializer type caching.
 
 ### ToyBox DarkHeresy - Ver 0.1.14 (built for 0.4.0.763)
 - (***ADDB***) Enemy and Ally morale multipliers now actually respect the set value instead of just doubling.

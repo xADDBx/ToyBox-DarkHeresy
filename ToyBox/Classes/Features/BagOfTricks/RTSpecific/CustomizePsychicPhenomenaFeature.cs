@@ -32,6 +32,12 @@ public partial class CustomizePsychicPhenomenaFeature : FeatureWithPatch, INeedE
             return ref Settings.EnableCustomizePsychicPhenomena;
         }
     }
+    public override void Enable() {
+        base.Enable();
+        if (IsEnabled && ConfigRoot.PsykerRootRef.Cached != null) {
+            RemovePhenomena();
+        }
+    }
     public override void Disable() {
         base.Disable();
         RestorePhenomena();

@@ -511,6 +511,18 @@
     "Original": "Damage Rolls: Take 1",
     "Translated": null
   },
+  "ToyBox_Features_BagOfTricks_DiceRolls_DiceRollsOverridesFeature_m_CoverInterception_UsesASeparateRoLocalizedText": {
+    "Original": "Controls whether attacks made by the selected units are redirected to cover instead of their target.",
+    "Translated": null
+  },
+  "ToyBox_Features_BagOfTricks_DiceRolls_DiceRollsOverridesFeature_m_CoverNeverInterceptsLocalizedText": {
+    "Original": "Cover: Never Redirect",
+    "Translated": null
+  },
+  "ToyBox_Features_BagOfTricks_DiceRolls_DiceRollsOverridesFeature_m_CoverAlwaysInterceptsLocalizedText": {
+    "Original": "Cover: Always Redirect",
+    "Translated": null
+  },
   "ToyBox_Features_BagOfTricks_EnemyStatModifier_EnemyFlatStatModifierFeature_Name": {
     "Original": "Flat Enemy Stat Modifier",
     "Translated": null
@@ -643,6 +655,14 @@
     "Original": "Adjusts the movement speed of your party in area maps.",
     "Translated": null
   },
+  "ToyBox_Features_BagOfTricks_OtherMultipliers_VisionRangeFeature_Name": {
+    "Original": "Vision Range Multiplier",
+    "Translated": null
+  },
+  "ToyBox_Features_BagOfTricks_OtherMultipliers_VisionRangeFeature_Description": {
+    "Original": "Multiplies the fog of war reveal range of party members and pets.",
+    "Translated": null
+  },
   "ToyBox_Features_BagOfTricks_Preview_DialogPreviewUtilities_m_RunActionHolderLocalizedText": {
     "Original": "RunActionHolder",
     "Translated": null
@@ -677,10 +697,6 @@
   },
   "ToyBox_Features_BagOfTricks_Preview_DialogPreviewUtilities_m_SoulMarkShiftLocalizedText": {
     "Original": "SoulMarkShift",
-    "Translated": null
-  },
-  "ToyBox_Features_BagOfTricks_Preview_DialogPreviewUtilities_m_Check__1__DC_2__Hidden_3__LocalizedText": {
-    "Original": "Check({1}, DC {2}, hidden {3})",
     "Translated": null
   },
   "ToyBox_Features_BagOfTricks_Preview_PreviewDialogConditionsFeature_Name": {
@@ -2125,6 +2141,10 @@
   },
   "ToyBox_Features_SearchAndPick_SearchAndPickFeature_m_ShowCharacterFilterPickerLocalizedText": {
     "Original": "Show Character Filter Picker",
+    "Translated": null
+  },
+  "ToyBox_Features_SearchAndPick_SearchAndPickFeature_m_ActionParameterLocalizedText": {
+    "Original": "Number Parameter (used e.g. as the amount of items to add)",
     "Translated": null
   },
   "ToyBox_Features_SearchAndPick_SearchAndPickFeature_m_CurrentCollationCategoryLocalizedText": {

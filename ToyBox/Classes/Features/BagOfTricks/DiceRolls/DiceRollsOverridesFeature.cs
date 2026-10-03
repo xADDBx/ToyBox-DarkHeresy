@@ -1,6 +1,8 @@
 ﻿using Kingmaker.RuleSystem;
 using Kingmaker.RuleSystem.Rules;
 using Kingmaker.RuleSystem.Rules.Damage;
+using Kingmaker.View.Covers;
+using System.Reflection.Emit;
 using ToyBox.Infrastructure.Utilities;
 using UnityEngine;
 
@@ -29,7 +31,7 @@ public partial class DiceRollsOverridesFeature : FeatureWithPatch {
         m_NeverRoll1LocalizedText, m_DamageRolls_Take1LocalizedText, m_DamageRolls_Take25LocalizedText, m_DamageRolls_Take50LocalizedText,
         m_OutOfCombat_Take1LocalizedText, m_OutOfCombat_Take25LocalizedText, m_OutOfCombat_Take50LocalizedText, m_SkillChecks_Take1LocalizedText,
         m_SkillChecks_Take25LocalizedText, m_SkillChecks_Take50LocalizedText, m_Take100LocalizedText, m_Take1LocalizedText,
-        m_Take50LocalizedText], GUI.skin.label));
+        m_Take50LocalizedText, m_CoverNeverInterceptsLocalizedText, m_CoverAlwaysInterceptsLocalizedText], GUI.skin.label));
     public override void OnGui() {
         base.OnGui();
         if (IsEnabled) {
@@ -69,6 +71,15 @@ public partial class DiceRollsOverridesFeature : FeatureWithPatch {
                     using (HorizontalScope()) {
                         UI.Label(m_NeverRoll1LocalizedText, Width(labelWidth));
                         UI.SelectionGrid(ref Settings.DiceRollsNeverRoll1, 8, e => e.GetLocalized(), Width(0.7f * EffectiveWindowWidth()));
+                    }
+                    UI.Label(m_CoverInterception_UsesASeparateRoLocalizedText.Green());
+                    using (HorizontalScope()) {
+                        UI.Label(m_CoverNeverInterceptsLocalizedText, Width(labelWidth));
+                        UI.SelectionGrid(ref Settings.DiceRollsCoverNeverIntercept, 8, e => e.GetLocalized(), Width(0.7f * EffectiveWindowWidth()));
+                    }
+                    using (HorizontalScope()) {
+                        UI.Label(m_CoverAlwaysInterceptsLocalizedText, Width(labelWidth));
+                        UI.SelectionGrid(ref Settings.DiceRollsCoverAlwaysIntercept, 8, e => e.GetLocalized(), Width(0.7f * EffectiveWindowWidth()));
                     }
                     using (HorizontalScope()) {
                         UI.Label(m_OutOfCombat_Take50LocalizedText, Width(labelWidth));
@@ -131,6 +142,34 @@ public partial class DiceRollsOverridesFeature : FeatureWithPatch {
             __instance.Result = AttackResult.Hit;
         }
     }
+    [HarmonyPatch(typeof(RulePerformAttackRoll), nameof(RulePerformAttackRoll.OnTrigger)), HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> RulePerformAttackRoll_Cover_Patch(IEnumerable<CodeInstruction> instructions) {
+        var getForceCoverHit = AccessTools.PropertyGetter(typeof(RuleCalculateHitChances), nameof(RuleCalculateHitChances.ResultForceCoverHit));
+        var awaitingStore = false;
+        var replaced = 0;
+        foreach (var instruction in instructions) {
+            if (instruction.Calls(getForceCoverHit)) {
+                awaitingStore = true;
+            }
+            if (awaitingStore && instruction.IsStloc()) {
+                yield return new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(instruction);
+                yield return CodeInstruction.Call((bool isCoverHit, RulePerformAttackRoll rule) => OverrideCoverHit(isCoverHit, rule));
+                awaitingStore = false;
+                replaced++;
+            }
+            yield return instruction;
+        }
+        ThrowIfTrue(replaced != 1);
+    }
+    private static bool OverrideCoverHit(bool isCoverHit, RulePerformAttackRoll rule) {
+        if (rule.HitChanceRule.ResultLos != LosCalculations.CoverType.Cover) {
+            return isCoverHit;
+        }
+        if (ToyBoxUnitHelper.IsOfSelectedType(rule.InitiatorUnit, Settings.DiceRollsCoverNeverIntercept)) {
+            return false;
+        }
+        return ToyBoxUnitHelper.IsOfSelectedType(rule.InitiatorUnit, Settings.DiceRollsCoverAlwaysIntercept) || isCoverHit;
+    }
     private static void ReRoll(RuleRollDice dice, bool? advantage = null) {
         m_IsRecursiveInitiativeRoll = true;
         var tmp = dice._result;
@@ -162,23 +201,23 @@ public partial class DiceRollsOverridesFeature : FeatureWithPatch {
     }
     [HarmonyPatch(typeof(RuleRollDice), nameof(RuleRollDice.Roll)), HarmonyPostfix]
     private static void RuleRollDice_Roll_Patch(RuleRollDice __instance) {
-        if (m_IsRecursiveInitiativeRoll) {
+        if (m_IsRecursiveInitiativeRoll || __instance.DiceFormula.Dice != DiceType.D100 || __instance.DiceFormula.Rolls > 1) {
             return;
         }
         var isDamageRule = false;
-        var partyReplace = 0;
-        if (Settings.DiceRollsSkillChecksTake1 != UnitSelectType.Off) {
-            partyReplace = 1;
-        } else if (Settings.DiceRollsSkillChecksTake25 != UnitSelectType.Off) {
-            partyReplace = 25;
-        } else if (Settings.DiceRollsSkillChecksTake50 != UnitSelectType.Off) {
-            partyReplace = 50;
-        }
-
         foreach (var evt in Rulebook.CurrentContext?.m_EventStack ?? []) {
-            if (evt is RulePerformPartySkillCheck) {
-                __instance._result = partyReplace;
-                return;
+            if (evt is RulePerformPartySkillCheck partySkillCheck) {
+                // Initiator of party skill check is always main character unit.
+                if (ToyBoxUnitHelper.IsOfSelectedType(partySkillCheck.InitiatorUnit, Settings.DiceRollsSkillChecksTake1)) {
+                    __instance._result = 1;
+                    return;
+                } else if (ToyBoxUnitHelper.IsOfSelectedType(partySkillCheck.InitiatorUnit, Settings.DiceRollsSkillChecksTake25)) {
+                    __instance._result = 25;
+                    return;
+                } else if (ToyBoxUnitHelper.IsOfSelectedType(partySkillCheck.InitiatorUnit, Settings.DiceRollsSkillChecksTake50)) {
+                    __instance._result = 50;
+                    return;
+                }
             } else if (evt is RulePerformSkillCheck skillCheck) {
                 if (ToyBoxUnitHelper.IsOfSelectedType(skillCheck.InitiatorUnit, Settings.DiceRollsSkillChecksTake1)) {
                     __instance._result = 1;
@@ -189,16 +228,24 @@ public partial class DiceRollsOverridesFeature : FeatureWithPatch {
                 } else if (ToyBoxUnitHelper.IsOfSelectedType(skillCheck.InitiatorUnit, Settings.DiceRollsRollWithAdvantage)) {
                     ReRoll(__instance, false);
                 } else if (ToyBoxUnitHelper.IsOfSelectedType(skillCheck.InitiatorUnit, Settings.DiceRollsRollWithDisadvantage)) {
-                    ReRoll(__instance, false);
+                    ReRoll(__instance, true);
+                } else {
+                    isDamageRule = false;
+                    break;
                 }
                 return;
             } else if (evt is RuleDealDamage) {
                 isDamageRule = true;
             } else if (evt is RulePerformBodyPartHitRoll) {
                 return;
+            } else if (evt is RuleRollInitiative) {
+                return;
             }
         }
         var initiator = __instance.InitiatorUnit;
+        if (initiator == null) {
+            return;
+        }
         if (!initiator.IsInCombat) {
             if (ToyBoxUnitHelper.IsOfSelectedType(initiator, Settings.DiceRollsOutOfCombatTake1)) {
                 __instance._result = 1;
@@ -248,9 +295,9 @@ public partial class DiceRollsOverridesFeature : FeatureWithPatch {
                 ReRoll(__instance);
             }
             if (ToyBoxUnitHelper.IsOfSelectedType(initiator, Settings.DiceRollsRollWithAdvantage)) {
-                ReRoll(__instance, true);
+                ReRoll(__instance, isDamageRule);
             } else if (ToyBoxUnitHelper.IsOfSelectedType(initiator, Settings.DiceRollsRollWithDisadvantage)) {
-                ReRoll(__instance, false);
+                ReRoll(__instance, !isDamageRule);
             }
         } while (currentAttempt < MaxAttempts && (__instance._result < minInclusive || __instance._result >= maxExclusive));
     }
@@ -304,4 +351,10 @@ public partial class DiceRollsOverridesFeature : FeatureWithPatch {
     private static partial string m_DamageRolls_Take25LocalizedText { get; }
     [LocalizedString("ToyBox_Features_BagOfTricks_DiceRolls_DiceRollsOverridesFeature_m_DamageRolls_Take1LocalizedText", "Damage Rolls: Take 1")]
     private static partial string m_DamageRolls_Take1LocalizedText { get; }
+    [LocalizedString("ToyBox_Features_BagOfTricks_DiceRolls_DiceRollsOverridesFeature_m_CoverInterception_UsesASeparateRoLocalizedText", "Controls whether attacks made by the selected units are redirected to cover instead of their target.")]
+    private static partial string m_CoverInterception_UsesASeparateRoLocalizedText { get; }
+    [LocalizedString("ToyBox_Features_BagOfTricks_DiceRolls_DiceRollsOverridesFeature_m_CoverNeverInterceptsLocalizedText", "Cover: Never Redirect")]
+    private static partial string m_CoverNeverInterceptsLocalizedText { get; }
+    [LocalizedString("ToyBox_Features_BagOfTricks_DiceRolls_DiceRollsOverridesFeature_m_CoverAlwaysInterceptsLocalizedText", "Cover: Always Redirect")]
+    private static partial string m_CoverAlwaysInterceptsLocalizedText { get; }
 }

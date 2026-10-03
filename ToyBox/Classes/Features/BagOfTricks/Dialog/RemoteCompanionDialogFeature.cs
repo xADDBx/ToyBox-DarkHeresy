@@ -1,4 +1,5 @@
 ﻿using Kingmaker;
+using Kingmaker.AreaLogic.Etudes;
 using Kingmaker.Blueprints;
 using Kingmaker.Controllers;
 using Kingmaker.Designers.EventConditionActionSystem.Conditions;
@@ -6,9 +7,10 @@ using Kingmaker.DialogSystem;
 using Kingmaker.DialogSystem.Blueprints;
 using Kingmaker.EntitySystem.Entities;
 using Kingmaker.Framework.DetectiveSystem;
+using Kingmaker.UI.Sound;
 using Kingmaker.UnitLogic.Parts;
 using Kingmaker.Utility.DotNetExtensions;
-using static Owlcat.Runtime.Visual.GPUDrivenBRG.Batching.GPUDrivenNativeDataUpdate;
+using UnityEngine;
 
 namespace ToyBox.Features.BagOfTricks.Dialog;
 
@@ -65,22 +67,29 @@ public partial class RemoteCompanionDialogFeature : FeatureWithPatch {
                         } else if (__instance.Owner is BlueprintClueStudy clueBp) {
                             Trace($"Overiding {clueBp.name} Companion {__instance.Companion.name} ({__instance.Companion.AssetGuid}) In Party to true");
                             __result = true;
+                        } else if (__instance.Owner is BlueprintEtude) {
+                            // We ignore etude; we don't want to change e.g. areas; we only want dialog presence.
                         } else {
                             Log($"Encountered IsCompanionInParty with unhandled owner type: {__instance.Owner.AssetGuid}");
                         }
                     }
                 }
             } else {
-                Debug($"Could not override check {__instance.name} on {__instance.Owner?.AssetGuid ?? "Null BP Owner?"} because no unit with blueprint {__instance.Companion?.AssetGuid ?? "Null Companion BP?"} was found.");
+                // Only log for missing interesting owners; e.g. BlueprintEtude's should not log spam for missing companions.
+                if (__instance.Owner is BlueprintCue or BlueprintAnswer or BlueprintClueStudy) {
+                    Debug($"Could not override check {__instance.name} on {__instance.Owner?.AssetGuid ?? "Null BP Owner?"} because no unit with blueprint {__instance.Companion?.AssetGuid ?? "Null Companion BP?"} was found.");
+                }
             }
         } catch (Exception ex) {
             Error(ex);
         }
     }
+    private const float m_MaxAudibleDialogDistance = 50f;
     [ThreadStatic]
     private static bool m_OriginallyIncludedEx;
     [ThreadStatic]
     private static bool m_OriginallyIncludedRemote;
+    private static WeakReference<BaseUnitEntity>? m_RemoteSpeaker;
     [HarmonyPatch(typeof(Kingmaker.Designers.EventConditionActionSystem.Evaluators.CompanionInParty), nameof(Kingmaker.Designers.EventConditionActionSystem.Evaluators.CompanionInParty.GetAbstractUnitEntityInternal)), HarmonyPrefix]
     private static void CompanionInParty_GetAbstractUnitEntityInternal_Pre_Patch(Kingmaker.Designers.EventConditionActionSystem.Evaluators.CompanionInParty __instance) {
         if (__instance.Owner is BlueprintCue or BlueprintAnswer) {
@@ -100,16 +109,25 @@ public partial class RemoteCompanionDialogFeature : FeatureWithPatch {
     }
     [HarmonyPatch(typeof(DialogSpeaker), nameof(DialogSpeaker.TryGetSpeakerEntity)), HarmonyPostfix]
     private static void DialogSpeaker_GetEntity_Patch(DialogSpeaker __instance, ref BaseUnitEntity speaker, ref bool __result) {
-        if (!__result && __instance.Blueprint != null) {
+        m_RemoteSpeaker = null;
+        if (!__instance.NoSpeaker && (!__result || __instance.ReplacedSpeakerWithErrorSpeaker) && __instance.Blueprint != null) {
             var units = Game.Instance.Controllers.EntitySpawner.CreationQueue.Select((EntitySpawnController.SpawnEntry ce) => ce.Entity).OfType<BaseUnitEntity>();
             var maybeUnit = Game.Instance.Player.AllCrossSceneUnits.Where(u => GetInstance<ExCompanionDialogFeature>().IsEnabled || u.GetCompanionOptional()?.State != CompanionState.ExCompanion)
                 .Concat(units).Select(__instance.SelectMatchingUnit).NotNull().Distinct().Nearest(Game.Instance.Controllers.DialogController.DialogPosition);
             if (maybeUnit != null) {
                 __instance.ReplacedSpeakerWithErrorSpeaker = false;
                 speaker = maybeUnit;
+                m_RemoteSpeaker = new(maybeUnit);
                 __result = true;
                 return;
             }
+        }
+    }
+    [HarmonyPatch(typeof(VoiceOverController), nameof(VoiceOverController.PlayDialogVoiceOver)), HarmonyPrefix]
+    private static void VoiceOverController_PlayDialogVoiceOver_Patch(ref GameObject? target) {
+        if (m_RemoteSpeaker?.TryGetTarget(out var remoteSpeaker) == true && target == remoteSpeaker.View?.gameObject
+            && (!remoteSpeaker.IsInGame || (target != null && Vector3.Distance(target.transform.position, Game.Instance.Controllers.DialogController.DialogPosition) > m_MaxAudibleDialogDistance))) {
+            target = null;
         }
     }
     [HarmonyPatch(typeof(DetectiveSystem), nameof(DetectiveSystem.IsCompanionAvailableForStudy)), HarmonyPostfix]

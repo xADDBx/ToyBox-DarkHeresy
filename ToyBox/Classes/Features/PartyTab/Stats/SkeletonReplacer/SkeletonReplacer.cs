@@ -7,6 +7,7 @@ namespace ToyBox.Features.PartyTab.Stats;
 
 internal class SkeletonReplacer {
     private readonly string m_Owner;
+    private readonly WeakReference<Character> m_Avatar;
     private readonly Skeleton m_OldSkeleton;
     private readonly Skeleton m_NewSkeleton;
 
@@ -22,14 +23,16 @@ internal class SkeletonReplacer {
     public bool IsValid { get; private set; }
 
     public SkeletonReplacer(BaseUnitEntity character) {
-        if (character?.View?.CharacterAvatar?.Skeleton is not Skeleton skeleton) {
+        if (character?.View?.CharacterAvatar is not Character avatar || avatar.Skeleton is not Skeleton skeleton) {
             m_Owner = "";
+            m_Avatar = new(null!);
             m_OldSkeleton = null!;
             m_NewSkeleton = null!;
             m_BoneActions = [];
             return;
         }
         m_Owner = character.UniqueId;
+        m_Avatar = new(avatar);
         m_OldSkeleton = skeleton;
         m_NewSkeleton = DuplicateSkeleton(skeleton);
 
@@ -76,6 +79,12 @@ internal class SkeletonReplacer {
             { "IO_backpackX", new() { Value = 0, Min = -2, Max = 2, Bones = ["C_back_w_____slot_08"] } },
             { "IO_backpackY", new() { Value = 0, Min = -2, Max = 2, Bones = ["C_back_w_____slot_08"] } },
             { "IO_backpackZ", new() { Value = 0, Min = -2, Max = 2, Bones = ["C_back_w_____slot_08"] } },
+            { "IO_weapon_in_hand_RX", new() { Value = 0, Min = -2, Max = 2, Bones = ["R_WeaponBone"] } },
+            { "IO_weapon_in_hand_RY", new() { Value = 0, Min = -2, Max = 2, Bones = ["R_WeaponBone"] } },
+            { "IO_weapon_in_hand_RZ", new() { Value = 0, Min = -2, Max = 2, Bones = ["R_WeaponBone"] } },
+            { "IO_weapon_in_hand_LX", new() { Value = 0, Min = -2, Max = 2, Bones = ["L_WeaponBone"] } },
+            { "IO_weapon_in_hand_LY", new() { Value = 0, Min = -2, Max = 2, Bones = ["L_WeaponBone"] } },
+            { "IO_weapon_in_hand_LZ", new() { Value = 0, Min = -2, Max = 2, Bones = ["L_WeaponBone"] } },
             { "IO_weapon_in_holstersRX", new() { Value = 0, Min = -2, Max = 2, Bones = ["R_front_weapon_slot_01_ADJ", "R_front_weapon_slot_02_ADJ"] } },
             { "IO_weapon_in_holstersRY", new() { Value = 0, Min = -2, Max = 2, Bones = ["R_front_weapon_slot_01_ADJ", "R_front_weapon_slot_02_ADJ"] } },
             { "IO_weapon_in_holstersRZ", new() { Value = 0, Min = -2, Max = 2, Bones = ["R_front_weapon_slot_01_ADJ", "R_front_weapon_slot_02_ADJ"] } },
@@ -86,6 +95,12 @@ internal class SkeletonReplacer {
             { "IS_backpack", new() { Value = 1, Min = 0.5f, Max = 2, Bones = ["C_back_w_____slot_08"] } },
             { "IS_weapon_in_hand_R", new() { Value = 1, Min = 0.5f, Max = 2, Bones = ["R_WeaponBone"] } },
             { "IS_weapon_in_hand_L", new() { Value = 1, Min = 0.5f, Max = 2, Bones = ["L_WeaponBone"] } },
+            { "IS_weapon_in_hand_RX", new() { Value = 1, Min = 0.5f, Max = 2, Bones = ["R_WeaponBone"] } },
+            { "IS_weapon_in_hand_RY", new() { Value = 1, Min = 0.5f, Max = 2, Bones = ["R_WeaponBone"] } },
+            { "IS_weapon_in_hand_RZ", new() { Value = 1, Min = 0.5f, Max = 2, Bones = ["R_WeaponBone"] } },
+            { "IS_weapon_in_hand_LX", new() { Value = 1, Min = 0.5f, Max = 2, Bones = ["L_WeaponBone"] } },
+            { "IS_weapon_in_hand_LY", new() { Value = 1, Min = 0.5f, Max = 2, Bones = ["L_WeaponBone"] } },
+            { "IS_weapon_in_hand_LZ", new() { Value = 1, Min = 0.5f, Max = 2, Bones = ["L_WeaponBone"] } },
             { "IS_weapon_in_holsters", new() { Value = 1, Min = 0.5f, Max = 2, Bones = ["R_front_weapon_slot_01", "R_front_weapon_slot_02", "C_front_weapon_slot_03", "L_front_weapon_slot_04", "L_front_weapon_slot_05"] } },
             { "IS_back_weapon_R", new() { Value = 1, Min = 0.5f, Max = 2, Bones = ["R_back_weapon_slot_06", "R_back_weapon_slot_09"] } },
             { "IS_back_weapon_L", new() { Value = 1, Min = 0.5f, Max = 2, Bones = ["L_back_weapon_slot_07", "L_back_weapon_slot_10"] } },
@@ -106,6 +121,12 @@ internal class SkeletonReplacer {
             { "IO_backpackX", (bone, data, param) => { bone.Offset.z = data.OriginalValue.z + (param * -0.1f); return bone; } },
             { "IO_backpackY", (bone, data, param) => { bone.Offset.y = data.OriginalValue.y + (param * -0.1f); return bone; } },
             { "IO_backpackZ", (bone, data, param) => { bone.Offset.x = data.OriginalValue.x + (param * -0.1f); return bone; } },
+            { "IO_weapon_in_hand_RX", (bone, data, param) => { bone.Offset.x = data.OriginalValue.x + (param * 0.1f); return bone; } },
+            { "IO_weapon_in_hand_RY", (bone, data, param) => { bone.Offset.y = data.OriginalValue.y + (param * 0.1f); return bone; } },
+            { "IO_weapon_in_hand_RZ", (bone, data, param) => { bone.Offset.z = data.OriginalValue.z + (param * 0.1f); return bone; } },
+            { "IO_weapon_in_hand_LX", (bone, data, param) => { bone.Offset.x = data.OriginalValue.x + (param * 0.1f); return bone; } },
+            { "IO_weapon_in_hand_LY", (bone, data, param) => { bone.Offset.y = data.OriginalValue.y + (param * 0.1f); return bone; } },
+            { "IO_weapon_in_hand_LZ", (bone, data, param) => { bone.Offset.z = data.OriginalValue.z + (param * 0.1f); return bone; } },
             { "IO_weapon_in_holstersRX", (bone, data, param) => { bone.Offset.y = data.OriginalValue.y + (param * -0.1f); return bone; } },
             { "IO_weapon_in_holstersRY", (bone, data, param) => { bone.Offset.x = data.OriginalValue.x + (param * 0.1f); return bone; } },
             { "IO_weapon_in_holstersRZ", (bone, data, param) => { bone.Offset.z = data.OriginalValue.z + (param * -0.1f); return bone; } },
@@ -117,6 +138,10 @@ internal class SkeletonReplacer {
 
         CreateBodyParts(partsTable);
         IsValid = true;
+    }
+
+    public bool IsFor(BaseUnitEntity character) {
+        return character.UniqueId == m_Owner && m_Avatar.TryGetTarget(out var avatar) && ReferenceEquals(character.View?.CharacterAvatar, avatar);
     }
 
     private void CreateBodyParts(Dictionary<string, PartDataStruct> bodyPartsTable) {
@@ -195,9 +220,14 @@ internal class SkeletonReplacer {
         }
         foreach (var bone in bodyPart.BonesData) {
             var targetBone = m_NewSkeleton.m_BoneDataForJob[bone.BoneIndex];
-            targetBone.Scale = bone.OriginalValue * bodyPart.Parameter / multiplier;
+            var axisScale = new Vector3(GetParameter($"{part}X"), GetParameter($"{part}Y"), GetParameter($"{part}Z"));
+            targetBone.Scale = Vector3.Scale(bone.OriginalValue, axisScale) * bodyPart.Parameter / multiplier;
             m_NewSkeleton.m_BoneDataForJob[bone.BoneIndex] = targetBone;
         }
+    }
+
+    private float GetParameter(string part) {
+        return BodyParts.TryGetValue(part, out var bodyPart) ? bodyPart.Parameter : 1;
     }
 
     private void BonesModification(Dictionary<string, float> loadedData, bool load, string part) {

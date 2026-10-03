@@ -172,6 +172,7 @@ public class GeneralSettings : AbstractJsonSettings {
     public float InvestigationMultiplier = 1f;
 
     // - Other Multipliers
+    public float? VisionRangeMultiplier = null;
     public int? MaxWalkDistanceSetting = null;
     public int? MinSprintDistanceSetting = null;
     public float? MovementSpeedMultiplier = null;
@@ -193,6 +194,8 @@ public class GeneralSettings : AbstractJsonSettings {
     public UnitSelectType DiceRollsAlwaysRoll1;
     public UnitSelectType DiceRollsNeverRoll100;
     public UnitSelectType DiceRollsNeverRoll1;
+    public UnitSelectType DiceRollsCoverNeverIntercept;
+    public UnitSelectType DiceRollsCoverAlwaysIntercept;
     public UnitSelectType DiceRollsInitiativeAlwaysRoll1;
     public UnitSelectType DiceRollsInitiativeAlwaysRoll50;
     public UnitSelectType DiceRollsInitiativeAlwaysRoll100;
